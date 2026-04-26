@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epsilon Heckle</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Supabase JS v2 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'eps': {
+                            red: '#DC2626',
+                            'red-dark': '#B91C1C',
+                            'red-glow': '#EF4444',
+                            black: '#0A0A0A',
+                            darker: '#050505',
+                            card: '#111111',
+                            'card-hover': '#1A1A1A',
+                            border: '#222222',
+                            muted: '#6B6B6B',
+                            'muted-light': '#9A9A9A',
+                        }
+                    },
+                    fontFamily: {
+                        display: ['"Bebas Neue"', 'sans-serif'],
+                        body: ['"Space Grotesk"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #0A0A0A;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0A0A0A;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #DC2626;
+        }
+
+        /* Hero grid overlay */
+        .hero-grid {
+            background-image:
+                linear-gradient(rgba(220, 38, 38, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(220, 38, 38, 0.04) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* Hero glow */
+        .hero-glow {
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            height: 180px;
+            background: radial-gradient(ellipse at center bottom, rgba(220, 38, 38, 0.18) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Nav transition */
+        .nav-solid {
+            background: rgba(10, 10, 10, 0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid #222;
+        }
+
+        /* Card */
+        .game-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .game-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 40px rgba(220, 38, 38, 0.08);
+            border-color: #333;
+        }
+
+        .game-card:hover .card-thumb img {
+            transform: scale(1.08);
+        }
+
+        .card-thumb img {
+            transition: transform 0.4s ease;
+        }
+
+        /* Thumbnail gradient */
+        .thumb-gradient {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.1) 50%, transparent 100%);
+        }
+
+        /* Genre pill */
+        .genre-pill {
+            transition: all 0.2s ease;
+        }
+
+        .genre-pill.active {
+            background: #DC2626 !important;
+            color: #fff !important;
+            border-color: #DC2626 !important;
+        }
+
+        .genre-pill:not(.active):hover {
+            border-color: #555;
+            color: #ccc;
+        }
+
+        /* Modal */
+        .modal-backdrop {
+            backdrop-filter: blur(6px);
+            background: rgba(0, 0, 0, 0.75);
+        }
+
+        /* Toast */
+        @keyframes toastIn {
+            from {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes toastOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+        }
+
+        .toast-enter {
+            animation: toastIn 0.35s ease forwards;
+        }
+
+        .toast-exit {
+            animation: toastOut 0.35s ease forwards;
+        }
+
+        /* Scroll indicator */
+        @keyframes scrollBounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(10px);
+            }
+        }
+
+        .scroll-bounce {
+            animation: scrollBounce 2s ease infinite;
+        }
+
+        /* Spinner */
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid #222;
+            border-top-color: #DC2626;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Line clamp fallback */
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Focus */
+        input:focus,
+        button:focus-visible {
+            outline: none;
+            border-color: #DC2626;
+            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.25);
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+
+            .game-card,
+            .card-thumb img,
+            .genre-pill {
+                transition: none !important;
+            }
+
+            .scroll-bounce,
+            .spinner {
+                animation: none !important;
+            }
+        }
+
+        /* Tab underline */
+        .auth-tab {
+            position: relative;
+            padding-bottom: 8px;
+        }
+
+        .auth-tab::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #DC2626;
+            transition: width 0.25s ease;
+        }
+
+        .auth-tab.active::after {
+            width: 100%;
+        }
+
+        /* View tab */
+        .view-tab {
+            transition: all 0.2s ease;
+        }
+
+        .view-tab.active {
+            background: #DC2626;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body class="font-body">
+
+    <!-- ===== NAVIGATION ===== -->
+    <nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" role="navigation"
+        aria-label="Main navigation">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-2 group" aria-label="Epsilon Heckle Home">
+                    <div
+                        class="w-8 h-8 bg-eps-red rounded flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <span class="font-display text-white text-lg leading-none">E</span>
+                    </div>
+                    <span class="font-display text-2xl tracking-wider text-white">EPSILON<span
+                            class="text-eps-red">HECKLE</span></span>
+                </a>
+
+                <!-- Search (desktop) -->
+                <div class="hidden md:block flex-1 max-w-md mx-8">
+                    <div class="relative">
+                        <i data-lucide="search"
+                            class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-eps-muted"></i>
+                        <input type="text" id="nav-search" placeholder="Search games..."
+                            class="w-full bg-eps-card border border-eps-border rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder-eps-muted focus:border-eps-red">
+                    </div>
+                </div>
+
+                <!-- Auth area -->
+                <div id="auth-area" class="flex items-center gap-3">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- ===== HERO ===== -->
+        <section id="hero" class="relative min-h-[75vh] flex items-center justify-center overflow-hidden hero-grid">
+            <canvas id="hero-canvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+            <div class="hero-glow"></div>
+
+            <div class="relative z-10 text-center px-4">
+                <h1 class="font-display text-7xl sm:text-8xl md:text-9xl leading-[0.9] tracking-wider">
+                    <span class="text-white">EPSILON</span><br>
+                    <span class="text-eps-red">HECKLE</span>
+                </h1>
+                <p class="mt-4 text-eps-muted-light text-base sm:text-lg font-light max-w-lg mx-auto">
+                    Your gateway to free gaming. Browse, play, and save your favorites.
+                </p>
+                <a href="#games"
+                    class="inline-flex items-center gap-2 mt-8 px-7 py-3 bg-eps-red hover:bg-eps-red-dark text-white font-semibold rounded-lg transition-colors">
+                    <span>Browse Library</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 scroll-bounce">
+                <i data-lucide="chevrons-down" class="w-5 h-5 text-eps-muted"></i>
+            </div>
+        </section>
+
+        <!-- ===== GAMES SECTION ===== -->
+        <section id="games" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <!-- Header row -->
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+                <div>
+                    <h2 class="font-display text-4xl sm:text-5xl tracking-wider text-white">GAME LIBRARY</h2>
+                    <p id="game-count" class="text-eps-muted text-sm mt-1"></p>
+                </div>
+                <div id="view-tabs" class="flex gap-2">
+                    <button
+                        class="view-tab active px-4 py-1.5 rounded-full text-sm font-medium border border-eps-border bg-transparent text-eps-muted-light"
+                        data-view="all">All Games</button>
+                    <button id="fav-tab"
+                        class="view-tab hidden px-4 py-1.5 rounded-full text-sm font-medium border border-eps-border bg-transparent text-eps-muted-light"
+                        data-view="favorites">My Favorites</button>
+                </div>
+            </div>
+
+            <!-- Mobile search -->
+            <div class="md:hidden mb-6">
+                <div class="relative">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-eps-muted"></i>
+                    <input type="text" id="mobile-search" placeholder="Search games..."
+                        class="w-full bg-eps-card border border-eps-border rounded-lg pl-10 pr-4 py-2.5 text-sm text-white placeholder-eps-muted">
+                </div>
+            </div>
+
+            <!-- Genre filters -->
+            <div id="genre-filters" class="flex flex-wrap gap-2 mb-8" role="group" aria-label="Filter by genre"></div>
+
+            <!-- Loading state -->
+            <div id="loading-state" class="flex flex-col items-center justify-center py-24">
+                <div class="spinner mb-4"></div>
+                <p class="text-eps-muted text-sm">Loading games...</p>
+            </div>
+
+            <!-- No data state -->
+            <div id="no-data-state" class="hidden flex-col items-center justify-center py-24 text-center">
+                <i data-lucide="folder-open" class="w-14 h-14 text-eps-muted mb-4"></i>
+                <p class="text-eps-muted-light text-lg mb-1">No games loaded</p>
+                <p class="text-eps-muted text-sm max-w-md">Place your games data in a file named <code
+                        class="bg-eps-card px-1.5 py-0.5 rounded text-eps-red text-xs">data.json</code> in the same
+                    directory as this HTML file.</p>
+            </div>
+
+            <!-- Empty filter state -->
+            <div id="empty-state" class="hidden flex-col items-center justify-center py-24 text-center">
+                <i data-lucide="search-x" class="w-14 h-14 text-eps-muted mb-4"></i>
+                <p class="text-eps-muted-light text-lg mb-1">No games found</p>
+                <p class="text-eps-muted text-sm">Try adjusting your search or filters.</p>
+            </div>
+
+            <!-- Favorites empty state -->
+            <div id="fav-empty-state" class="hidden flex-col items-center justify-center py-24 text-center">
+                <i data-lucide="heart" class="w-14 h-14 text-eps-muted mb-4"></i>
+                <p class="text-eps-muted-light text-lg mb-1">No favorites yet</p>
+                <p class="text-eps-muted text-sm">Click the heart icon on any game to save it here.</p>
+            </div>
+
+            <!-- Game grid -->
+            <div id="game-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+        </section>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="border-t border-eps-border py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 bg-eps-red rounded flex items-center justify-center">
+                    <span class="font-display text-white text-sm leading-none">E</span>
+                </div>
+                <span class="font-display text-lg tracking-wider text-eps-muted">EPSILON<span
+                        class="text-eps-red">HECKLE</span></span>
+            </div>
+            <p class="text-eps-muted text-xs">&copy; 2025 Epsilon Heckle. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- ===== AUTH MODAL ===== -->
+    <div id="auth-modal" class="fixed inset-0 z-[100] hidden items-center justify-center modal-backdrop" role="dialog"
+        aria-modal="true" aria-label="Authentication">
+        <div
+            class="bg-eps-card border border-eps-border rounded-xl w-full max-w-md mx-4 shadow-2xl relative overflow-hidden">
+            <!-- Red accent top -->
+            <div class="h-1 bg-eps-red"></div>
+            <!-- Close button -->
+            <button onclick="hideModal('auth-modal')"
+                class="absolute top-4 right-4 text-eps-muted hover:text-white transition-colors" aria-label="Close">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="p-8">
+                <!-- Supabase config notice -->
+                <div id="supabase-notice"
+                    class="hidden mb-5 p-3 bg-yellow-900/30 border border-yellow-800/50 rounded-lg text-yellow-200 text-xs leading-relaxed">
+                    Supabase is not configured. Add your project URL and anon key in the script section to enable
+                    authentication.
+                </div>
+
+                <!-- Tabs -->
+                <div class="flex gap-8 mb-8">
+                    <button class="auth-tab active text-white font-semibold text-lg" onclick="switchAuthTab('login')"
+                        data-tab="login">Sign In</button>
+                    <button class="auth-tab text-eps-muted font-semibold text-lg" onclick="switchAuthTab('signup')"
+                        data-tab="signup">Sign Up</button>
+                </div>
+
+                <!-- Login form -->
+                <form id="login-form" class="space-y-4" onsubmit="handleLogin(event)">
+                    <div>
+                        <label class="block text-sm text-eps-muted-light mb-1.5" for="login-email">Email</label>
+                        <input type="email" id="login-email" required autocomplete="email"
+                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-eps-muted">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-eps-muted-light mb-1.5" for="login-password">Password</label>
+                        <input type="password" id="login-password" required autocomplete="current-password"
+                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-eps-muted">
+                    </div>
+                    <div id="login-error" class="hidden text-red-400 text-sm"></div>
+                    <button type="submit"
+                        class="w-full py-2.5 bg-eps-red hover:bg-eps-red-dark text-white font-semibold rounded-lg transition-colors">
+                        Sign In
+                    </button>
+                </form>
+
+                <!-- Signup form -->
+                <form id="signup-form" class="space-y-4 hidden" onsubmit="handleSignup(event)">
+                    <div>
+                        <label class="block text-sm text-eps-muted-light mb-1.5" for="signup-email">Email</label>
+                        <input type="email" id="signup-email" required autocomplete="email"
+                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-eps-muted">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-eps-muted-light mb-1.5" for="signup-password">Password</label>
+                        <input type="password" id="signup-password" required minlength="6" autocomplete="new-password"
+                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-eps-muted">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-eps-muted-light mb-1.5" for="signup-confirm">Confirm
+                            Password</label>
+                        <input type="password" id="signup-confirm" required minlength="6" autocomplete="new-password"
+                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-eps-muted">
+                    </div>
+                    <div id="signup-error" class="hidden text-red-400 text-sm"></div>
+                    <button type="submit"
+                        class="w-full py-2.5 bg-eps-red hover:bg-eps-red-dark text-white font-semibold rounded-lg transition-colors">
+                        Create Account
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== GAME DETAIL MODAL ===== -->
+    <div id="game-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center modal-backdrop overflow-y-auto py-8"
+        role="dialog" aria-modal="true" aria-label="Game details">
+        <div
+            class="bg-eps-card border border-eps-border rounded-xl w-full max-w-3xl mx-4 shadow-2xl relative overflow-hidden">
+            <div class="h-1 bg-eps-red"></div>
+            <button onclick="hideModal('game-modal')"
+                class="absolute top-5 right-5 z-10 text-eps-muted hover:text-white transition-colors bg-black/40 rounded-full p-1"
+                aria-label="Close">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div id="game-modal-content" class="p-6 sm:p-8">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-[200] flex flex-col gap-3 pointer-events-none"
+        aria-live="polite"></div>
+
+
+    <!-- ===== SCRIPT ===== -->
+    <script>
+        // ================================================================
+        //  SUPABASE CONFIGURATION
+        //  Replace the values below with your Supabase project credentials.
+        //  You can find these in: Supabase Dashboard > Settings > API
+        // ================================================================
+        const SUPABASE_URL = '';
+        const SUPABASE_ANON_KEY = '';
+
+        /*
+        ================================================================
+        SQL to run in Supabase SQL Editor for the favorites table:
+    
+        create table public.favorites (
+            id uuid default gen_random_uuid() primary key,
+            user_id uuid references auth.users(id) on delete cascade not null,
+            game_id integer not null,
+            created_at timestamptz default now()
+        );
+    
+        alter table public.favorites enable row level security;
+    
+        create policy "Users can read own favorites"
+            on public.favorites for select
+            using (auth.uid() = user_id);
+    
+        create policy "Users can insert own favorites"
+            on public.favorites for insert
+            with check (auth.uid() = user_id);
+    
+        create policy "Users can delete own favorites"
+            on public.favorites for delete
+            using (auth.uid() = user_id);
+    
+        create unique index idx_favorites_user_game on public.favorites(user_id, game_id);
+        ================================================================
+        */
+
+        // ===== STATE =====
+        let supabaseClient = null;
+        let currentUser = null;
+        let gamesData = [];
+        let userFavorites = [];
+        let activeGenre = 'All';
+        let activeView = 'all'; // 'all' or 'favorites'
+        let searchQuery = '';
+        let searchDebounce = null;
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // ===== INIT =====
+        document.addEventListener('DOMContentLoaded', () => {
+            initSupabase();
+            loadGames();
+            setupEventListeners();
+            if (!prefersReducedMotion) initParticles();
+            lucide.createIcons();
+        });
+
+        // ===== SUPABASE =====
+        function initSupabase() {
+            const notice = document.getElementById('supabase-notice');
+            if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+                notice.classList.remove('hidden');
+                notice.classList.add('block');
+                updateAuthUI();
+                return;
+            }
+            if (typeof supabase === 'undefined') {
+                notice.textContent = 'Supabase JS library failed to load. Check your internet connection.';
+                notice.classList.remove('hidden');
+                notice.classList.add('block');
+                updateAuthUI();
+                return;
+            }
+            try {
+                const { createClient } = supabase;
+                supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+                supabaseClient.auth.onAuthStateChange((event, session) => {
+                    if (session && session.user) {
+                        currentUser = session.user;
+                        loadFavorites();
+                    } else {
+                        currentUser = null;
+                        userFavorites = [];
+                    }
+                    updateAuthUI();
+                    renderCurrentView();
+                });
+
+                // Check existing session
+                supabaseClient.auth.getSession().then(({ data: { session } }) => {
+                    if (session) {
+                        currentUser = session.user;
+                        loadFavorites();
+                    }
+                    updateAuthUI();
+                });
+            } catch (err) {
+                notice.textContent = 'Failed to initialize Supabase: ' + err.message;
+                notice.classList.remove('hidden');
+                notice.classList.add('block');
+                updateAuthUI();
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            const errEl = document.getElementById('login-error');
+            errEl.classList.add('hidden');
+
+            if (!supabaseClient) {
+                errEl.textContent = 'Supabase is not configured.';
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error) {
+                errEl.textContent = error.message;
+                errEl.classList.remove('hidden');
+                return;
+            }
+            hideModal('auth-modal');
+            showToast('Signed in successfully', 'success');
+            e.target.reset();
+        }
+
+        async function handleSignup(e) {
+            e.preventDefault();
+            const email = document.getElementById('signup-email').value.trim();
+            const password = document.getElementById('signup-password').value;
+            const confirm = document.getElementById('signup-confirm').value;
+            const errEl = document.getElementById('signup-error');
+            errEl.classList.add('hidden');
+
+            if (password !== confirm) {
+                errEl.textContent = 'Passwords do not match.';
+                errEl.classList.remove('hidden');
+                return;
+            }
+            if (!supabaseClient) {
+                errEl.textContent = 'Supabase is not configured.';
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            const { error } = await supabaseClient.auth.signUp({ email, password });
+            if (error) {
+                errEl.textContent = error.message;
+                errEl.classList.remove('hidden');
+                return;
+            }
+            hideModal('auth-modal');
+            showToast('Account created! Check your email to verify.', 'success');
+            e.target.reset();
+        }
+
+        async function handleSignOut() {
+            if (!supabaseClient) return;
+            await supabaseClient.auth.signOut();
+            showToast('Signed out', 'info');
+        }
+
+        // ===== FAVORITES =====
+        async function loadFavorites() {
+            if (!supabaseClient || !currentUser) { userFavorites = []; return; }
+            try {
+                const { data, error } = await supabaseClient
+                    .from('favorites')
+                    .select('game_id')
+                    .eq('user_id', currentUser.id);
+                if (error) throw error;
+                userFavorites = data.map(d => d.game_id);
+            } catch {
+                userFavorites = [];
+            }
+        }
+
+        async function toggleFavorite(gameId) {
+            if (!currentUser) {
+                showModal('auth-modal');
+                showToast('Sign in to save favorites', 'info');
+                return;
+            }
+            if (!supabaseClient) return;
+
+            const isFav = userFavorites.includes(gameId);
+            try {
+                if (isFav) {
+                    const { error } = await supabaseClient
+                        .from('favorites')
+                        .delete()
+                        .eq('user_id', currentUser.id)
+                        .eq('game_id', gameId);
+                    if (error) throw error;
+                    userFavorites = userFavorites.filter(id => id !== gameId);
+                    showToast('Removed from favorites', 'info');
+                } else {
+                    const { error } = await supabaseClient
+                        .from('favorites')
+                        .insert({ user_id: currentUser.id, game_id: gameId });
+                    if (error) throw error;
+                    userFavorites.push(gameId);
+                    showToast('Added to favorites', 'success');
+                }
+                renderCurrentView();
+                // Re-render detail modal if open
+                if (!document.getElementById('game-modal').classList.contains('hidden')) {
+                    const game = gamesData.find(g => g.id === gameId);
+                    if (game) renderGameDetail(game);
+                }
+            } catch (err) {
+                showToast('Failed to update favorites: ' + err.message, 'error');
+            }
+        }
+
+        // ===== GAMES LOADING =====
+        // Fetch and display games
+        async function loadGames() {
+            const grid = document.getElementById('game-grid'); // Ensure your grid has this ID
+            try {
+                const response = await fetch('data.json');
+                const games = await response.json();
+
+                grid.innerHTML = games.map(game => `
+            <div class="game-card bg-eps-card border border-eps-border rounded-xl overflow-hidden group cursor-pointer" onclick="openGame('${game.game_url}')">
+                <div class="card-thumb relative aspect-video overflow-hidden">
+                    <img src="${game.thumbnail}" alt="${game.title}" class="w-full h-full object-cover">
+                    <div class="thumb-gradient absolute inset-0 opacity-60"></div>
+                    <span class="absolute bottom-3 left-3 bg-eps-red text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
+                        ${game.genre}
+                    </span>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-display text-xl mb-1 group-hover:text-eps-red transition-colors">${game.title}</h3>
+                    <p class="text-eps-muted text-sm line-clamp-2">${game.short_description}</p>
+                </div>
+            </div>
+        `).join('');
+            } catch (error) {
+                console.error("Failed to load games:", error);
+            }
+        }
+
+        function openGame(url) {
+            window.open(url, '_blank');
+        }
+
+        document.addEventListener('DOMContentLoaded', loadGames);
+
+        function buildGenreFilters() {
+            const container = document.getElementById('genre-filters');
+            const genres = ['All', ...new Set(gamesData.map(g => g.genre).filter(Boolean))];
+            container.innerHTML = genres.map(genre =>
+                `<button class="genre-pill px-4 py-1.5 rounded-full text-sm font-medium border border-eps-border bg-transparent text-eps-muted ${genre === 'All' ? 'active' : ''}" data-genre="${genre}">${genre}</button>`
+            ).join('');
+            lucide.createIcons();
+        }
+
+        function getFilteredGames() {
+            let games = [...gamesData];
+
+            if (activeView === 'favorites') {
+                games = games.filter(g => userFavorites.includes(g.id));
+            }
+
+            if (activeGenre !== 'All') {
+                games = games.filter(g => g.genre === activeGenre);
+            }
+
+            if (searchQuery.trim()) {
+                const q = searchQuery.toLowerCase().trim();
+                games = games.filter(g =>
+                    (g.title && g.title.toLowerCase().includes(q)) ||
+                    (g.genre && g.genre.toLowerCase().includes(q)) ||
+                    (g.platform && g.platform.toLowerCase().includes(q)) ||
+                    (g.publisher && g.publisher.toLowerCase().includes(q)) ||
+                    (g.developer && g.developer.toLowerCase().includes(q))
+                );
+            }
+
+            return games;
+        }
+
+        function renderCurrentView() {
+            const loadingEl = document.getElementById('loading-state');
+            const noDataEl = document.getElementById('no-data-state');
+            const gridEl = document.getElementById('game-grid');
+            const emptyEl = document.getElementById('empty-state');
+            const favEmptyEl = document.getElementById('fav-empty-state');
+            const countEl = document.getElementById('game-count');
+
+            loadingEl.classList.add('hidden');
+            loadingEl.classList.remove('flex');
+            noDataEl.classList.add('hidden');
+            noDataEl.classList.remove('flex');
+            emptyEl.classList.add('hidden');
+            emptyEl.classList.remove('flex');
+            favEmptyEl.classList.add('hidden');
+            favEmptyEl.classList.remove('flex');
+
+            if (gamesData.length === 0) {
+                noDataEl.classList.remove('hidden');
+                noDataEl.classList.add('flex');
+                return;
+            }
+
+            const games = getFilteredGames();
+
+            if (activeView === 'favorites' && games.length === 0 && userFavorites.length === 0) {
+                countEl.textContent = '';
+                favEmptyEl.classList.remove('hidden');
+                favEmptyEl.classList.add('flex');
+                gridEl.classList.add('hidden');
+                return;
+            }
+
+            if (games.length === 0) {
+                countEl.textContent = '0 games found';
+                emptyEl.classList.remove('hidden');
+                emptyEl.classList.add('flex');
+                gridEl.classList.add('hidden');
+                return;
+            }
+
+            countEl.textContent = `${games.length} game${games.length !== 1 ? 's' : ''}`;
+            gridEl.classList.remove('hidden');
+            renderGameGrid(games);
+        }
+
+        function renderGameGrid(games) {
+            const grid = document.getElementById('game-grid');
+            grid.innerHTML = games.map(game => {
+                const isFav = userFavorites.includes(game.id);
+                return `
+            <article class="game-card bg-eps-card rounded-lg overflow-hidden border border-eps-border cursor-pointer" onclick="openGameDetail(${game.id})" tabindex="0" role="button" aria-label="View details for ${escapeHtml(game.title)}">
+                <div class="card-thumb relative aspect-video overflow-hidden bg-eps-black">
+                    <img src="${escapeHtml(game.thumbnail)}" alt="${escapeHtml(game.title)}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22225%22><rect fill=%22%23111111%22 width=%22400%22 height=%22225%22/><text x=%2250%25%22 y=%2250%25%22 fill=%22%23333%22 font-family=%22sans-serif%22 font-size=%2214%22 text-anchor=%22middle%22 dy=%22.3em%22>No Image</text></svg>'">
+                    <div class="thumb-gradient absolute inset-0"></div>
+                    ${game.genre ? `<span class="absolute top-3 left-3 bg-eps-red/90 text-white text-[11px] font-semibold px-2.5 py-1 rounded uppercase tracking-wide">${escapeHtml(game.genre)}</span>` : ''}
+                    <button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 hover:bg-eps-red/90 flex items-center justify-center transition-colors"
+                        onclick="event.stopPropagation(); toggleFavorite(${game.id})"
+                        aria-label="${isFav ? 'Remove from favorites' : 'Add to favorites'}">
+                        <i data-lucide="heart" class="w-4 h-4 ${isFav ? 'fill-eps-red text-eps-red' : 'text-white'}"></i>
+                    </button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-white text-base mb-1 truncate">${escapeHtml(game.title)}</h3>
+                    <p class="text-eps-muted text-sm line-clamp-2 mb-3 leading-relaxed">${escapeHtml(game.short_description)}</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] text-eps-muted flex items-center gap-1">
+                            <i data-lucide="monitor" class="w-3 h-3"></i>
+                            ${escapeHtml(game.platform || 'N/A')}
+                        </span>
+                        <span class="text-[11px] text-eps-red font-semibold tracking-wide flex items-center gap-1 uppercase">
+                            Play <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                        </span>
+                    </div>
+                </div>
+            </article>`;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function openGameDetail(gameId) {
+            const game = gamesData.find(g => g.id === gameId);
+            if (!game) return;
+            renderGameDetail(game);
+            showModal('game-modal');
+        }
+
+        function renderGameDetail(game) {
+            const isFav = userFavorites.includes(game.id);
+            const content = document.getElementById('game-modal-content');
+            content.innerHTML = `
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="md:w-1/2 flex-shrink-0">
+                    <img src="${escapeHtml(game.thumbnail)}" alt="${escapeHtml(game.title)}" class="w-full rounded-lg object-cover aspect-video"
+                        onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22225%22><rect fill=%22%23111111%22 width=%22400%22 height=%22225%22/><text x=%2250%25%22 y=%2250%25%22 fill=%22%23333%22 font-family=%22sans-serif%22 font-size=%2214%22 text-anchor=%22middle%22 dy=%22.3em%22>No Image</text></svg>'">
+                </div>
+                <div class="flex-1 flex flex-col">
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <h2 class="font-display text-3xl sm:text-4xl tracking-wider text-white">${escapeHtml(game.title)}</h2>
+                        <button onclick="toggleFavorite(${game.id})" class="flex-shrink-0 w-10 h-10 rounded-full border ${isFav ? 'bg-eps-red/20 border-eps-red' : 'border-eps-border hover:border-eps-red'} flex items-center justify-center transition-colors"
+                            aria-label="${isFav ? 'Remove from favorites' : 'Add to favorites'}">
+                            <i data-lucide="heart" class="w-5 h-5 ${isFav ? 'fill-eps-red text-eps-red' : 'text-eps-muted'}"></i>
+                        </button>
+                    </div>
+                    ${game.genre ? `<span class="inline-block bg-eps-red text-white text-xs font-semibold px-3 py-1 rounded uppercase tracking-wider mb-4 self-start">${escapeHtml(game.genre)}</span>` : ''}
+                    <p class="text-eps-muted-light text-sm leading-relaxed mb-5">${escapeHtml(game.short_description)}</p>
+                    <div class="grid grid-cols-2 gap-3 mb-6 text-sm">
+                        ${game.platform ? `<div><span class="text-eps-muted block text-xs mb-0.5">Platform</span><span class="text-white flex items-center gap-1.5"><i data-lucide="monitor" class="w-3.5 h-3.5 text-eps-muted"></i>${escapeHtml(game.platform)}</span></div>` : ''}
+                        ${game.publisher ? `<div><span class="text-eps-muted block text-xs mb-0.5">Publisher</span><span class="text-white">${escapeHtml(game.publisher)}</span></div>` : ''}
+                        ${game.developer ? `<div><span class="text-eps-muted block text-xs mb-0.5">Developer</span><span class="text-white">${escapeHtml(game.developer)}</span></div>` : ''}
+                        ${game.release_date ? `<div><span class="text-eps-muted block text-xs mb-0.5">Release Date</span><span class="text-white flex items-center gap-1.5"><i data-lucide="calendar" class="w-3.5 h-3.5 text-eps-muted"></i>${escapeHtml(game.release_date)}</span></div>` : ''}
+                    </div>
+                    <div class="mt-auto flex gap-3">
+                        ${game.game_url ? `<a href="${escapeHtml(game.game_url)}" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center gap-2 py-3 bg-eps-red hover:bg-eps-red-dark text-white font-semibold rounded-lg transition-colors text-sm">
+                            <i data-lucide="play" class="w-4 h-4"></i> Play Now
+                        </a>` : ''}
+                        ${game.freetogame_profile_url ? `<a href="${escapeHtml(game.freetogame_profile_url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-3 border border-eps-border hover:border-eps-muted text-eps-muted-light hover:text-white rounded-lg transition-colors text-sm">
+                            <i data-lucide="external-link" class="w-4 h-4"></i> Profile
+                        </a>` : ''}
+                    </div>
+                </div>
+            </div>`;
+            lucide.createIcons();
+        }
+
+        // ===== UI UPDATES =====
+        function updateAuthUI() {
+            const area = document.getElementById('auth-area');
+            const favTab = document.getElementById('fav-tab');
+
+            if (currentUser) {
+                favTab.classList.remove('hidden');
+                const email = currentUser.email || 'Account';
+                const displayEmail = email.length > 20 ? email.substring(0, 18) + '...' : email;
+                area.innerHTML = `
+                <span class="hidden sm:block text-eps-muted-light text-sm truncate max-w-[160px]" title="${escapeHtml(email)}">${escapeHtml(displayEmail)}</span>
+                <button onclick="handleSignOut()" class="inline-flex items-center gap-1.5 px-4 py-1.5 border border-eps-border hover:border-red-600 hover:text-eps-red text-eps-muted-light rounded-lg text-sm transition-colors">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Sign Out</span>
+                </button>`;
+            } else {
+                favTab.classList.add('hidden');
+                if (activeView === 'favorites') {
+                    activeView = 'all';
+                    document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t.dataset.view === 'all'));
+                    renderCurrentView();
+                }
+                area.innerHTML = `
+                <button onclick="showModal('auth-modal')" class="inline-flex items-center gap-1.5 px-4 py-1.5 border border-eps-border hover:border-eps-muted text-eps-muted-light hover:text-white rounded-lg text-sm transition-colors">
+                    <i data-lucide="log-in" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Sign In</span>
+                </button>
+                <button onclick="showModal('auth-modal'); switchAuthTab('signup');" class="inline-flex items-center gap-1.5 px-4 py-1.5 bg-eps-red hover:bg-eps-red-dark text-white rounded-lg text-sm font-medium transition-colors">
+                    Sign Up
+                </button>`;
+            }
+            lucide.createIcons();
+        }
+
+        function switchAuthTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => {
+                t.classList.toggle('active', t.dataset.tab === tab);
+                t.classList.toggle('text-white', t.dataset.tab === tab);
+                t.classList.toggle('text-eps-muted', t.dataset.tab !== tab);
+            });
+            document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
+            document.getElementById('signup-form').classList.toggle('hidden', tab !== 'signup');
+            document.getElementById('login-error').classList.add('hidden');
+            document.getElementById('signup-error').classList.add('hidden');
+        }
+
+        function showModal(id) {
+            const el = document.getElementById(id);
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideModal(id) {
+            const el = document.getElementById(id);
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const colors = {
+                success: 'border-green-600 bg-green-950/80 text-green-200',
+                error: 'border-red-600 bg-red-950/80 text-red-200',
+                info: 'border-neutral-600 bg-neutral-900/80 text-neutral-200',
+            };
+            const icons = { success: 'check-circle-2', error: 'alert-circle', info: 'info' };
+            const toast = document.createElement('div');
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg border ${colors[type] || colors.info} text-sm shadow-xl toast-enter max-w-sm`;
+            toast.innerHTML = `<i data-lucide="${icons[type] || icons.info}" class="w-4 h-4 flex-shrink-0"></i><span>${escapeHtml(message)}</span>`;
+            container.appendChild(toast);
+            lucide.createIcons({ nodes: [toast] });
+
+            setTimeout(() => {
+                toast.classList.remove('toast-enter');
+                toast.classList.add('toast-exit');
+                toast.addEventListener('animationend', () => toast.remove());
+            }, 3500);
+        }
+
+        // ===== EVENT LISTENERS =====
+        function setupEventListeners() {
+            // Nav scroll effect
+            const nav = document.getElementById('main-nav');
+            const hero = document.getElementById('hero');
+            const observer = new IntersectionObserver(entries => {
+                nav.classList.toggle('nav-solid', !entries[0].isIntersecting);
+            }, { threshold: 0.1 });
+            observer.observe(hero);
+
+            // Genre filters (delegated)
+            document.getElementById('genre-filters').addEventListener('click', e => {
+                const pill = e.target.closest('.genre-pill');
+                if (!pill) return;
+                activeGenre = pill.dataset.genre;
+                document.querySelectorAll('.genre-pill').forEach(p => p.classList.toggle('active', p === pill));
+                renderCurrentView();
+            });
+
+            // View tabs
+            document.getElementById('view-tabs').addEventListener('click', e => {
+                const tab = e.target.closest('.view-tab');
+                if (!tab) return;
+                activeView = tab.dataset.view;
+                document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t === tab));
+                renderCurrentView();
+            });
+
+            // Search - desktop
+            document.getElementById('nav-search').addEventListener('input', e => {
+                clearTimeout(searchDebounce);
+                searchDebounce = setTimeout(() => {
+                    searchQuery = e.target.value;
+                    document.getElementById('mobile-search').value = searchQuery;
+                    renderCurrentView();
+                }, 250);
+            });
+
+            // Search - mobile
+            document.getElementById('mobile-search').addEventListener('input', e => {
+                clearTimeout(searchDebounce);
+                searchDebounce = setTimeout(() => {
+                    searchQuery = e.target.value;
+                    document.getElementById('nav-search').value = searchQuery;
+                    renderCurrentView();
+                }, 250);
+            });
+
+            // Modal backdrop click to close
+            ['auth-modal', 'game-modal'].forEach(id => {
+                document.getElementById(id).addEventListener('click', e => {
+                    if (e.target === e.currentTarget) hideModal(id);
+                });
+            });
+
+            // Escape key to close modals
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') {
+                    ['auth-modal', 'game-modal'].forEach(id => {
+                        if (!document.getElementById(id).classList.contains('hidden')) hideModal(id);
+                    });
+                }
+            });
+
+            // Enter on game cards
+            document.getElementById('game-grid').addEventListener('keydown', e => {
+                if (e.key === 'Enter') {
+                    const card = e.target.closest('.game-card');
+                    if (card) card.click();
+                }
+            });
+        }
+
+        // ===== PARTICLES =====
+        function initParticles() {
+            const canvas = document.getElementById('hero-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            const PARTICLE_COUNT = 45;
+
+            function resize() {
+                const parent = canvas.parentElement;
+                canvas.width = parent.offsetWidth;
+                canvas.height = parent.offsetHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 1.8 + 0.4,
+                    speedY: -(Math.random() * 0.35 + 0.08),
+                    speedX: (Math.random() - 0.5) * 0.15,
+                    opacity: Math.random() * 0.4 + 0.08,
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (const p of particles) {
+                    p.x += p.speedX;
+                    p.y += p.speedY;
+                    if (p.y < -10) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
+                    if (p.x < -10) p.x = canvas.width + 10;
+                    if (p.x > canvas.width + 10) p.x = -10;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, Math.max(0.1, p.size), 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(220,38,38,${p.opacity})`;
+                    ctx.fill();
+                }
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // ===== UTILITIES =====
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+
+</html>
