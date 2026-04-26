@@ -1132,6 +1132,58 @@
             div.textContent = str;
             return div.innerHTML;
         }
+        (function() {
+    // --- Search Logic Fix ---
+    // This connects your search inputs to the rendering engine
+    const performSearch = (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        const gameCards = document.querySelectorAll('#game-grid > div, .game-card');
+        
+        gameCards.forEach(card => {
+            const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+            const description = card.querySelector('p')?.textContent.toLowerCase() || '';
+            
+            if (title.includes(query) || description.includes(query)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    };
+
+    const navSearch = document.getElementById('nav-search');
+    const mobileSearch = document.getElementById('mobile-search');
+
+    if (navSearch) navSearch.addEventListener('input', performSearch);
+    if (mobileSearch) mobileSearch.addEventListener('input', performSearch);
+
+
+    // --- Right-Click to Favorite ---
+    // Detects right-click on game cards to toggle favorites without opening the game
+    document.getElementById('game-grid').addEventListener('contextmenu', function(e) {
+        const card = e.target.closest('.game-card');
+        if (card) {
+            e.preventDefault(); // Stop the annoying browser menu
+            
+            // Extract the ID if it's stored in the card, or find it from the data
+            // Since your loadGames doesn't set an ID on the element, 
+            // we'll find the game by title as a fallback for this snippet
+            const gameTitle = card.querySelector('h3')?.textContent;
+            const game = gamesData.find(g => g.title === gameTitle);
+            
+            if (game && typeof toggleFavorite === 'function') {
+                toggleFavorite(game.id);
+                
+                // Visual feedback for the right-click
+                card.classList.add('ring-2', 'ring-eps-red');
+                setTimeout(() => card.classList.remove('ring-2', 'ring-eps-red'), 500);
+            } else {
+                // If it's a simple URL-based game from your loadGames function:
+                showToast("Right-click detected! Log in to save to favorites.", "info");
+            }
+        }
+    });
+})();
     </script>
 </body>
 
