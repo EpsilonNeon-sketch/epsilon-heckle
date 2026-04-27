@@ -22,7 +22,6 @@
 
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -49,7 +48,6 @@
     </script>
 
     <style>
-        /* Base Resets */
         *,
         *::before,
         *::after {
@@ -83,12 +81,15 @@
             background: #DC2626;
         }
 
-        /* Hero Grid & Glow */
+        /* Hero grid overlay */
         .hero-grid {
-            background-image: linear-gradient(rgba(220, 38, 38, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(220, 38, 38, 0.04) 1px, transparent 1px);
+            background-image:
+                linear-gradient(rgba(220, 38, 38, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(220, 38, 38, 0.04) 1px, transparent 1px);
             background-size: 50px 50px;
         }
 
+        /* Hero glow */
         .hero-glow {
             position: absolute;
             bottom: -2px;
@@ -100,12 +101,14 @@
             pointer-events: none;
         }
 
-        /* Sidebar Transitions */
-        .sidebar-transition {
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Nav transition */
+        .nav-solid {
+            background: rgba(10, 10, 10, 0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid #222;
         }
 
-        /* Card Hover Effects */
+        /* Card */
         .game-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
@@ -116,32 +119,42 @@
             border-color: #333;
         }
 
-        .card-thumb img {
-            transition: transform 0.4s ease;
-        }
-
         .game-card:hover .card-thumb img {
             transform: scale(1.08);
         }
 
+        .card-thumb img {
+            transition: transform 0.4s ease;
+        }
+
+        /* Thumbnail gradient */
         .thumb-gradient {
             background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.1) 50%, transparent 100%);
         }
 
-        /* Navigation Item Active State */
-        .nav-item.active {
-            background: rgba(220, 38, 38, 0.1);
-            color: #DC2626;
-            border-right: 3px solid #DC2626;
+        /* Genre pill */
+        .genre-pill {
+            transition: all 0.2s ease;
         }
 
-        /* Modal Backdrop */
+        .genre-pill.active {
+            background: #DC2626 !important;
+            color: #fff !important;
+            border-color: #DC2626 !important;
+        }
+
+        .genre-pill:not(.active):hover {
+            border-color: #555;
+            color: #ccc;
+        }
+
+        /* Modal */
         .modal-backdrop {
             backdrop-filter: blur(6px);
             background: rgba(0, 0, 0, 0.75);
         }
 
-        /* Toast Animations */
+        /* Toast */
         @keyframes toastIn {
             from {
                 transform: translateX(120%);
@@ -174,6 +187,23 @@
             animation: toastOut 0.35s ease forwards;
         }
 
+        /* Scroll indicator */
+        @keyframes scrollBounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(10px);
+            }
+        }
+
+        .scroll-bounce {
+            animation: scrollBounce 2s ease infinite;
+        }
+
         /* Spinner */
         .spinner {
             width: 36px;
@@ -190,16 +220,38 @@
             }
         }
 
-        /* Focus Styles */
+        /* Line clamp fallback */
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Focus */
         input:focus,
-        textarea:focus,
         button:focus-visible {
             outline: none;
             border-color: #DC2626;
             box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.25);
         }
 
-        /* Auth Tabs */
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+
+            .game-card,
+            .card-thumb img,
+            .genre-pill {
+                transition: none !important;
+            }
+
+            .scroll-bounce,
+            .spinner {
+                animation: none !important;
+            }
+        }
+
+        /* Tab underline */
         .auth-tab {
             position: relative;
             padding-bottom: 8px;
@@ -220,289 +272,198 @@
             width: 100%;
         }
 
-        /* Utilities */
-        .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+        /* View tab */
+        .view-tab {
+            transition: all 0.2s ease;
+        }
+
+        .view-tab.active {
+            background: #DC2626;
+            color: #fff;
         }
     </style>
 </head>
+<dialog 
+    id="epsilon-release-modal" 
+    class="fixed inset-0 m-auto backdrop:bg-black/80 backdrop:backdrop-blur-sm bg-eps-card border border-eps-border rounded-xl p-0 w-[calc(100%-2rem)] max-w-md shadow-2xl overflow-hidden"
+>
+    <div class="h-1 bg-eps-red w-full"></div>
+    
+    <div class="p-8 text-center">
+        <div class="w-16 h-16 bg-eps-red/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="rocket" class="w-8 h-8 text-eps-red"></i>
+        </div>
+        
+        <h2 class="font-display text-4xl tracking-wider text-white mb-2">NEW VERSION DROPPING</h2>
+        <p class="text-eps-red font-bold text-xl mb-4 tracking-tight">MAY 1ST, 2026</p>
+        
+        <p class="text-eps-muted-light text-sm leading-relaxed mb-8">
+            The next evolution of <span class="text-white">Epsilon Heckle</span> is almost here. Get a sneak peek at the new features and UI before the official launch.
+        </p>
 
+        <div class="flex flex-col gap-3">
+            <a href="./new.html" class="w-full py-3 bg-eps-red hover:bg-eps-red-dark text-white font-semibold rounded-lg transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+                <span>View Preview</span>
+                <i data-lucide="external-link" class="w-4 h-4"></i>
+            </a>
+            <button onclick="document.getElementById('epsilon-release-modal').close()" class="text-eps-muted hover:text-white text-sm transition-colors py-2">
+                Maybe later
+            </button>
+        </div>
+    </div>
+</dialog>
 <body class="font-body">
 
-    <!-- ===== MOBILE OVERLAY ===== -->
-    <div id="mobile-overlay" class="fixed inset-0 bg-black/80 z-40 hidden md:hidden glass-effect"
-        onclick="toggleMobileMenu()"></div>
+    <!-- ===== NAVIGATION ===== -->
+    <nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" role="navigation"
+        aria-label="Main navigation">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-2 group" aria-label="Epsilon Heckle Home">
+                    <div
+                        class="w-8 h-8 bg-eps-red rounded flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <span class="font-display text-white text-lg leading-none">E</span>
+                    </div>
+                    <span class="font-display text-2xl tracking-wider text-white">EPSILON<span
+                            class="text-eps-red">HECKLE</span></span>
+                </a>
 
-    <!-- ===== SIDEBAR NAVIGATION ===== -->
-    <aside id="sidebar"
-        class="fixed top-0 left-0 bottom-0 w-64 bg-eps-card border-r border-eps-border z-50 transform -translate-x-full md:translate-x-0 sidebar-transition flex flex-col justify-between">
-
-        <!-- Logo Section -->
-        <div>
-            <div class="h-16 flex items-center px-6 border-b border-eps-border">
-                <div
-                    class="w-8 h-8 bg-eps-red rounded flex items-center justify-center mr-3 shadow-lg shadow-red-900/20">
-                    <span class="font-display text-white text-lg leading-none">E</span>
+                <!-- Search (desktop) -->
+                <div class="hidden md:block flex-1 max-w-md mx-8">
+                    <div class="relative">
+                        <i data-lucide="search"
+                            class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-eps-muted"></i>
+                        <input type="text" id="nav-search" placeholder="Search games..."
+                            class="w-full bg-eps-card border border-eps-border rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder-eps-muted focus:border-eps-red">
+                    </div>
                 </div>
-                <span class="font-display text-xl tracking-wider text-white">EPSILON<span
-                        class="text-eps-red">HECKLE</span></span>
-                <!-- Close button for mobile -->
-                <button onclick="toggleMobileMenu()" class="ml-auto md:hidden text-eps-muted hover:text-white">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
-            </div>
 
-            <!-- Main Nav Links -->
-            <nav class="p-4 space-y-1">
-                <button onclick="switchView('library')"
-                    class="nav-item active w-full flex items-center gap-3 px-4 py-3 text-eps-muted-light hover:text-white hover:bg-eps-border/50 rounded-r-lg transition-colors text-left group"
-                    data-view="library">
-                    <i data-lucide="gamepad-2" class="w-5 h-5 group-hover:text-eps-red transition-colors"></i>
-                    <span class="font-medium">Game Library</span>
-                </button>
-                <button onclick="switchView('feed')"
-                    class="nav-item w-full flex items-center gap-3 px-4 py-3 text-eps-muted-light hover:text-white hover:bg-eps-border/50 rounded-r-lg transition-colors text-left group"
-                    data-view="feed">
-                    <i data-lucide="users" class="w-5 h-5 group-hover:text-eps-red transition-colors"></i>
-                    <span class="font-medium">Community Feed</span>
-                </button>
-                <button onclick="switchView('post')"
-                    class="nav-item w-full flex items-center gap-3 px-4 py-3 text-eps-muted-light hover:text-white hover:bg-eps-border/50 rounded-r-lg transition-colors text-left group"
-                    data-view="post">
-                    <i data-lucide="pen-tool" class="w-5 h-5 group-hover:text-eps-red transition-colors"></i>
-                    <span class="font-medium">Create Post</span>
-                </button>
-                <button onclick="switchView('settings')"
-                    class="nav-item w-full flex items-center gap-3 px-4 py-3 text-eps-muted-light hover:text-white hover:bg-eps-border/50 rounded-r-lg transition-colors text-left group"
-                    data-view="settings">
-                    <i data-lucide="settings" class="w-5 h-5 group-hover:text-eps-red transition-colors"></i>
-                    <span class="font-medium">Settings</span>
-                </button>
-            </nav>
-        </div>
-
-        <!-- User Profile Snippet (Bottom Sidebar) -->
-        <div class="p-4 border-t border-eps-border bg-eps-darker">
-            <div id="sidebar-user-area" class="flex items-center gap-3">
-                <!-- Populated by JS -->
+                <!-- Auth area -->
+                <div id="auth-area" class="flex items-center gap-3">
+                    <!-- Populated by JS -->
+                </div>
             </div>
         </div>
-    </aside>
+    </nav>
 
-    <!-- ===== MAIN CONTENT WRAPPER ===== -->
-    <div class="md:ml-64 min-h-screen flex flex-col transition-all duration-300">
+    <main>
+        <!-- ===== HERO ===== -->
+        <section id="hero" class="relative min-h-[75vh] flex items-center justify-center overflow-hidden hero-grid">
+            <canvas id="hero-canvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+            <div class="hero-glow"></div>
 
-        <!-- Top Bar (Mobile Header + Search) -->
-        <header
-            class="sticky top-0 z-30 bg-eps-black/90 backdrop-blur-md border-b border-eps-border h-16 flex items-center justify-between px-4 sm:px-6">
-            <div class="flex items-center gap-4">
-                <button onclick="toggleMobileMenu()" class="md:hidden text-eps-muted hover:text-white">
-                    <i data-lucide="menu" class="w-6 h-6"></i>
-                </button>
-                <!-- Search (visible on all screens now, adjusted width) -->
-                <div class="relative w-full max-w-md">
+            <div class="relative z-10 text-center px-4">
+                <h1 class="font-display text-7xl sm:text-8xl md:text-9xl leading-[0.9] tracking-wider">
+                    <span class="text-white">EPSILON</span><br>
+                    <span class="text-eps-red">HECKLE</span>
+                </h1>
+                <p class="mt-4 text-eps-muted-light text-base sm:text-lg font-light max-w-lg mx-auto">
+                    Your gateway to free gaming. Browse, play, and save your favorites.
+                </p>
+                <a href="#games"
+                    class="inline-flex items-center gap-2 mt-8 px-7 py-3 bg-eps-red hover:bg-eps-red-dark text-white font-semibold rounded-lg transition-colors">
+                    <span>Browse Library</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 scroll-bounce">
+                <i data-lucide="chevrons-down" class="w-5 h-5 text-eps-muted"></i>
+            </div>
+        </section>
+
+        <!-- ===== GAMES SECTION ===== -->
+        <section id="games" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <!-- Header row -->
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+                <div>
+                    <h2 class="font-display text-4xl sm:text-5xl tracking-wider text-white">GAME LIBRARY</h2>
+                    <p id="game-count" class="text-eps-muted text-sm mt-1"></p>
+                </div>
+                <div id="view-tabs" class="flex gap-2">
+                    <button
+                        class="view-tab active px-4 py-1.5 rounded-full text-sm font-medium border border-eps-border bg-transparent text-eps-muted-light"
+                        data-view="all">All Games</button>
+                    <button id="fav-tab"
+                        class="view-tab hidden px-4 py-1.5 rounded-full text-sm font-medium border border-eps-border bg-transparent text-eps-muted-light"
+                        data-view="favorites">My Favorites</button>
+                </div>
+            </div>
+
+            <!-- Mobile search -->
+            <div class="md:hidden mb-6">
+                <div class="relative">
                     <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-eps-muted"></i>
-                    <input type="text" id="global-search" placeholder="Search games..."
-                        class="w-full bg-eps-card border border-eps-border rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder-eps-muted focus:border-eps-red transition-colors">
+                    <input type="text" id="mobile-search" placeholder="Search games..."
+                        class="w-full bg-eps-card border border-eps-border rounded-lg pl-10 pr-4 py-2.5 text-sm text-white placeholder-eps-muted">
                 </div>
             </div>
 
-            <!-- Desktop Quick Auth (Only visible if not logged in, else handled in sidebar) -->
-            <div id="desktop-auth-buttons" class="hidden md:flex items-center gap-2">
-                <!-- Injected via JS -->
-            </div>
-        </header>
+            <!-- Genre filters -->
+            <div id="genre-filters" class="flex flex-wrap gap-2 mb-8" role="group" aria-label="Filter by genre"></div>
 
-        <!-- CONTENT VIEWS CONTAINER -->
-        <main class="flex-1 relative">
-
-            <!-- ===== VIEW: LIBRARY (Original Content) ===== -->
-            <div id="view-library" class="view-section">
-                <!-- Hero -->
-                <section
-                    class="relative min-h-[60vh] lg:min-h-[70vh] flex items-center justify-center overflow-hidden hero-grid pt-16">
-                    <canvas id="hero-canvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
-                    <div class="hero-glow"></div>
-                    <div class="relative z-10 text-center px-4">
-                        <h1 class="font-display text-6xl sm:text-7xl lg:text-8xl leading-[0.9] tracking-wider">
-                            <span class="text-white">EPSILON</span><br><span class="text-eps-red">HECKLE</span>
-                        </h1>
-                        <p class="mt-4 text-eps-muted-light text-sm sm:text-base font-light max-w-lg mx-auto">
-                            Your gateway to free gaming. Browse, play, and save your favorites.
-                        </p>
-                    </div>
-                </section>
-
-                <!-- Games Grid Section -->
-                <section class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-                    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-                        <div>
-                            <h2 class="font-display text-3xl sm:text-4xl tracking-wider text-white">GAME LIBRARY</h2>
-                            <p id="game-count" class="text-eps-muted text-sm mt-1"></p>
-                        </div>
-                        <div id="view-tabs" class="flex gap-2">
-                            <button
-                                class="view-tab active px-4 py-1.5 rounded-full text-sm font-medium border border-eps-border bg-transparent text-eps-muted-light"
-                                data-view="all">All Games</button>
-                            <button id="fav-tab"
-                                class="view-tab hidden px-4 py-1.5 rounded-full text-sm font-medium border border-eps-border bg-transparent text-eps-muted-light"
-                                data-view="favorites">My Favorites</button>
-                        </div>
-                    </div>
-
-                    <!-- Genre filters -->
-                    <div id="genre-filters" class="flex flex-wrap gap-2 mb-8" role="group" aria-label="Filter by genre">
-                    </div>
-
-                    <!-- States -->
-                    <div id="loading-state" class="flex flex-col items-center justify-center py-24">
-                        <div class="spinner mb-4"></div>
-                        <p class="text-eps-muted text-sm">Loading games...</p>
-                    </div>
-                    <div id="empty-state" class="hidden flex-col items-center justify-center py-24 text-center">
-                        <i data-lucide="search-x" class="w-14 h-14 text-eps-muted mb-4"></i>
-                        <p class="text-eps-muted-light text-lg">No games found</p>
-                    </div>
-                    <div id="fav-empty-state" class="hidden flex-col items-center justify-center py-24 text-center">
-                        <i data-lucide="heart" class="w-14 h-14 text-eps-muted mb-4"></i>
-                        <p class="text-eps-muted-light text-lg">No favorites yet</p>
-                    </div>
-
-                    <!-- Grid -->
-                    <div id="game-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                    </div>
-                </section>
+            <!-- Loading state -->
+            <div id="loading-state" class="flex flex-col items-center justify-center py-24">
+                <div class="spinner mb-4"></div>
+                <p class="text-eps-muted text-sm">Loading games...</p>
             </div>
 
-            <!-- ===== VIEW: FEED ===== -->
-            <div id="view-feed" class="view-section hidden max-w-3xl mx-auto py-10 px-4">
-                <div class="flex items-center justify-between mb-8">
-                    <h2 class="font-display text-4xl tracking-wider text-white">COMMUNITY</h2>
-                    <button onclick="switchView('post')"
-                        class="md:hidden px-4 py-2 bg-eps-red text-white rounded-lg text-sm font-medium flex items-center gap-2">
-                        <i data-lucide="plus"></i> Post
-                    </button>
-                </div>
-
-                <div id="feed-loading" class="hidden py-12 justify-center">
-                    <div class="spinner"></div>
-                </div>
-
-                <div id="feed-container" class="space-y-6">
-                    <!-- Posts injected via JS -->
-                </div>
+            <!-- Empty filter state -->
+            <div id="empty-state" class="hidden flex-col items-center justify-center py-24 text-center">
+                <i data-lucide="search-x" class="w-14 h-14 text-eps-muted mb-4"></i>
+                <p class="text-eps-muted-light text-lg mb-1">No games found</p>
+                <p class="text-eps-muted text-sm">Try adjusting your search or filters.</p>
             </div>
 
-            <!-- ===== VIEW: POST CREATION ===== -->
-            <div id="view-post" class="view-section hidden max-w-3xl mx-auto py-10 px-4">
-                <h2 class="font-display text-4xl tracking-wider text-white mb-6">CREATE POST</h2>
-
-                <div class="bg-eps-card border border-eps-border rounded-xl p-6">
-                    <form id="post-form" onsubmit="handlePostSubmit(event)">
-                        <div class="mb-4">
-                            <label class="block text-sm text-eps-muted-light mb-2">Content</label>
-                            <textarea id="post-content" rows="5" required
-                                class="w-full bg-eps-black border border-eps-border rounded-lg p-4 text-white placeholder-eps-muted focus:border-eps-red transition-colors resize-none"
-                                placeholder="What's on your mind? Share a game tip or just say hi..."></textarea>
-                        </div>
-                        <div class="flex justify-end">
-                            <button type="submit"
-                                class="inline-flex items-center gap-2 px-6 py-2.5 bg-eps-red hover:bg-eps-red-dark text-white font-semibold rounded-lg transition-colors">
-                                <i data-lucide="send" class="w-4 h-4"></i> Publish Post
-                            </button>
-                        </div>
-                    </form>
-                </div>
+            <!-- Favorites empty state -->
+            <div id="fav-empty-state" class="hidden flex-col items-center justify-center py-24 text-center">
+                <i data-lucide="heart" class="w-14 h-14 text-eps-muted mb-4"></i>
+                <p class="text-eps-muted-light text-lg mb-1">No favorites yet</p>
+                <p class="text-eps-muted text-sm">Click the heart icon on any game to save it here.</p>
             </div>
 
-            <!-- ===== VIEW: SETTINGS ===== -->
-            <div id="view-settings" class="view-section hidden max-w-3xl mx-auto py-10 px-4">
-                <h2 class="font-display text-4xl tracking-wider text-white mb-6">SETTINGS</h2>
+            <!-- Game grid -->
+            <div id="game-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+        </section>
+    </main>
 
-                <div class="bg-eps-card border border-eps-border rounded-xl overflow-hidden">
-                    <div class="p-6 border-b border-eps-border">
-                        <h3 class="text-lg font-semibold text-white mb-1">Profile Settings</h3>
-                        <p class="text-sm text-eps-muted">Update your public display information.</p>
-                    </div>
-                    <div class="p-6">
-                        <form id="settings-form" onsubmit="handleSettingsSave(event)">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                <div>
-                                    <label class="block text-sm text-eps-muted-light mb-2">Username</label>
-                                    <input type="text" id="settings-username" required
-                                        class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white focus:border-eps-red">
-                                </div>
-                                <div>
-                                    <label class="block text-sm text-eps-muted-light mb-2">Avatar URL</label>
-                                    <input type="url" id="settings-avatar" placeholder="https://..."
-                                        class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white focus:border-eps-red">
-                                    <p class="text-xs text-eps-muted mt-1">Leave empty to use default.</p>
-                                </div>
-                            </div>
-                            <div class="flex justify-end">
-                                <button type="submit"
-                                    class="px-5 py-2.5 bg-eps-card hover:bg-eps-card-hover border border-eps-border text-white rounded-lg text-sm font-medium transition-colors">
-                                    Save Changes
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+    <!-- ===== FOOTER ===== -->
+    <footer class="border-t border-eps-border py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 bg-eps-red rounded flex items-center justify-center">
+                    <span class="font-display text-white text-sm leading-none">E</span>
                 </div>
-
-                <div
-                    class="mt-6 bg-eps-card border border-eps-border rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div>
-                        <h3 class="text-lg font-semibold text-white text-red-500">Danger Zone</h3>
-                        <p class="text-sm text-eps-muted">Sign out of your account on this device.</p>
-                    </div>
-                    <button onclick="handleSignOut()"
-                        class="px-4 py-2 border border-red-900/50 text-red-500 hover:bg-red-900/20 rounded-lg text-sm transition-colors">
-                        Sign Out
-                    </button>
-                </div>
+                <span class="font-display text-lg tracking-wider text-eps-muted">EPSILON<span
+                        class="text-eps-red">HECKLE</span></span>
             </div>
+            <p class="text-eps-muted text-xs">&copy; 2025 Epsilon Heckle. All rights reserved.</p>
+        </div>
+    </footer>
 
-        </main>
-
-        <!-- ===== FOOTER ===== -->
-        <footer class="border-t border-eps-border py-6 px-4 md:ml-0 mt-auto">
-            <div
-                class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-eps-muted">
-                <div class="flex items-center gap-2">
-                    <div class="w-4 h-4 bg-eps-red rounded-sm flex items-center justify-center">
-                        <span class="font-display text-[10px] text-white leading-none">E</span>
-                    </div>
-                    <span>&copy; 2025 Epsilon Heckle.</span>
-                </div>
-                <div class="flex gap-4">
-                    <a href="#" class="hover:text-white">Privacy</a>
-                    <a href="#" class="hover:text-white">Terms</a>
-                </div>
-            </div>
-        </footer>
-    </div>
-
-    <!-- ===== MODALS ===== -->
-
-    <!-- Auth Modal -->
-    <div id="auth-modal" class="fixed inset-0 z-[100] hidden items-center justify-center modal-backdrop" role="dialog">
+    <!-- ===== AUTH MODAL ===== -->
+    <div id="auth-modal" class="fixed inset-0 z-[100] hidden items-center justify-center modal-backdrop" role="dialog"
+        aria-modal="true" aria-label="Authentication">
         <div
             class="bg-eps-card border border-eps-border rounded-xl w-full max-w-md mx-4 shadow-2xl relative overflow-hidden">
+            <!-- Red accent top -->
             <div class="h-1 bg-eps-red"></div>
+            <!-- Close button -->
             <button onclick="hideModal('auth-modal')"
-                class="absolute top-4 right-4 text-eps-muted hover:text-white transition-colors">
+                class="absolute top-4 right-4 text-eps-muted hover:text-white transition-colors" aria-label="Close">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
 
             <div class="p-8">
+                <!-- Supabase config notice -->
                 <div id="supabase-notice"
-                    class="hidden mb-5 p-3 bg-yellow-900/30 border border-yellow-800/50 rounded-lg text-yellow-200 text-xs">
-                    Supabase is not configured. Add your project URL and anon key in the script section.
+                    class="hidden mb-5 p-3 bg-yellow-900/30 border border-yellow-800/50 rounded-lg text-yellow-200 text-xs leading-relaxed">
+                    Supabase is not configured. Add your project URL and anon key in the script section to enable
+                    authentication.
                 </div>
 
+                <!-- Tabs -->
                 <div class="flex gap-8 mb-8">
                     <button class="auth-tab active text-white font-semibold text-lg" onclick="switchAuthTab('login')"
                         data-tab="login">Sign In</button>
@@ -510,161 +471,180 @@
                         data-tab="signup">Sign Up</button>
                 </div>
 
+                <!-- Login form -->
                 <form id="login-form" class="space-y-4" onsubmit="handleLogin(event)">
                     <div>
-                        <label class="block text-sm text-eps-muted-light mb-1.5">Email</label>
+                        <label class="block text-sm text-eps-muted-light mb-1.5" for="login-email">Email</label>
                         <input type="email" id="login-email" required autocomplete="email"
-                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white">
+                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-eps-muted">
                     </div>
                     <div>
-                        <label class="block text-sm text-eps-muted-light mb-1.5">Password</label>
+                        <label class="block text-sm text-eps-muted-light mb-1.5" for="login-password">Password</label>
                         <input type="password" id="login-password" required autocomplete="current-password"
-                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white">
+                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-eps-muted">
                     </div>
                     <div id="login-error" class="hidden text-red-400 text-sm"></div>
                     <button type="submit"
-                        class="w-full py-2.5 bg-eps-red hover:bg-eps-red-dark text-white font-semibold rounded-lg transition-colors">Sign
-                        In</button>
+                        class="w-full py-2.5 bg-eps-red hover:bg-eps-red-dark text-white font-semibold rounded-lg transition-colors">
+                        Sign In
+                    </button>
                 </form>
 
+                <!-- Signup form -->
                 <form id="signup-form" class="space-y-4 hidden" onsubmit="handleSignup(event)">
                     <div>
-                        <label class="block text-sm text-eps-muted-light mb-1.5">Email</label>
+                        <label class="block text-sm text-eps-muted-light mb-1.5" for="signup-email">Email</label>
                         <input type="email" id="signup-email" required autocomplete="email"
-                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white">
+                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-eps-muted">
                     </div>
                     <div>
-                        <label class="block text-sm text-eps-muted-light mb-1.5">Password</label>
+                        <label class="block text-sm text-eps-muted-light mb-1.5" for="signup-password">Password</label>
                         <input type="password" id="signup-password" required minlength="6" autocomplete="new-password"
-                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white">
+                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-eps-muted">
                     </div>
                     <div>
-                        <label class="block text-sm text-eps-muted-light mb-1.5">Confirm Password</label>
+                        <label class="block text-sm text-eps-muted-light mb-1.5" for="signup-confirm">Confirm
+                            Password</label>
                         <input type="password" id="signup-confirm" required minlength="6" autocomplete="new-password"
-                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white">
+                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-eps-muted">
                     </div>
                     <div id="signup-error" class="hidden text-red-400 text-sm"></div>
                     <button type="submit"
-                        class="w-full py-2.5 bg-eps-red hover:bg-eps-red-dark text-white font-semibold rounded-lg transition-colors">Create
-                        Account</button>
+                        class="w-full py-2.5 bg-eps-red hover:bg-eps-red-dark text-white font-semibold rounded-lg transition-colors">
+                        Create Account
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Game Detail Modal -->
+    <!-- ===== GAME DETAIL MODAL ===== -->
     <div id="game-modal"
         class="fixed inset-0 z-[100] hidden items-center justify-center modal-backdrop overflow-y-auto py-8"
-        role="dialog">
+        role="dialog" aria-modal="true" aria-label="Game details">
         <div
             class="bg-eps-card border border-eps-border rounded-xl w-full max-w-3xl mx-4 shadow-2xl relative overflow-hidden">
             <div class="h-1 bg-eps-red"></div>
             <button onclick="hideModal('game-modal')"
-                class="absolute top-5 right-5 z-10 text-eps-muted hover:text-white transition-colors bg-black/40 rounded-full p-1">
+                class="absolute top-5 right-5 z-10 text-eps-muted hover:text-white transition-colors bg-black/40 rounded-full p-1"
+                aria-label="Close">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
-            <div id="game-modal-content" class="p-6 sm:p-8"></div>
+            <div id="game-modal-content" class="p-6 sm:p-8">
+                <!-- Populated by JS -->
+            </div>
         </div>
     </div>
 
-    <!-- Toast Container -->
+    <!-- ===== TOAST CONTAINER ===== -->
     <div id="toast-container" class="fixed bottom-6 right-6 z-[200] flex flex-col gap-3 pointer-events-none"
         aria-live="polite"></div>
+
 
     <!-- ===== SCRIPT ===== -->
     <script>
         // ================================================================
-        // CONFIGURATION
+        //  SUPABASE CONFIGURATION
+        //  Replace the values below with your Supabase project credentials.
+        //  You can find these in: Supabase Dashboard > Settings > API
         // ================================================================
         const SUPABASE_URL = 'https://uyjsgapinpfzkjvawfdp.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5anNnYXBpbnBmemtqdmF3ZmRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDUyMTMsImV4cCI6MjA5MTIyMTIxM30.WkwcEx3YCb6ITR_h1HGR22cc2X_gP_1q9ulb1_IXL9o';
 
-        // ================================================================
-        // STATE
-        // ================================================================
+        /*
+        ================================================================
+        SQL to run in Supabase SQL Editor for the favorites table:
+    
+        create table public.favorites (
+            id uuid default gen_random_uuid() primary key,
+            user_id uuid references auth.users(id) on delete cascade not null,
+            game_id integer not null,
+            created_at timestamptz default now()
+        );
+    
+        alter table public.favorites enable row level security;
+    
+        create policy "Users can read own favorites"
+            on public.favorites for select
+            using (auth.uid() = user_id);
+    
+        create policy "Users can insert own favorites"
+            on public.favorites for insert
+            with check (auth.uid() = user_id);
+    
+        create policy "Users can delete own favorites"
+            on public.favorites for delete
+            using (auth.uid() = user_id);
+    
+        create unique index idx_favorites_user_game on public.favorites(user_id, game_id);
+        ================================================================
+        */
+
+        // ===== STATE =====
         let supabaseClient = null;
         let currentUser = null;
-        let userProfile = null; // { username, avatar_url }
         let gamesData = [];
         let userFavorites = [];
         let activeGenre = 'All';
-        let activeLibraryView = 'all';
+        let activeView = 'all'; // 'all' or 'favorites'
         let searchQuery = '';
         let searchDebounce = null;
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        // ================================================================
-        // INIT
-        // ================================================================
+        // ===== INIT =====
         document.addEventListener('DOMContentLoaded', () => {
             initSupabase();
             loadGames();
             setupEventListeners();
-            initParticles();
+            if (!prefersReducedMotion) initParticles();
             lucide.createIcons();
-
-            // Responsive Canvas Adjustment
-            window.addEventListener('resize', () => {
-                const canvas = document.getElementById('hero-canvas');
-                if (canvas && canvas.offsetParent !== null) {
-                    // Logic handled inside initParticles/resize listener there
-                }
-            });
         });
 
-        // ================================================================
-        // SUPABASE & AUTH
-        // ================================================================
+        // ===== SUPABASE =====
         function initSupabase() {
             const notice = document.getElementById('supabase-notice');
+            if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+                notice.classList.remove('hidden');
+                notice.classList.add('block');
+                updateAuthUI();
+                return;
+            }
             if (typeof supabase === 'undefined') {
-                if (notice) { notice.textContent = 'Supabase JS library failed to load.'; notice.classList.remove('hidden'); }
+                notice.textContent = 'Supabase JS library failed to load. Check your internet connection.';
+                notice.classList.remove('hidden');
+                notice.classList.add('block');
+                updateAuthUI();
                 return;
             }
             try {
                 const { createClient } = supabase;
                 supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-                supabaseClient.auth.onAuthStateChange(async (event, session) => {
+                supabaseClient.auth.onAuthStateChange((event, session) => {
                     if (session && session.user) {
                         currentUser = session.user;
-                        await loadUserProfile(currentUser.id);
-                        await loadFavorites();
+                        loadFavorites();
                     } else {
                         currentUser = null;
-                        userProfile = null;
                         userFavorites = [];
                     }
-                    updateUI();
+                    updateAuthUI();
+                    renderCurrentView();
                 });
 
-                supabaseClient.auth.getSession().then(async ({ data: { session } }) => {
+                // Check existing session
+                supabaseClient.auth.getSession().then(({ data: { session } }) => {
                     if (session) {
                         currentUser = session.user;
-                        await loadUserProfile(currentUser.id);
-                        await loadFavorites();
+                        loadFavorites();
                     }
-                    updateUI();
+                    updateAuthUI();
                 });
             } catch (err) {
-                console.error(err);
-            }
-        }
-
-        async function loadUserProfile(userId) {
-            if (!supabaseClient) return;
-            const { data, error } = await supabaseClient
-                .from('profiles')
-                .select('*')
-                .eq('id', userId)
-                .single();
-
-            if (data) userProfile = data;
-            if (error && error.code !== 'PGRST116') console.error('Profile load error', error);
-
-            // Populate Settings Form if available
-            if (userProfile) {
-                document.getElementById('settings-username').value = userProfile.username || '';
-                document.getElementById('settings-avatar').value = userProfile.avatar_url || '';
+                notice.textContent = 'Failed to initialize Supabase: ' + err.message;
+                notice.classList.remove('hidden');
+                notice.classList.add('block');
+                updateAuthUI();
             }
         }
 
@@ -674,10 +654,21 @@
             const password = document.getElementById('login-password').value;
             const errEl = document.getElementById('login-error');
             errEl.classList.add('hidden');
+
+            if (!supabaseClient) {
+                errEl.textContent = 'Supabase is not configured.';
+                errEl.classList.remove('hidden');
+                return;
+            }
+
             const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-            if (error) { errEl.textContent = error.message; errEl.classList.remove('hidden'); return; }
+            if (error) {
+                errEl.textContent = error.message;
+                errEl.classList.remove('hidden');
+                return;
+            }
             hideModal('auth-modal');
-            showToast('Welcome back!', 'success');
+            showToast('Signed in successfully', 'success');
             e.target.reset();
         }
 
@@ -688,411 +679,315 @@
             const confirm = document.getElementById('signup-confirm').value;
             const errEl = document.getElementById('signup-error');
             errEl.classList.add('hidden');
-            if (password !== confirm) { errEl.textContent = 'Passwords do not match.'; errEl.classList.remove('hidden'); return; }
+
+            if (password !== confirm) {
+                errEl.textContent = 'Passwords do not match.';
+                errEl.classList.remove('hidden');
+                return;
+            }
+            if (!supabaseClient) {
+                errEl.textContent = 'Supabase is not configured.';
+                errEl.classList.remove('hidden');
+                return;
+            }
+
             const { error } = await supabaseClient.auth.signUp({ email, password });
-            if (error) { errEl.textContent = error.message; errEl.classList.remove('hidden'); return; }
+            if (error) {
+                errEl.textContent = error.message;
+                errEl.classList.remove('hidden');
+                return;
+            }
             hideModal('auth-modal');
-            showToast('Account created! Verify email to sign in.', 'success');
+            showToast('Account created! Check your email to verify.', 'success');
             e.target.reset();
         }
 
         async function handleSignOut() {
+            if (!supabaseClient) return;
             await supabaseClient.auth.signOut();
-            switchView('library');
             showToast('Signed out', 'info');
         }
 
-        // ================================================================
-        // DATA: GAMES
-        // ================================================================
-        async function loadGames() {
-            const grid = document.getElementById('game-grid');
-            const loading = document.getElementById('loading-state');
-
+        // ===== FAVORITES =====
+        async function loadFavorites() {
+            if (!supabaseClient || !currentUser) { userFavorites = []; return; }
             try {
-                // Using the same dummy JSON structure logic as before, or fetching data.json
-                // In a real scenario, this would be from Supabase too.
-                const response = await fetch('data.json');
-                gamesData = await response.json();
-                loading.classList.add('hidden');
-                loading.classList.remove('flex');
-                buildGenreFilters();
-                renderLibrary();
-            } catch (error) {
-                console.error("Failed to load games:", error);
-                // Fallback for demo if data.json missing
-                gamesData = [];
-                loading.classList.add('hidden');
-                document.getElementById('empty-state').classList.remove('hidden');
-                document.getElementById('empty-state').classList.add('flex');
+                const { data, error } = await supabaseClient
+                    .from('favorites')
+                    .select('game_id')
+                    .eq('user_id', currentUser.id);
+                if (error) throw error;
+                userFavorites = data.map(d => d.game_id);
+            } catch {
+                userFavorites = [];
             }
         }
 
-        // ================================================================
-        // DATA: FEED / POSTS
-        // ================================================================
-        async function loadFeed() {
-            const container = document.getElementById('feed-container');
-            const loader = document.getElementById('feed-loading');
-
-            container.innerHTML = '';
-            loader.classList.remove('hidden');
-            loader.classList.add('flex');
-
-            if (!supabaseClient) {
-                loader.classList.add('hidden');
-                container.innerHTML = `<div class="text-center p-8 text-eps-muted">Database not configured for feed.</div>`;
-                return;
-            }
-
-            const { data, error } = await supabaseClient
-                .from('posts_with_authors') // Using the View created in SQL
-                .select('*')
-                .order('created_at', { ascending: false })
-                .limit(20);
-
-            loader.classList.add('hidden');
-
-            if (error) {
-                container.innerHTML = `<div class="text-center p-8 text-eps-muted">Failed to load feed.</div>`;
-                return;
-            }
-
-            if (!data || data.length === 0) {
-                container.innerHTML = `<div class="text-center p-8 text-eps-muted">No posts yet. Be the first!</div>`;
-                return;
-            }
-
-            container.innerHTML = data.map(post => `
-                <article class="bg-eps-card border border-eps-border rounded-xl p-5 hover:border-eps-muted transition-colors">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-full bg-eps-darker flex items-center justify-center overflow-hidden border border-eps-border">
-                            ${post.avatar_url
-                    ? `<img src="${post.avatar_url}" class="w-full h-full object-cover">`
-                    : `<span class="font-display text-eps-red text-lg">${post.username ? post.username[0].toUpperCase() : 'U'}</span>`
-                }
-                        </div>
-                        <div>
-                            <h4 class="text-white font-medium text-sm leading-tight">${escapeHtml(post.username || 'User')}</h4>
-                            <span class="text-eps-muted text-xs">${new Date(post.created_at).toLocaleDateString()} ${new Date(post.created_at).toLocaleTimeString()}</span>
-                        </div>
-                        ${currentUser && currentUser.id === post.user_id
-                    ? `<button onclick="deletePost(${post.id})" class="ml-auto text-eps-muted hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`
-                    : ''}
-                    </div>
-                    <div class="text-eps-muted-light text-sm whitespace-pre-wrap leading-relaxed">${escapeHtml(post.content)}</div>
-                </article>
-            `).join('');
-            lucide.createIcons();
-        }
-
-        async function handlePostSubmit(e) {
-            e.preventDefault();
+        async function toggleFavorite(gameId) {
             if (!currentUser) {
                 showModal('auth-modal');
+                showToast('Sign in to save favorites', 'info');
                 return;
             }
-            const content = document.getElementById('post-content').value.trim();
-            if (!content) return;
+            if (!supabaseClient) return;
 
-            const { error } = await supabaseClient
-                .from('posts')
-                .insert([{ user_id: currentUser.id, content: content }]);
-
-            if (error) {
-                showToast('Failed to post: ' + error.message, 'error');
-            } else {
-                showToast('Post published!', 'success');
-                document.getElementById('post-form').reset();
-                switchView('feed'); // Go to feed to see it
-            }
-        }
-
-        async function deletePost(postId) {
-            if (!confirm('Delete this post?')) return;
-            const { error } = await supabaseClient
-                .from('posts')
-                .delete()
-                .eq('id', postId);
-
-            if (error) showToast('Error deleting post', 'error');
-            else {
-                showToast('Post deleted', 'info');
-                loadFeed(); // Refresh
-            }
-        }
-
-        // ================================================================
-        // SETTINGS
-        // ================================================================
-        async function handleSettingsSave(e) {
-            e.preventDefault();
-            if (!currentUser) return;
-
-            const username = document.getElementById('settings-username').value.trim();
-            const avatarUrl = document.getElementById('settings-avatar').value.trim();
-
-            const { error } = await supabaseClient
-                .from('profiles')
-                .update({ username, avatar_url: avatarUrl })
-                .eq('id', currentUser.id);
-
-            if (error) {
-                showToast('Failed to update profile', 'error');
-            } else {
-                userProfile.username = username;
-                userProfile.avatar_url = avatarUrl;
-                showToast('Profile updated successfully', 'success');
-                updateUI(); // Refresh nav and feed
-            }
-        }
-
-
-        // ================================================================
-        // UI RENDERERS
-        // ================================================================
-        function updateUI() {
-            updateSidebarUser();
-            updateDesktopAuth();
-            renderLibrary(); // Re-render library to show/hide favorite icons correctly
-
-            // If on Feed, reload it to show correct delete buttons or avatars
-            if (!document.getElementById('view-feed').classList.contains('hidden')) {
-                loadFeed();
-            }
-        }
-
-        function updateSidebarUser() {
-            const area = document.getElementById('sidebar-user-area');
-            if (currentUser) {
-                const displayUser = userProfile?.username || currentUser.email;
-                const avatar = userProfile?.avatar_url;
-
-                area.innerHTML = `
-                    <div class="relative group cursor-pointer" onclick="switchView('settings')">
-                        <div class="w-9 h-9 rounded-full bg-eps-darker flex items-center justify-center overflow-hidden border border-eps-border group-hover:border-eps-red transition-colors">
-                             ${avatar
-                        ? `<img src="${avatar}" class="w-full h-full object-cover">`
-                        : `<span class="font-display text-eps-red text-sm">${displayUser[0].toUpperCase()}</span>`
-                    }
-                        </div>
-                        <div class="absolute left-12 top-2 bg-eps-black border border-eps-border px-2 py-1 rounded text-xs text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg">
-                            View Profile
-                        </div>
-                    </div>
-                    <div class="flex-1 overflow-hidden">
-                        <p class="text-sm text-white font-medium truncate">${escapeHtml(displayUser)}</p>
-                        <p class="text-xs text-eps-muted truncate">Settings</p>
-                    </div>
-                    <button onclick="handleSignOut()" class="text-eps-muted hover:text-white p-1"><i data-lucide="log-out" class="w-4 h-4"></i></button>
-                `;
-            } else {
-                area.innerHTML = `
-                    <button onclick="showModal('auth-modal')" class="flex-1 text-left text-sm text-eps-muted-light hover:text-white">
-                        Sign In
-                    </button>
-                `;
-            }
-            lucide.createIcons();
-        }
-
-        function updateDesktopAuth() {
-            const area = document.getElementById('desktop-auth-buttons');
-            if (!currentUser) {
-                area.classList.remove('hidden');
-                area.innerHTML = `
-                    <button onclick="showModal('auth-modal')" class="px-4 py-2 text-sm text-eps-muted-light hover:text-white font-medium">Sign In</button>
-                    <button onclick="showModal('auth-modal'); switchAuthTab('signup')" class="px-4 py-2 text-sm bg-eps-red hover:bg-eps-red-dark text-white font-medium rounded-lg transition-colors">Sign Up</button>
-                `;
-            } else {
-                area.classList.add('hidden');
-            }
-        }
-
-        function switchView(viewName) {
-            // Update Tab State
-            document.querySelectorAll('.nav-item').forEach(el => {
-                if (el.dataset.view === viewName) el.classList.add('active');
-                else el.classList.remove('active');
-            });
-
-            // Hide all views
-            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-
-            // Show target view
-            const target = document.getElementById(`view-${viewName}`);
-            if (target) {
-                target.classList.remove('hidden');
-                // If switching to feed, refresh it
-                if (viewName === 'feed') loadFeed();
-            }
-
-            // Close mobile menu if open
-            if (window.innerWidth < 768) {
-                const sidebar = document.getElementById('sidebar');
-                const overlay = document.getElementById('mobile-overlay');
-                if (!sidebar.classList.contains('-translate-x-full')) {
-                    toggleMobileMenu();
+            const isFav = userFavorites.includes(gameId);
+            try {
+                if (isFav) {
+                    const { error } = await supabaseClient
+                        .from('favorites')
+                        .delete()
+                        .eq('user_id', currentUser.id)
+                        .eq('game_id', gameId);
+                    if (error) throw error;
+                    userFavorites = userFavorites.filter(id => id !== gameId);
+                    showToast('Removed from favorites', 'info');
+                } else {
+                    const { error } = await supabaseClient
+                        .from('favorites')
+                        .insert({ user_id: currentUser.id, game_id: gameId });
+                    if (error) throw error;
+                    userFavorites.push(gameId);
+                    showToast('Added to favorites', 'success');
                 }
+                renderCurrentView();
+                // Re-render detail modal if open
+                if (!document.getElementById('game-modal').classList.contains('hidden')) {
+                    const game = gamesData.find(g => g.id === gameId);
+                    if (game) renderGameDetail(game);
+                }
+            } catch (err) {
+                showToast('Failed to update favorites: ' + err.message, 'error');
             }
         }
 
-        // Mobile Menu Toggle
-        function toggleMobileMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('mobile-overlay');
-            const isClosed = sidebar.classList.contains('-translate-x-full');
+        // ===== GAMES LOADING =====
+        // Fetch and display games
+        async function loadGames() {
+            const grid = document.getElementById('game-grid'); // Ensure your grid has this ID
+            try {
+                const response = await fetch('data.json');
+                const games = await response.json();
 
-            if (isClosed) {
-                sidebar.classList.remove('-translate-x-full');
-                overlay.classList.remove('hidden');
-            } else {
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.add('hidden');
+                grid.innerHTML = games.map(game => `
+            <div class="game-card bg-eps-card border border-eps-border rounded-xl overflow-hidden group cursor-pointer" onclick="openGame('${game.game_url}')">
+                <div class="card-thumb relative aspect-video overflow-hidden">
+                    <img src="${game.thumbnail}" alt="${game.title}" class="w-full h-full object-cover">
+                    <div class="thumb-gradient absolute inset-0 opacity-60"></div>
+                    <span class="absolute bottom-3 left-3 bg-eps-red text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
+                        ${game.genre}
+                    </span>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-display text-xl mb-1 group-hover:text-eps-red transition-colors">${game.title}</h3>
+                    <p class="text-eps-muted text-sm line-clamp-2">${game.short_description}</p>
+                </div>
+            </div>
+        `).join('');
+            } catch (error) {
+                console.error("Failed to load games:", error);
             }
         }
 
-        // ================================================================
-        // LIBRARY LOGIC (Refactored from original)
-        // ================================================================
+        function openGame(url) {
+            window.open(url, '_blank');
+        }
+
+        document.addEventListener('DOMContentLoaded', loadGames);
+
         function buildGenreFilters() {
             const container = document.getElementById('genre-filters');
             const genres = ['All', ...new Set(gamesData.map(g => g.genre).filter(Boolean))];
             container.innerHTML = genres.map(genre =>
                 `<button class="genre-pill px-4 py-1.5 rounded-full text-sm font-medium border border-eps-border bg-transparent text-eps-muted ${genre === 'All' ? 'active' : ''}" data-genre="${genre}">${genre}</button>`
             ).join('');
-
-            // Re-attach listeners for new buttons
-            container.querySelectorAll('.genre-pill').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    activeGenre = btn.dataset.genre;
-                    container.querySelectorAll('.genre-pill').forEach(p => p.classList.toggle('active', p === btn));
-                    renderLibrary();
-                });
-            });
+            lucide.createIcons();
         }
 
         function getFilteredGames() {
             let games = [...gamesData];
-            if (activeLibraryView === 'favorites') {
+
+            if (activeView === 'favorites') {
                 games = games.filter(g => userFavorites.includes(g.id));
             }
+
             if (activeGenre !== 'All') {
                 games = games.filter(g => g.genre === activeGenre);
             }
+
             if (searchQuery.trim()) {
                 const q = searchQuery.toLowerCase().trim();
-                games = games.filter(g => (g.title && g.title.toLowerCase().includes(q)));
+                games = games.filter(g =>
+                    (g.title && g.title.toLowerCase().includes(q)) ||
+                    (g.genre && g.genre.toLowerCase().includes(q)) ||
+                    (g.platform && g.platform.toLowerCase().includes(q)) ||
+                    (g.publisher && g.publisher.toLowerCase().includes(q)) ||
+                    (g.developer && g.developer.toLowerCase().includes(q))
+                );
             }
+
             return games;
         }
 
-        function renderLibrary() {
-            const grid = document.getElementById('game-grid');
+        function renderCurrentView() {
+            const loadingEl = document.getElementById('loading-state');
+            const noDataEl = document.getElementById('no-data-state');
+            const gridEl = document.getElementById('game-grid');
             const emptyEl = document.getElementById('empty-state');
             const favEmptyEl = document.getElementById('fav-empty-state');
             const countEl = document.getElementById('game-count');
-            const favTab = document.getElementById('fav-tab');
 
-            // Show/Hide favorites tab based on login
-            if (currentUser) favTab.classList.remove('hidden');
-            else favTab.classList.add('hidden');
-
-            // Hide all states initially
+            loadingEl.classList.add('hidden');
+            loadingEl.classList.remove('flex');
+            noDataEl.classList.add('hidden');
+            noDataEl.classList.remove('flex');
             emptyEl.classList.add('hidden');
             emptyEl.classList.remove('flex');
             favEmptyEl.classList.add('hidden');
             favEmptyEl.classList.remove('flex');
 
-            if (gamesData.length === 0) return; // Wait for load
-
-            const games = getFilteredGames();
-
-            // Handle Favorites Empty State
-            if (activeLibraryView === 'favorites' && games.length === 0) {
-                countEl.textContent = '';
-                favEmptyEl.classList.remove('hidden');
-                favEmptyEl.classList.add('flex');
-                grid.innerHTML = '';
+            if (gamesData.length === 0) {
+                noDataEl.classList.remove('hidden');
+                noDataEl.classList.add('flex');
                 return;
             }
 
-            // Handle Search Empty
+            const games = getFilteredGames();
+
+            if (activeView === 'favorites' && games.length === 0 && userFavorites.length === 0) {
+                countEl.textContent = '';
+                favEmptyEl.classList.remove('hidden');
+                favEmptyEl.classList.add('flex');
+                gridEl.classList.add('hidden');
+                return;
+            }
+
             if (games.length === 0) {
                 countEl.textContent = '0 games found';
                 emptyEl.classList.remove('hidden');
                 emptyEl.classList.add('flex');
-                grid.innerHTML = '';
+                gridEl.classList.add('hidden');
                 return;
             }
 
             countEl.textContent = `${games.length} game${games.length !== 1 ? 's' : ''}`;
+            gridEl.classList.remove('hidden');
+            renderGameGrid(games);
+        }
 
+        function renderGameGrid(games) {
+            const grid = document.getElementById('game-grid');
             grid.innerHTML = games.map(game => {
                 const isFav = userFavorites.includes(game.id);
                 return `
-                <article class="game-card bg-eps-card rounded-lg overflow-hidden border border-eps-border cursor-pointer relative group" onclick="openGameDetail(${game.id})" tabindex="0">
-                    <div class="card-thumb relative aspect-video overflow-hidden bg-eps-black">
-                        <img src="${escapeHtml(game.thumbnail)}" alt="${escapeHtml(game.title)}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22225%22><rect fill=%22%23111111%22 width=%22400%22 height=%22225%22/><text x=%2250%25%22 y=%2250%25%22 fill=%22%23333%22 font-family=%22sans-serif%22 font-size=%2214%22 text-anchor=%22middle%22 dy=%22.3em%22>No Image</text></svg>'">
-                        <div class="thumb-gradient absolute inset-0"></div>
-                        ${game.genre ? `<span class="absolute top-3 left-3 bg-eps-red/90 text-white text-[11px] font-semibold px-2.5 py-1 rounded uppercase tracking-wide">${escapeHtml(game.genre)}</span>` : ''}
-                        <button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 hover:bg-eps-red/90 flex items-center justify-center transition-colors z-10"
-                            onclick="event.stopPropagation(); toggleFavorite(${game.id})">
-                            <i data-lucide="heart" class="w-4 h-4 ${isFav ? 'fill-eps-red text-eps-red' : 'text-white'}"></i>
-                        </button>
+            <article class="game-card bg-eps-card rounded-lg overflow-hidden border border-eps-border cursor-pointer" onclick="openGameDetail(${game.id})" tabindex="0" role="button" aria-label="View details for ${escapeHtml(game.title)}">
+                <div class="card-thumb relative aspect-video overflow-hidden bg-eps-black">
+                    <img src="${escapeHtml(game.thumbnail)}" alt="${escapeHtml(game.title)}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22225%22><rect fill=%22%23111111%22 width=%22400%22 height=%22225%22/><text x=%2250%25%22 y=%2250%25%22 fill=%22%23333%22 font-family=%22sans-serif%22 font-size=%2214%22 text-anchor=%22middle%22 dy=%22.3em%22>No Image</text></svg>'">
+                    <div class="thumb-gradient absolute inset-0"></div>
+                    ${game.genre ? `<span class="absolute top-3 left-3 bg-eps-red/90 text-white text-[11px] font-semibold px-2.5 py-1 rounded uppercase tracking-wide">${escapeHtml(game.genre)}</span>` : ''}
+                    <button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 hover:bg-eps-red/90 flex items-center justify-center transition-colors"
+                        onclick="event.stopPropagation(); toggleFavorite(${game.id})"
+                        aria-label="${isFav ? 'Remove from favorites' : 'Add to favorites'}">
+                        <i data-lucide="heart" class="w-4 h-4 ${isFav ? 'fill-eps-red text-eps-red' : 'text-white'}"></i>
+                    </button>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-white text-base mb-1 truncate">${escapeHtml(game.title)}</h3>
+                    <p class="text-eps-muted text-sm line-clamp-2 mb-3 leading-relaxed">${escapeHtml(game.short_description)}</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] text-eps-muted flex items-center gap-1">
+                            <i data-lucide="monitor" class="w-3 h-3"></i>
+                            ${escapeHtml(game.platform || 'N/A')}
+                        </span>
+                        <span class="text-[11px] text-eps-red font-semibold tracking-wide flex items-center gap-1 uppercase">
+                            Play <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                        </span>
                     </div>
-                    <div class="p-4">
-                        <h3 class="font-semibold text-white text-base mb-1 truncate">${escapeHtml(game.title)}</h3>
-                        <p class="text-eps-muted text-sm line-clamp-2 mb-3 leading-relaxed">${escapeHtml(game.short_description)}</p>
-                        <div class="flex items-center justify-between">
-                            <span class="text-[11px] text-eps-muted flex items-center gap-1">
-                                <i data-lucide="monitor" class="w-3 h-3"></i> ${escapeHtml(game.platform || 'Web')}
-                            </span>
-                        </div>
-                    </div>
-                </article>`;
+                </div>
+            </article>`;
             }).join('');
             lucide.createIcons();
         }
 
-        async function toggleFavorite(gameId) {
-            if (!currentUser) { showModal('auth-modal'); showToast('Sign in to save favorites', 'info'); return; }
-            const isFav = userFavorites.includes(gameId);
-            try {
-                if (isFav) {
-                    await supabaseClient.from('favorites').delete().eq('user_id', currentUser.id).eq('game_id', gameId);
-                    userFavorites = userFavorites.filter(id => id !== gameId);
-                    showToast('Removed from favorites', 'info');
-                } else {
-                    await supabaseClient.from('favorites').insert({ user_id: currentUser.id, game_id: gameId });
-                    userFavorites.push(gameId);
-                    showToast('Added to favorites', 'success');
+        function openGameDetail(gameId) {
+            const game = gamesData.find(g => g.id === gameId);
+            if (!game) return;
+            renderGameDetail(game);
+            showModal('game-modal');
+        }
+
+        function renderGameDetail(game) {
+            const isFav = userFavorites.includes(game.id);
+            const content = document.getElementById('game-modal-content');
+            content.innerHTML = `
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="md:w-1/2 flex-shrink-0">
+                    <img src="${escapeHtml(game.thumbnail)}" alt="${escapeHtml(game.title)}" class="w-full rounded-lg object-cover aspect-video"
+                        onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22225%22><rect fill=%22%23111111%22 width=%22400%22 height=%22225%22/><text x=%2250%25%22 y=%2250%25%22 fill=%22%23333%22 font-family=%22sans-serif%22 font-size=%2214%22 text-anchor=%22middle%22 dy=%22.3em%22>No Image</text></svg>'">
+                </div>
+                <div class="flex-1 flex flex-col">
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <h2 class="font-display text-3xl sm:text-4xl tracking-wider text-white">${escapeHtml(game.title)}</h2>
+                        <button onclick="toggleFavorite(${game.id})" class="flex-shrink-0 w-10 h-10 rounded-full border ${isFav ? 'bg-eps-red/20 border-eps-red' : 'border-eps-border hover:border-eps-red'} flex items-center justify-center transition-colors"
+                            aria-label="${isFav ? 'Remove from favorites' : 'Add to favorites'}">
+                            <i data-lucide="heart" class="w-5 h-5 ${isFav ? 'fill-eps-red text-eps-red' : 'text-eps-muted'}"></i>
+                        </button>
+                    </div>
+                    ${game.genre ? `<span class="inline-block bg-eps-red text-white text-xs font-semibold px-3 py-1 rounded uppercase tracking-wider mb-4 self-start">${escapeHtml(game.genre)}</span>` : ''}
+                    <p class="text-eps-muted-light text-sm leading-relaxed mb-5">${escapeHtml(game.short_description)}</p>
+                    <div class="grid grid-cols-2 gap-3 mb-6 text-sm">
+                        ${game.platform ? `<div><span class="text-eps-muted block text-xs mb-0.5">Platform</span><span class="text-white flex items-center gap-1.5"><i data-lucide="monitor" class="w-3.5 h-3.5 text-eps-muted"></i>${escapeHtml(game.platform)}</span></div>` : ''}
+                        ${game.publisher ? `<div><span class="text-eps-muted block text-xs mb-0.5">Publisher</span><span class="text-white">${escapeHtml(game.publisher)}</span></div>` : ''}
+                        ${game.developer ? `<div><span class="text-eps-muted block text-xs mb-0.5">Developer</span><span class="text-white">${escapeHtml(game.developer)}</span></div>` : ''}
+                        ${game.release_date ? `<div><span class="text-eps-muted block text-xs mb-0.5">Release Date</span><span class="text-white flex items-center gap-1.5"><i data-lucide="calendar" class="w-3.5 h-3.5 text-eps-muted"></i>${escapeHtml(game.release_date)}</span></div>` : ''}
+                    </div>
+                    <div class="mt-auto flex gap-3">
+                        ${game.game_url ? `<a href="${escapeHtml(game.game_url)}" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center gap-2 py-3 bg-eps-red hover:bg-eps-red-dark text-white font-semibold rounded-lg transition-colors text-sm">
+                            <i data-lucide="play" class="w-4 h-4"></i> Play Now
+                        </a>` : ''}
+                        ${game.freetogame_profile_url ? `<a href="${escapeHtml(game.freetogame_profile_url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-3 border border-eps-border hover:border-eps-muted text-eps-muted-light hover:text-white rounded-lg transition-colors text-sm">
+                            <i data-lucide="external-link" class="w-4 h-4"></i> Profile
+                        </a>` : ''}
+                    </div>
+                </div>
+            </div>`;
+            lucide.createIcons();
+        }
+
+        // ===== UI UPDATES =====
+        function updateAuthUI() {
+            const area = document.getElementById('auth-area');
+            const favTab = document.getElementById('fav-tab');
+
+            if (currentUser) {
+                favTab.classList.remove('hidden');
+                const email = currentUser.email || 'Account';
+                const displayEmail = email.length > 20 ? email.substring(0, 18) + '...' : email;
+                area.innerHTML = `
+                <span class="hidden sm:block text-eps-muted-light text-sm truncate max-w-[160px]" title="${escapeHtml(email)}">${escapeHtml(displayEmail)}</span>
+                <button onclick="handleSignOut()" class="inline-flex items-center gap-1.5 px-4 py-1.5 border border-eps-border hover:border-red-600 hover:text-eps-red text-eps-muted-light rounded-lg text-sm transition-colors">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Sign Out</span>
+                </button>`;
+            } else {
+                favTab.classList.add('hidden');
+                if (activeView === 'favorites') {
+                    activeView = 'all';
+                    document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t.dataset.view === 'all'));
+                    renderCurrentView();
                 }
-                renderLibrary();
-            } catch (err) { showToast('Failed to update favorites', 'error'); }
+                area.innerHTML = `
+                <button onclick="showModal('auth-modal')" class="inline-flex items-center gap-1.5 px-4 py-1.5 border border-eps-border hover:border-eps-muted text-eps-muted-light hover:text-white rounded-lg text-sm transition-colors">
+                    <i data-lucide="log-in" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Sign In</span>
+                </button>
+                <button onclick="showModal('auth-modal'); switchAuthTab('signup');" class="inline-flex items-center gap-1.5 px-4 py-1.5 bg-eps-red hover:bg-eps-red-dark text-white rounded-lg text-sm font-medium transition-colors">
+                    Sign Up
+                </button>`;
+            }
+            lucide.createIcons();
         }
 
-        async function loadFavorites() {
-            if (!supabaseClient || !currentUser) { userFavorites = []; return; }
-            const { data } = await supabaseClient.from('favorites').select('game_id').eq('user_id', currentUser.id);
-            userFavorites = data ? data.map(d => d.game_id) : [];
-        }
-
-        // ================================================================
-        // MODALS & TOASTS
-        // ================================================================
-        function showModal(id) {
-            const el = document.getElementById(id);
-            el.classList.remove('hidden');
-            el.classList.add('flex');
-            document.body.style.overflow = 'hidden';
-        }
-        function hideModal(id) {
-            const el = document.getElementById(id);
-            el.classList.add('hidden');
-            el.classList.remove('flex');
-            document.body.style.overflow = '';
-        }
         function switchAuthTab(tab) {
             document.querySelectorAll('.auth-tab').forEach(t => {
                 t.classList.toggle('active', t.dataset.tab === tab);
@@ -1101,16 +996,35 @@
             });
             document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
             document.getElementById('signup-form').classList.toggle('hidden', tab !== 'signup');
+            document.getElementById('login-error').classList.add('hidden');
+            document.getElementById('signup-error').classList.add('hidden');
+        }
+
+        function showModal(id) {
+            const el = document.getElementById(id);
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideModal(id) {
+            const el = document.getElementById(id);
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+            document.body.style.overflow = '';
         }
 
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
-            const colors = { success: 'border-green-600 bg-green-950/80 text-green-200', error: 'border-red-600 bg-red-950/80 text-red-200', info: 'border-neutral-600 bg-neutral-900/80 text-neutral-200' };
+            const colors = {
+                success: 'border-green-600 bg-green-950/80 text-green-200',
+                error: 'border-red-600 bg-red-950/80 text-red-200',
+                info: 'border-neutral-600 bg-neutral-900/80 text-neutral-200',
+            };
             const icons = { success: 'check-circle-2', error: 'alert-circle', info: 'info' };
-
             const toast = document.createElement('div');
-            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg border ${colors[type]} text-sm shadow-xl toast-enter max-w-sm`;
-            toast.innerHTML = `<i data-lucide="${icons[type]}" class="w-4 h-4 flex-shrink-0"></i><span>${escapeHtml(message)}</span>`;
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg border ${colors[type] || colors.info} text-sm shadow-xl toast-enter max-w-sm`;
+            toast.innerHTML = `<i data-lucide="${icons[type] || icons.info}" class="w-4 h-4 flex-shrink-0"></i><span>${escapeHtml(message)}</span>`;
             container.appendChild(toast);
             lucide.createIcons({ nodes: [toast] });
 
@@ -1121,65 +1035,62 @@
             }, 3500);
         }
 
-        function openGameDetail(gameId) {
-            const game = gamesData.find(g => g.id === gameId);
-            if (!game) return;
-            const isFav = userFavorites.includes(game.id);
-            const content = document.getElementById('game-modal-content');
-            content.innerHTML = `
-                <div class="flex flex-col md:flex-row gap-6">
-                    <div class="md:w-1/2">
-                        <img src="${escapeHtml(game.thumbnail)}" class="w-full rounded-lg object-cover aspect-video bg-eps-black">
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex justify-between items-start mb-2">
-                            <h2 class="font-display text-3xl text-white">${escapeHtml(game.title)}</h2>
-                            <button onclick="toggleFavorite(${game.id})" class="p-2 rounded-full border ${isFav ? 'border-eps-red text-eps-red' : 'border-eps-border text-eps-muted'} hover:text-white">
-                                <i data-lucide="heart" class="w-5 h-5 ${isFav ? 'fill-eps-red' : ''}"></i>
-                            </button>
-                        </div>
-                        <p class="text-eps-muted-light text-sm mb-4">${escapeHtml(game.short_description)}</p>
-                        <div class="flex gap-2 mb-6">
-                             ${game.game_url ? `<a href="${escapeHtml(game.game_url)}" target="_blank" class="flex-1 bg-eps-red hover:bg-eps-red-dark text-white text-center py-3 rounded font-semibold transition-colors">Play Now</a>` : ''}
-                             ${game.freetogame_profile_url ? `<a href="${escapeHtml(game.freetogame_profile_url)}" target="_blank" class="px-4 border border-eps-border hover:border-eps-muted text-eps-muted-light rounded transition-colors">Profile</a>` : ''}
-                        </div>
-                    </div>
-                </div>`;
-            lucide.createIcons();
-            showModal('game-modal');
-        }
-
-        // ================================================================
-        // EVENT LISTENERS & HELPERS
-        // ================================================================
+        // ===== EVENT LISTENERS =====
         function setupEventListeners() {
-            // Search
-            document.getElementById('global-search').addEventListener('input', e => {
+            // Nav scroll effect
+            const nav = document.getElementById('main-nav');
+            const hero = document.getElementById('hero');
+            const observer = new IntersectionObserver(entries => {
+                nav.classList.toggle('nav-solid', !entries[0].isIntersecting);
+            }, { threshold: 0.1 });
+            observer.observe(hero);
+
+            // Genre filters (delegated)
+            document.getElementById('genre-filters').addEventListener('click', e => {
+                const pill = e.target.closest('.genre-pill');
+                if (!pill) return;
+                activeGenre = pill.dataset.genre;
+                document.querySelectorAll('.genre-pill').forEach(p => p.classList.toggle('active', p === pill));
+                renderCurrentView();
+            });
+
+            // View tabs
+            document.getElementById('view-tabs').addEventListener('click', e => {
+                const tab = e.target.closest('.view-tab');
+                if (!tab) return;
+                activeView = tab.dataset.view;
+                document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t === tab));
+                renderCurrentView();
+            });
+
+            // Search - desktop
+            document.getElementById('nav-search').addEventListener('input', e => {
                 clearTimeout(searchDebounce);
                 searchDebounce = setTimeout(() => {
                     searchQuery = e.target.value;
-                    renderLibrary();
+                    document.getElementById('mobile-search').value = searchQuery;
+                    renderCurrentView();
                 }, 250);
             });
 
-            // Library View Tabs (All / Favorites)
-            const viewTabs = document.getElementById('view-tabs');
-            if (viewTabs) {
-                viewTabs.addEventListener('click', e => {
-                    const btn = e.target.closest('.view-tab');
-                    if (!btn) return;
-                    activeLibraryView = btn.dataset.view;
-                    viewTabs.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t === btn));
-                    renderLibrary();
-                });
-            }
+            // Search - mobile
+            document.getElementById('mobile-search').addEventListener('input', e => {
+                clearTimeout(searchDebounce);
+                searchDebounce = setTimeout(() => {
+                    searchQuery = e.target.value;
+                    document.getElementById('nav-search').value = searchQuery;
+                    renderCurrentView();
+                }, 250);
+            });
 
-            // Modals
+            // Modal backdrop click to close
             ['auth-modal', 'game-modal'].forEach(id => {
                 document.getElementById(id).addEventListener('click', e => {
                     if (e.target === e.currentTarget) hideModal(id);
                 });
             });
+
+            // Escape key to close modals
             document.addEventListener('keydown', e => {
                 if (e.key === 'Escape') {
                     ['auth-modal', 'game-modal'].forEach(id => {
@@ -1187,18 +1098,17 @@
                     });
                 }
             });
+
+            // Enter on game cards
+            document.getElementById('game-grid').addEventListener('keydown', e => {
+                if (e.key === 'Enter') {
+                    const card = e.target.closest('.game-card');
+                    if (card) card.click();
+                }
+            });
         }
 
-        function escapeHtml(str) {
-            if (!str) return '';
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-
-        // ================================================================
-        // PARTICLES (Visual FX)
-        // ================================================================
+        // ===== PARTICLES =====
         function initParticles() {
             const canvas = document.getElementById('hero-canvas');
             const ctx = canvas.getContext('2d');
@@ -1207,13 +1117,11 @@
 
             function resize() {
                 const parent = canvas.parentElement;
-                if (parent) {
-                    canvas.width = parent.offsetWidth;
-                    canvas.height = parent.offsetHeight;
-                }
+                canvas.width = parent.offsetWidth;
+                canvas.height = parent.offsetHeight;
             }
-            window.addEventListener('resize', resize);
             resize();
+            window.addEventListener('resize', resize);
 
             for (let i = 0; i < PARTICLE_COUNT; i++) {
                 particles.push({
@@ -1228,12 +1136,6 @@
 
             function animate() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                // Only animate if visible to save resources
-                if (canvas.offsetParent === null) {
-                    requestAnimationFrame(animate);
-                    return;
-                }
-
                 for (const p of particles) {
                     p.x += p.speedX;
                     p.y += p.speedY;
@@ -1250,6 +1152,96 @@
             }
             animate();
         }
+
+        // ===== UTILITIES =====
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+        (function () {
+            // --- Search Logic Fix ---
+            // This connects your search inputs to the rendering engine
+            const performSearch = (e) => {
+                const query = e.target.value.toLowerCase().trim();
+                const gameCards = document.querySelectorAll('#game-grid > div, .game-card');
+
+                gameCards.forEach(card => {
+                    const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+                    const description = card.querySelector('p')?.textContent.toLowerCase() || '';
+
+                    if (title.includes(query) || description.includes(query)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            };
+
+            const navSearch = document.getElementById('nav-search');
+            const mobileSearch = document.getElementById('mobile-search');
+
+            if (navSearch) navSearch.addEventListener('input', performSearch);
+            if (mobileSearch) mobileSearch.addEventListener('input', performSearch);
+
+
+            // --- Right-Click to Favorite ---
+            // Detects right-click on game cards to toggle favorites without opening the game
+            document.getElementById('game-grid').addEventListener('contextmenu', function (e) {
+                const card = e.target.closest('.game-card');
+                if (card) {
+                    e.preventDefault(); // Stop the annoying browser menu
+
+                    // Extract the ID if it's stored in the card, or find it from the data
+                    // Since your loadGames doesn't set an ID on the element, 
+                    // we'll find the game by title as a fallback for this snippet
+                    const gameTitle = card.querySelector('h3')?.textContent;
+                    const game = gamesData.find(g => g.title === gameTitle);
+
+                    if (game && typeof toggleFavorite === 'function') {
+                        toggleFavorite(game.id);
+
+                        // Visual feedback for the right-click
+                        card.classList.add('ring-2', 'ring-eps-red');
+                        setTimeout(() => card.classList.remove('ring-2', 'ring-eps-red'), 500);
+                    } else {
+                        // If it's a simple URL-based game from your loadGames function:
+                        showToast("Right-click detected! Log in to save to favorites.", "info");
+                    }
+                }
+            });
+        })();
+        // --- Release Announcement Logic ---
+function initReleaseModal() {
+    const releaseModal = document.getElementById('epsilon-release-modal');
+    
+    // Check if they've already seen it this session so we don't annoy them
+    const hasSeen = sessionStorage.getItem('epsilon_release_seen');
+
+    if (!hasSeen && releaseModal) {
+        // Short delay so it doesn't jump scare them immediately
+        setTimeout(() => {
+            releaseModal.showModal();
+            // Refresh icons inside the modal
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons({
+                    attrs: {
+                        class: 'lucide'
+                    },
+                    nameAttr: 'data-lucide'
+                });
+            }
+            sessionStorage.setItem('epsilon_release_seen', 'true');
+        }, 1500);
+    }
+}
+
+// Call this in your DOMContentLoaded listener
+document.addEventListener('DOMContentLoaded', () => {
+    // ... your other init code
+    initReleaseModal();
+});
     </script>
 </body>
 
