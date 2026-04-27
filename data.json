@@ -5289,5 +5289,43 @@
         "developer": "Turbine, Inc.",
         "release_date": "2001-04-24",
         "freetogame_profile_url": "https://www.freetogame.com/lotro"
-    }
-]
+    },
+    {
+        "id": 9991,
+        "title": "Google Dino Run",
+        "thumbnail": "https://www.google.com/logos/2010/pacman10-i.png",
+        "short_description": "The literal goat (or dinosaur) of no-internet entertainment. Peak gaming when the wifi dies.",
+        "game_url": "https://chromedino.com/",
+        "genre": "Runner",
+        "platform": "Web Browser",
+        "publisher": "Google",
+        "developer": "Google",
+        "release_date": "2014-09-01",
+        "freetogame_profile_url": "https://www.freetogame.com/dino-run"
+    },
+    {
+        "id": 9992,
+        "title": "Cookie Clicker",
+        "thumbnail": "https://orteil.dashnet.org/cookieclicker/img/intro.png",
+        "short_description": "A game about clicking a cookie until your fingers fall off and you've enslaved the entire universe to bake for you.",
+        "game_url": "https://orteil.dashnet.org/cookieclicker/",
+        "genre": "Idle",
+        "platform": "Web Browser",
+        "publisher": "DashNet",
+        "developer": "Orteil",
+        "release_date": "2013-08-08",
+        "freetogame_profile_url": "https://www.freetogame.com/cookie-clicker"
+    },
+    {
+        "id": 9993,
+        "title": "Slither.io",
+        "thumbnail": "https://slither.io/s/facebook.png",
+        "short_description": "Eat glowing orbs, get long, and try not to run into other snakes. It's basically high-stakes Snake from the 90s.",
+        "game_url": "https://slither.io/",
+        "genre": "IO",
+        "platform": "Web Browser",
+        "publisher": "Lowtech Studios",
+        "developer": "Steve Howse",
+        "release_date": "2016-03-25",
+        "freetogame_profile_url": "https://www.freetogame.com/slither-io"
+    }]
