@@ -46,5 +46,185 @@
     "desc": "Control a ball rolling down a slope at increasing speeds.",
     "author": "Rob Kay",
     "link": "https://slope-game.github.io/"
+  },
+  {
+    "name": "2048",
+    "desc": "Join the numbers and get to the 2048 tile! A classic puzzle game.",
+    "author": "Gabriele Cirulli",
+    "link": "https://play2048.co/"
+  },
+  {
+    "name": "Hextris",
+    "desc": "Fast-paced hexagon stacking arcade game inspired by Tetris.",
+    "author": "Hextris Team",
+    "link": "https://hextris.io/"
+  },
+  {
+    "name": "Krunker",
+    "desc": "Multiplayer browser FPS with fast movement and custom maps.",
+    "author": "Yendis Entertainment",
+    "link": "https://krunker.io/"
+  },
+  {
+    "name": "Slither.io",
+    "desc": "Grow your snake and survive against players around the world.",
+    "author": "Steve Howse",
+    "link": "https://slither.io/"
+  },
+  {
+    "name": "A Dark Room",
+    "desc": "Minimalist text-based survival and mystery game.",
+    "author": "Michael Townsend",
+    "link": "https://adarkroom.doublespeakgames.com/"
+  },
+  {
+    "name": "Cookie Clicker",
+    "desc": "Idle clicker game about baking absurd amounts of cookies.",
+    "author": "Orteil",
+    "link": "https://orteil.dashnet.org/cookieclicker/"
+  },
+  {
+    "name": "Tetr.io",
+    "desc": "Competitive modern multiplayer Tetris-style experience.",
+    "author": "osk",
+    "link": "https://tetr.io/"
+  },
+  {
+    "name": "Shell Shockers",
+    "desc": "Egg-themed online shooter where every player is an armed egg.",
+    "author": "Blue Wizard Digital",
+    "link": "https://shellshock.io/"
+  },
+  {
+    "name": "Little Alchemy 2",
+    "desc": "Mix elements together to create hundreds of new discoveries.",
+    "author": "Recloak",
+    "link": "https://littlealchemy2.com/"
+  },
+  {
+    "name": "Agar.io",
+    "desc": "Consume smaller cells and avoid getting eaten in this multiplayer game.",
+    "author": "Miniclip",
+    "link": "https://agar.io/"
+  },
+  {
+    "name": "Townscaper",
+    "desc": "Relaxing city-building toy for creating colorful island towns.",
+    "author": "Oskar Stålberg",
+    "link": "https://oskarstalberg.com/Townscaper/"
+  },
+  {
+    "name": "Powerline.io",
+    "desc": "Snake-style multiplayer game with neon visuals and speed boosts.",
+    "author": "Profusion Studios",
+    "link": "https://powerline.io/"
+  },
+  {
+    "name": "Skribbl.io",
+    "desc": "Online drawing and guessing game with friends or strangers.",
+    "author": "Timon Schulz",
+    "link": "https://skribbl.io/"
+  },
+  {
+    "name": "Venge.io",
+    "desc": "Online multiplayer shooter with abilities and fast action gameplay.",
+    "author": "Crazyblox Games",
+    "link": "https://venge.io/"
+  },
+  {
+    "name": "Wordle",
+    "desc": "Guess the hidden five-letter word in six tries.",
+    "author": "Josh Wardle",
+    "link": "https://www.nytimes.com/games/wordle/index.html"
+  },
+  {
+    "name": "2048",
+    "desc": "Join the numbers and get to the 2048 tile! A classic puzzle game.",
+    "author": "Gabriele Cirulli",
+    "link": "https://play2048.co/"
+  },
+  {
+    "name": "Cookie Clicker",
+    "desc": "A classic idle game where you click cookies to bake billions of cookies.",
+    "author": "Orteil",
+    "link": "https://orteil.dashnet.org/cookieclicker/"
+  },
+  {
+    "name": "A Dark Room",
+    "desc": "A minimalistic text-based adventure that starts with lighting a fire and evolves into a complex civilization builder.",
+    "author": "Doublespeak Games",
+    "link": "https://adarkroom.doublespeakgames.com/"
+  },
+  {
+    "name": "Slither.io",
+    "desc": "Eat orbs to grow longer and cut off other players in this modern take on Snake.",
+    "author": "Lowtech Studios",
+    "link": "https://slither.io/"
+  },
+  {
+    "name": "Agar.io",
+    "desc": "The original cell-eating multiplayer game where you must avoid bigger cells and consume smaller ones.",
+    "author": "Matheus Valadares",
+    "link": "https://agar.io/"
+  },
+  {
+    "name": "Hextris",
+    "desc": "An addictive puzzle game inspired by Tetris, but played on a hexagonal grid.",
+    "author": "Garrett and Charles",
+    "link": "https://hextris.io/"
+  },
+  {
+    "name": "Wordle",
+    "desc": "Guess the hidden word in 6 tries. A daily word puzzle that took the world by storm.",
+    "author": "Josh Wardle",
+    "link": "https://www.nytimes.com/games/wordle/index.html"
+  },
+  {
+    "name": "GeoGuessr",
+    "desc": "Explore the world and test your geography skills by guessing the location of Google Street View images.",
+    "author": "Anton Wallén",
+    "link": "https://www.geoguessr.com/"
+  },
+  {
+    "name": "Little Alchemy 2",
+    "desc": "Combine different elements to discover new items, starting with just air, earth, fire, and water.",
+    "author": "Recloak",
+    "link": "https://littlealchemy2.com/"
+  },
+  {
+    "name": "Diep.io",
+    "desc": "Control a tank, shoot shapes and other players to level up and upgrade your stats.",
+    "author": "Miniclip",
+    "link": "https://diep.io/"
+  },
+  {
+    "name": "Minesweeper",
+    "desc": "The classic logic puzzle game where you clear a board containing hidden mines without detonating any of them.",
+    "author": "Microsoft (Original) / Various Web Ports",
+    "link": "https://minesweeper.online/"
+  },
+  {
+    "name": "Paper.io 2",
+    "desc": "Capture territory by closing loops, but be careful not to let other players hit your tail.",
+    "author": "Voodoo",
+    "link": "https://paper-io.com/"
+  },
+  {
+    "name": "The World's Hardest Game",
+    "desc": "Navigate a red square through a maze of blue circles to reach the green zone. Requires extreme patience.",
+    "author": "Snubby Land",
+    "link": "https://www.coolmathgames.com/0-worlds-hardest-game"
+  },
+  {
+    "name": "Krunker.io",
+    "desc": "A fast-paced, blocky first-person shooter playable directly in your browser.",
+    "author": "Sidney de Vries",
+    "link": "https://krunker.io/"
+  },
+  {
+    "name": "Townscaper",
+    "desc": "An experimental building toy where you stack colorful blocks to create quaint island towns.",
+    "author": "Oskar Stålberg",
+    "link": "https://townscaper.com/"
   }
 ]
