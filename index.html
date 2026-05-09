@@ -446,14 +446,30 @@
                         <h2 class="font-display text-4xl tracking-wider text-white">LATEST POSTS</h2>
                         <p class="text-eps-muted text-sm mt-1">News, updates, and community highlights.</p>
                     </div>
-                    <button onclick="showToast('Create Post feature coming soon!', 'info')"
+                    <button onclick="openCreatePostModal()"
                         class="flex items-center gap-2 px-4 py-2 bg-eps-card border border-eps-border hover:border-eps-red text-white text-sm rounded-lg transition-colors">
                         <i data-lucide="plus" class="w-4 h-4"></i>
                         <span>New Post</span>
                     </button>
                 </div>
 
-                <!-- Posts Grid (Mock Data) -->
+                <!-- Loading State -->
+                <div id="posts-loading" class="flex flex-col items-center justify-center py-24">
+                    <div class="spinner mb-4"></div>
+                    <p class="text-eps-muted text-sm">Loading posts...</p>
+                </div>
+
+                <!-- Empty State -->
+                <div id="posts-empty" class="hidden flex-col items-center justify-center py-24 text-center">
+                    <i data-lucide="newspaper" class="w-14 h-14 text-eps-muted mb-4"></i>
+                    <p class="text-eps-muted-light text-lg mb-1">No posts yet</p>
+                    <p class="text-eps-muted text-sm mb-4">Be the first to share something with the community!</p>
+                    <button onclick="openCreatePostModal()" class="px-4 py-2 bg-eps-red hover:bg-eps-red-dark text-white text-sm font-medium rounded-lg transition-colors">
+                        Create First Post
+                    </button>
+                </div>
+
+                <!-- Posts Grid -->
                 <div id="posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Populated by JS -->
                 </div>
@@ -765,6 +781,61 @@
         </div>
     </div>
 
+    <!-- ===== CREATE POST MODAL ===== -->
+    <div id="create-post-modal" class="fixed inset-0 z-[100] hidden items-center justify-center modal-backdrop overflow-y-auto py-8"
+        role="dialog" aria-modal="true" aria-label="Create Post">
+        <div class="bg-eps-card border border-eps-border rounded-xl w-full max-w-2xl mx-4 shadow-2xl relative overflow-hidden">
+            <div class="h-1 bg-eps-red"></div>
+            <button onclick="hideModal('create-post-modal')"
+                class="absolute top-4 right-4 text-eps-muted hover:text-white transition-colors z-10" aria-label="Close">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="p-8">
+                <h2 class="font-display text-3xl tracking-wider text-white mb-6">CREATE POST</h2>
+
+                <form id="create-post-form" class="space-y-5" onsubmit="handleCreatePost(event)">
+                    <div>
+                        <label class="block text-sm text-eps-muted-light mb-2 font-medium" for="post-title">Title *</label>
+                        <input type="text" id="post-title" required maxlength="200"
+                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-eps-muted focus:border-eps-red focus:ring-1 focus:ring-eps-red outline-none"
+                            placeholder="Enter post title...">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-eps-muted-light mb-2 font-medium" for="post-excerpt">Excerpt *</label>
+                        <textarea id="post-excerpt" required rows="3" maxlength="500"
+                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-eps-muted focus:border-eps-red focus:ring-1 focus:ring-eps-red outline-none resize-none"
+                            placeholder="Brief description or summary..."></textarea>
+                        <p class="text-xs text-eps-muted mt-1">Max 500 characters</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-eps-muted-light mb-2 font-medium" for="post-image">Image URL (optional)</label>
+                        <input type="url" id="post-image"
+                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-eps-muted focus:border-eps-red focus:ring-1 focus:ring-eps-red outline-none"
+                            placeholder="https://example.com/image.jpg">
+                        <p class="text-xs text-eps-muted mt-1">Leave blank for random placeholder</p>
+                    </div>
+
+                    <div id="create-post-error" class="hidden text-red-400 text-sm p-3 bg-red-900/20 border border-red-800/50 rounded-lg"></div>
+
+                    <div class="flex gap-3 pt-2">
+                        <button type="button" onclick="hideModal('create-post-modal')"
+                            class="flex-1 py-2.5 bg-eps-black border border-eps-border hover:border-eps-muted text-white text-sm font-medium rounded-lg transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit" id="create-post-btn"
+                            class="flex-1 py-2.5 bg-eps-red hover:bg-eps-red-dark text-white text-sm font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                            <span>Publish Post</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== TOAST CONTAINER ===== -->
     <div id="toast-container" class="fixed bottom-6 right-6 z-[200] flex flex-col gap-3 pointer-events-none"
         aria-live="polite"></div>
@@ -791,34 +862,9 @@
         let playableGames = [];
         let playSearchQuery = '';
         let currentPlayingGame = null;
+        let postsData = [];
 
-        // Posts Mock Data
-        const postsData = [
-            {
-                id: 1,
-                title: "Top 10 Indie Games of 2025",
-                excerpt: "Discover the hidden gems that have taken the gaming world by storm this year. From pixel art to 3D masterpieces...",
-                date: "Oct 12, 2025",
-                author: "Epsilon Team",
-                image: "https://picsum.photos/seed/game1/400/200"
-            },
-            {
-                id: 2,
-                title: "Server Maintenance Update",
-                excerpt: "We will be performing scheduled maintenance on the database servers this Sunday at 3:00 AM UTC. Expect downtime.",
-                date: "Oct 10, 2025",
-                author: "System Admin",
-                image: "https://picsum.photos/seed/tech/400/200"
-            },
-            {
-                id: 3,
-                title: "Community Spotlight: Speedrunning",
-                excerpt: "Check out the latest records set by our community members in the latest platformer challenges.",
-                date: "Oct 08, 2025",
-                author: "Moderator",
-                image: "https://picsum.photos/seed/run/400/200"
-            }
-        ];
+
 
         // ===== INIT =====
         document.addEventListener('DOMContentLoaded', () => {
@@ -876,27 +922,175 @@
             }
         }
 
-        function loadPosts() {
+        // ===== POSTS =====
+        async function loadPosts() {
             const container = document.getElementById('posts-grid');
-            container.innerHTML = postsData.map(post => `
+            const loadingEl = document.getElementById('posts-loading');
+            const emptyEl = document.getElementById('posts-empty');
+
+            loadingEl.classList.remove('hidden');
+            emptyEl.classList.add('hidden');
+            container.innerHTML = '';
+
+            if (!supabaseClient) {
+                // Use mock data if Supabase not configured
+                postsData = [
+                    {
+                        id: 1,
+                        title: "Top 10 Indie Games of 2025",
+                        excerpt: "Discover the hidden gems that have taken the gaming world by storm this year. From pixel art to 3D masterpieces...",
+                        created_at: new Date().toISOString(),
+                        author: "Epsilon Team",
+                        image: "https://picsum.photos/seed/game1/400/200"
+                    },
+                    {
+                        id: 2,
+                        title: "Server Maintenance Update",
+                        excerpt: "We will be performing scheduled maintenance on the database servers this Sunday at 3:00 AM UTC. Expect downtime.",
+                        created_at: new Date().toISOString(),
+                        author: "System Admin",
+                        image: "https://picsum.photos/seed/tech/400/200"
+                    }
+                ];
+                renderPosts();
+                return;
+            }
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('posts')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                postsData = data || [];
+                renderPosts();
+            } catch (err) {
+                console.error('Error loading posts:', err);
+                showToast('Failed to load posts', 'error');
+                loadingEl.classList.add('hidden');
+                emptyEl.classList.remove('hidden');
+                emptyEl.classList.add('flex');
+            }
+        }
+
+        function renderPosts() {
+            const container = document.getElementById('posts-grid');
+            const loadingEl = document.getElementById('posts-loading');
+            const emptyEl = document.getElementById('posts-empty');
+
+            loadingEl.classList.add('hidden');
+
+            if (postsData.length === 0) {
+                emptyEl.classList.remove('hidden');
+                emptyEl.classList.add('flex');
+                container.innerHTML = '';
+                lucide.createIcons();
+                return;
+            }
+
+            emptyEl.classList.add('hidden');
+            container.innerHTML = postsData.map(post => {
+                const date = post.created_at ? new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Unknown';
+                const image = post.image || `https://picsum.photos/seed/${post.id}/400/200`;
+                const author = post.author || 'Anonymous';
+
+                return `
                 <article class="bg-eps-card border border-eps-border rounded-xl overflow-hidden hover:border-eps-muted transition-colors group cursor-pointer">
                     <div class="aspect-video overflow-hidden">
-                        <img src="${post.image}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="${image}" alt="${escapeHtml(post.title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
                     </div>
                     <div class="p-5">
                         <div class="flex items-center gap-2 text-xs text-eps-muted mb-2">
-                            <span>${post.date}</span>
+                            <span>${date}</span>
                             <span class="w-1 h-1 bg-eps-muted rounded-full"></span>
-                            <span>${post.author}</span>
+                            <span>${escapeHtml(author)}</span>
                         </div>
-                        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-eps-red transition-colors">${post.title}</h3>
-                        <p class="text-eps-muted text-sm line-clamp-2">${post.excerpt}</p>
+                        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-eps-red transition-colors">${escapeHtml(post.title)}</h3>
+                        <p class="text-eps-muted text-sm line-clamp-2">${escapeHtml(post.excerpt)}</p>
                         <div class="mt-4 flex items-center text-eps-red text-sm font-medium">
                             Read More <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
                         </div>
                     </div>
                 </article>
-            `).join('');
+                `;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function openCreatePostModal() {
+            if (!currentUser) {
+                showModal('auth-modal');
+                showToast('Sign in to create posts', 'info');
+                return;
+            }
+            showModal('create-post-modal');
+        }
+
+        async function handleCreatePost(e) {
+            e.preventDefault();
+
+            if (!currentUser) {
+                showToast('You must be signed in to create posts', 'error');
+                return;
+            }
+
+            const title = document.getElementById('post-title').value.trim();
+            const excerpt = document.getElementById('post-excerpt').value.trim();
+            const image = document.getElementById('post-image').value.trim();
+            const errEl = document.getElementById('create-post-error');
+            const btn = document.getElementById('create-post-btn');
+
+            errEl.classList.add('hidden');
+
+            if (!title || !excerpt) {
+                errEl.textContent = 'Title and excerpt are required.';
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            if (!supabaseClient) {
+                errEl.textContent = 'Supabase is not configured. Cannot create posts.';
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            // Disable button
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner" style="width: 16px; height: 16px; border-width: 2px;"></div><span>Publishing...</span>';
+
+            try {
+                const postData = {
+                    title,
+                    excerpt,
+                    image: image || null,
+                    author: currentUser.email.split('@')[0],
+                    user_id: currentUser.id
+                };
+
+                const { data, error } = await supabaseClient
+                    .from('posts')
+                    .insert([postData])
+                    .select();
+
+                if (error) throw error;
+
+                showToast('Post published successfully!', 'success');
+                hideModal('create-post-modal');
+                document.getElementById('create-post-form').reset();
+                
+                // Reload posts
+                await loadPosts();
+            } catch (err) {
+                console.error('Error creating post:', err);
+                errEl.textContent = 'Failed to create post: ' + err.message;
+                errEl.classList.remove('hidden');
+            } finally {
+                // Re-enable button
+                btn.disabled = false;
+                btn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i><span>Publish Post</span>';
+                lucide.createIcons();
+            }
         }
 
         // ===== SUPABASE & AUTH =====
@@ -1338,7 +1532,7 @@
             });
 
             // Modal backdrop click to close
-            ['auth-modal', 'game-modal'].forEach(id => {
+            ['auth-modal', 'game-modal', 'create-post-modal'].forEach(id => {
                 document.getElementById(id).addEventListener('click', e => {
                     if (e.target === e.currentTarget) hideModal(id);
                 });
@@ -1347,7 +1541,7 @@
             // Escape key to close modals
             document.addEventListener('keydown', e => {
                 if (e.key === 'Escape') {
-                    ['auth-modal', 'game-modal'].forEach(id => {
+                    ['auth-modal', 'game-modal', 'create-post-modal'].forEach(id => {
                         if (!document.getElementById(id).classList.contains('hidden')) hideModal(id);
                     });
                 }
