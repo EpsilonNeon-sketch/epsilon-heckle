@@ -156,17 +156,36 @@
 
         /* Toast */
         @keyframes toastIn {
-            from { transform: translateX(120%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         @keyframes toastOut {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(120%); opacity: 0; }
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(120%);
+                opacity: 0;
+            }
         }
 
-        .toast-enter { animation: toastIn 0.35s ease forwards; }
-        .toast-exit { animation: toastOut 0.35s ease forwards; }
+        .toast-enter {
+            animation: toastIn 0.35s ease forwards;
+        }
+
+        .toast-exit {
+            animation: toastOut 0.35s ease forwards;
+        }
 
         /* Spinner */
         .spinner {
@@ -178,14 +197,19 @@
             animation: spin 0.7s linear infinite;
         }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
         /* Switch Toggle */
         .toggle-checkbox:checked {
             right: 0;
             border-color: #DC2626;
         }
-        .toggle-checkbox:checked + .toggle-label {
+
+        .toggle-checkbox:checked+.toggle-label {
             background-color: #DC2626;
         }
 
@@ -196,7 +220,7 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
-        
+
         .line-clamp-3 {
             display: -webkit-box;
             -webkit-line-clamp: 3;
@@ -207,30 +231,31 @@
 </head>
 
 <!-- Release Modal -->
-<dialog 
-    id="epsilon-release-modal" 
-    class="fixed inset-0 m-auto backdrop:bg-black/80 backdrop:backdrop-blur-sm bg-eps-card border border-eps-border rounded-xl p-0 w-[calc(100%-2rem)] max-w-md shadow-2xl overflow-hidden z-[200]"
->
+<dialog id="epsilon-release-modal"
+    class="fixed inset-0 m-auto backdrop:bg-black/80 backdrop:backdrop-blur-sm bg-eps-card border border-eps-border rounded-xl p-0 w-[calc(100%-2rem)] max-w-md shadow-2xl overflow-hidden z-[200]">
     <div class="h-1 bg-eps-red w-full"></div>
-    
+
     <div class="p-8 text-center">
         <div class="w-16 h-16 bg-eps-red/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <i data-lucide="rocket" class="w-8 h-8 text-eps-red"></i>
         </div>
-        
+
         <h2 class="font-display text-4xl tracking-wider text-white mb-2">NEW VERSION DROPPING</h2>
         <p class="text-eps-red font-bold text-xl mb-4 tracking-tight">MAY 1ST, 2026</p>
-        
+
         <p class="text-eps-muted-light text-sm leading-relaxed mb-8">
-            The next evolution of <span class="text-white">Epsilon Heckle</span> is almost here. Get a sneak peek at the new features and UI before the official launch.
+            The next evolution of <span class="text-white">Epsilon Heckle</span> is almost here. Get a sneak peek at the
+            new features and UI before the official launch.
         </p>
 
         <div class="flex flex-col gap-3">
-            <a href="./new.html" class="w-full py-3 bg-eps-red hover:bg-eps-red-dark text-white font-semibold rounded-lg transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+            <a href="./new.html"
+                class="w-full py-3 bg-eps-red hover:bg-eps-red-dark text-white font-semibold rounded-lg transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
                 <span>View Preview</span>
                 <i data-lucide="external-link" class="w-4 h-4"></i>
             </a>
-            <button onclick="document.getElementById('epsilon-release-modal').close()" class="text-eps-muted hover:text-white text-sm transition-colors py-2">
+            <button onclick="document.getElementById('epsilon-release-modal').close()"
+                class="text-eps-muted hover:text-white text-sm transition-colors py-2">
                 Maybe later
             </button>
         </div>
@@ -243,34 +268,46 @@
     <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-40 hidden lg:hidden glass"></div>
 
     <!-- ===== SIDEBAR NAVIGATION ===== -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-eps-card border-r border-eps-border transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col">
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 z-50 w-64 bg-eps-card border-r border-eps-border transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col">
         <!-- Logo Area -->
         <div class="h-16 flex items-center px-6 border-b border-eps-border">
             <a href="#" onclick="navigateTo('home')" class="flex items-center gap-2 group">
-                <div class="w-8 h-8 bg-eps-red rounded flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div
+                    class="w-8 h-8 bg-eps-red rounded flex items-center justify-center group-hover:scale-110 transition-transform">
                     <span class="font-display text-white text-lg leading-none">E</span>
                 </div>
-                <span class="font-display text-xl tracking-wider text-white">EPSILON<span class="text-eps-red">HECKLE</span></span>
+                <span class="font-display text-xl tracking-wider text-white">EPSILON<span
+                        class="text-eps-red">HECKLE</span></span>
             </a>
         </div>
 
         <!-- Navigation Links -->
         <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
             <div class="text-xs font-semibold text-eps-muted uppercase tracking-wider px-3 mb-2">Menu</div>
-            
-            <button onclick="navigateTo('home')" id="nav-home" class="nav-link active w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-eps-muted-light rounded-lg hover:text-white hover:bg-eps-card-hover transition-colors">
+
+            <button onclick="navigateTo('home')" id="nav-home"
+                class="nav-link active w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-eps-muted-light rounded-lg hover:text-white hover:bg-eps-card-hover transition-colors">
                 <i data-lucide="gamepad-2" class="w-5 h-5"></i>
                 <span>Game Library</span>
             </button>
-            
-            <button onclick="navigateTo('posts')" id="nav-posts" class="nav-link w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-eps-muted-light rounded-lg hover:text-white hover:bg-eps-card-hover transition-colors">
+
+            <button onclick="navigateTo('posts')" id="nav-posts"
+                class="nav-link w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-eps-muted-light rounded-lg hover:text-white hover:bg-eps-card-hover transition-colors">
                 <i data-lucide="newspaper" class="w-5 h-5"></i>
                 <span>Posts & News</span>
             </button>
 
+            <button onclick="navigateTo('play')" id="nav-play"
+                class="nav-link w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-eps-muted-light rounded-lg hover:text-white hover:bg-eps-card-hover transition-colors">
+                <i data-lucide="play-circle" class="w-5 h-5"></i>
+                <span>Play Games</span>
+            </button>
+
             <div class="text-xs font-semibold text-eps-muted uppercase tracking-wider px-3 mb-2 mt-6">Account</div>
 
-            <button onclick="navigateTo('settings')" id="nav-settings" class="nav-link w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-eps-muted-light rounded-lg hover:text-white hover:bg-eps-card-hover transition-colors">
+            <button onclick="navigateTo('settings')" id="nav-settings"
+                class="nav-link w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-eps-muted-light rounded-lg hover:text-white hover:bg-eps-card-hover transition-colors">
                 <i data-lucide="settings" class="w-5 h-5"></i>
                 <span>Settings</span>
             </button>
@@ -288,16 +325,18 @@
     <div class="lg:pl-64 flex flex-col min-h-screen transition-all duration-300">
 
         <!-- ===== TOP HEADER ===== -->
-        <header class="h-16 bg-eps-darker/80 backdrop-blur border-b border-eps-border flex items-center justify-between px-4 lg:px-8 sticky top-0 z-30">
+        <header
+            class="h-16 bg-eps-darker/80 backdrop-blur border-b border-eps-border flex items-center justify-between px-4 lg:px-8 sticky top-0 z-30">
             <div class="flex items-center gap-4">
-                <button id="sidebar-toggle" class="lg:hidden p-2 text-eps-muted hover:text-white rounded-md hover:bg-eps-card border border-transparent hover:border-eps-border">
+                <button id="sidebar-toggle"
+                    class="lg:hidden p-2 text-eps-muted hover:text-white rounded-md hover:bg-eps-card border border-transparent hover:border-eps-border">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
-                
+
                 <!-- Desktop Search -->
                 <div class="hidden md:flex relative max-w-md w-full ml-4">
                     <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-eps-muted"></i>
-                    <input type="text" id="nav-search" placeholder="Search games..." 
+                    <input type="text" id="nav-search" placeholder="Search games..."
                         class="w-full bg-eps-card border border-eps-border rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder-eps-muted focus:border-eps-red focus:ring-1 focus:ring-eps-red outline-none transition-all">
                 </div>
             </div>
@@ -306,18 +345,20 @@
             <div class="flex items-center gap-4">
                 <button class="p-2 text-eps-muted hover:text-eps-red relative transition-colors">
                     <i data-lucide="bell" class="w-5 h-5"></i>
-                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-eps-red rounded-full border border-eps-darker"></span>
+                    <span
+                        class="absolute top-1.5 right-1.5 w-2 h-2 bg-eps-red rounded-full border border-eps-darker"></span>
                 </button>
             </div>
         </header>
 
         <main class="flex-1 p-4 lg:p-8 max-w-[1600px] mx-auto w-full">
-            
+
             <!-- ===== VIEW: HOME (GAMES) ===== -->
             <div id="view-home" class="view-section animate-fade-in">
-                
+
                 <!-- Hero Section -->
-                <section id="hero" class="relative rounded-2xl min-h-[50vh] flex items-center justify-center overflow-hidden hero-grid border border-eps-border mb-12">
+                <section id="hero"
+                    class="relative rounded-2xl min-h-[50vh] flex items-center justify-center overflow-hidden hero-grid border border-eps-border mb-12">
                     <canvas id="hero-canvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
                     <div class="hero-glow"></div>
 
@@ -346,22 +387,28 @@
                             <p id="game-count" class="text-eps-muted text-sm mt-1"></p>
                         </div>
                         <div id="view-tabs" class="flex gap-2">
-                            <button class="view-tab active px-4 py-1.5 rounded-full text-sm font-medium border border-eps-border bg-transparent text-eps-muted-light" data-view="all">All Games</button>
-                            <button id="fav-tab" class="view-tab hidden px-4 py-1.5 rounded-full text-sm font-medium border border-eps-border bg-transparent text-eps-muted-light" data-view="favorites">My Favorites</button>
+                            <button
+                                class="view-tab active px-4 py-1.5 rounded-full text-sm font-medium border border-eps-border bg-transparent text-eps-muted-light"
+                                data-view="all">All Games</button>
+                            <button id="fav-tab"
+                                class="view-tab hidden px-4 py-1.5 rounded-full text-sm font-medium border border-eps-border bg-transparent text-eps-muted-light"
+                                data-view="favorites">My Favorites</button>
                         </div>
                     </div>
 
                     <!-- Mobile search (visible if needed) -->
                     <div class="md:hidden mb-6">
                         <div class="relative">
-                            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-eps-muted"></i>
+                            <i data-lucide="search"
+                                class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-eps-muted"></i>
                             <input type="text" id="mobile-search" placeholder="Search games..."
                                 class="w-full bg-eps-card border border-eps-border rounded-lg pl-10 pr-4 py-2.5 text-sm text-white placeholder-eps-muted">
                         </div>
                     </div>
 
                     <!-- Genre filters -->
-                    <div id="genre-filters" class="flex flex-wrap gap-2 mb-8" role="group" aria-label="Filter by genre"></div>
+                    <div id="genre-filters" class="flex flex-wrap gap-2 mb-8" role="group" aria-label="Filter by genre">
+                    </div>
 
                     <!-- Loading/Empty States -->
                     <div id="loading-state" class="flex flex-col items-center justify-center py-24">
@@ -387,7 +434,8 @@
                     </div>
 
                     <!-- Game grid -->
-                    <div id="game-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+                    <div id="game-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                    </div>
                 </section>
             </div>
 
@@ -398,15 +446,99 @@
                         <h2 class="font-display text-4xl tracking-wider text-white">LATEST POSTS</h2>
                         <p class="text-eps-muted text-sm mt-1">News, updates, and community highlights.</p>
                     </div>
-                    <button onclick="showToast('Create Post feature coming soon!', 'info')" class="flex items-center gap-2 px-4 py-2 bg-eps-card border border-eps-border hover:border-eps-red text-white text-sm rounded-lg transition-colors">
+                    <button onclick="openCreatePostModal()"
+                        class="flex items-center gap-2 px-4 py-2 bg-eps-card border border-eps-border hover:border-eps-red text-white text-sm rounded-lg transition-colors">
                         <i data-lucide="plus" class="w-4 h-4"></i>
                         <span>New Post</span>
                     </button>
                 </div>
 
-                <!-- Posts Grid (Mock Data) -->
+                <!-- Loading State -->
+                <div id="posts-loading" class="flex flex-col items-center justify-center py-24">
+                    <div class="spinner mb-4"></div>
+                    <p class="text-eps-muted text-sm">Loading posts...</p>
+                </div>
+
+                <!-- Empty State -->
+                <div id="posts-empty" class="hidden flex-col items-center justify-center py-24 text-center">
+                    <i data-lucide="newspaper" class="w-14 h-14 text-eps-muted mb-4"></i>
+                    <p class="text-eps-muted-light text-lg mb-1">No posts yet</p>
+                    <p class="text-eps-muted text-sm mb-4">Be the first to share something with the community!</p>
+                    <button onclick="openCreatePostModal()" class="px-4 py-2 bg-eps-red hover:bg-eps-red-dark text-white text-sm font-medium rounded-lg transition-colors">
+                        Create First Post
+                    </button>
+                </div>
+
+                <!-- Posts Grid -->
                 <div id="posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- ===== VIEW: PLAY GAMES ===== -->
+            <div id="view-play" class="view-section hidden animate-fade-in">
+                <div class="grid lg:grid-cols-[350px_1fr] gap-6 h-[calc(100vh-12rem)]">
+                    <!-- Games List Sidebar -->
+                    <div class="bg-eps-card border border-eps-border rounded-xl p-4 overflow-y-auto">
+                        <div class="flex items-center justify-between mb-4 pb-3 border-b border-eps-border">
+                            <h2 class="font-display text-2xl tracking-wider text-white">PLAYABLE GAMES</h2>
+                        </div>
+                        
+                        <!-- Search for playable games -->
+                        <div class="relative mb-4">
+                            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-eps-muted"></i>
+                            <input type="text" id="play-search" placeholder="Search playable games..."
+                                class="w-full bg-eps-black border border-eps-border rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder-eps-muted focus:border-eps-red focus:ring-1 focus:ring-eps-red outline-none">
+                        </div>
+
+                        <div id="playable-games-list" class="space-y-2">
+                            <!-- Populated by JS -->
+                        </div>
+
+                        <div id="play-loading" class="flex flex-col items-center justify-center py-12">
+                            <div class="spinner mb-3"></div>
+                            <p class="text-eps-muted text-sm">Loading games...</p>
+                        </div>
+
+                        <div id="play-empty" class="hidden flex-col items-center justify-center py-12 text-center">
+                            <i data-lucide="gamepad-2" class="w-12 h-12 text-eps-muted mb-3"></i>
+                            <p class="text-eps-muted-light">No playable games found</p>
+                        </div>
+                    </div>
+
+                    <!-- Game Player Area -->
+                    <div class="bg-eps-card border border-eps-border rounded-xl overflow-hidden flex flex-col">
+                        <div id="player-header" class="hidden border-b border-eps-border p-4">
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="flex-1 min-w-0">
+                                    <h3 id="player-game-title" class="font-display text-2xl tracking-wider text-white truncate mb-1"></h3>
+                                    <p id="player-game-author" class="text-eps-muted text-sm"></p>
+                                    <p id="player-game-desc" class="text-eps-muted-light text-sm mt-2 line-clamp-2"></p>
+                                </div>
+                                <button onclick="closeGamePlayer()" class="flex-shrink-0 p-2 text-eps-muted hover:text-eps-red transition-colors rounded-lg hover:bg-eps-black">
+                                    <i data-lucide="x" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="player-placeholder" class="flex-1 flex flex-col items-center justify-center p-8 text-center">
+                            <div class="w-20 h-20 bg-eps-red/10 rounded-full flex items-center justify-center mb-4">
+                                <i data-lucide="play-circle" class="w-10 h-10 text-eps-red"></i>
+                            </div>
+                            <h3 class="font-display text-3xl tracking-wider text-white mb-2">SELECT A GAME</h3>
+                            <p class="text-eps-muted max-w-md">Choose a game from the list to start playing directly in your browser</p>
+                        </div>
+
+                        <div id="player-container" class="hidden flex-1 relative bg-eps-black">
+                            <iframe id="game-iframe" class="w-full h-full border-0" allowfullscreen allow="gamepad; microphone; camera"></iframe>
+                            <div id="iframe-loader" class="absolute inset-0 bg-eps-black flex items-center justify-center">
+                                <div class="text-center">
+                                    <div class="spinner mb-3"></div>
+                                    <p class="text-eps-muted text-sm">Loading game...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -415,7 +547,7 @@
                 <h2 class="font-display text-4xl tracking-wider text-white mb-8">SETTINGS</h2>
 
                 <div class="grid gap-8">
-                    
+
                     <!-- Profile Section -->
                     <div class="bg-eps-card border border-eps-border rounded-xl p-6 sm:p-8">
                         <div class="flex items-center gap-2 mb-6 pb-4 border-b border-eps-border">
@@ -424,26 +556,36 @@
                         </div>
 
                         <div class="flex flex-col md:flex-row items-start gap-6">
-                            <div class="w-24 h-24 rounded-full bg-eps-darker border-2 border-eps-border flex items-center justify-center flex-shrink-0 overflow-hidden">
-                                <img src="https://picsum.photos/seed/user/200/200" alt="Avatar" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity">
+                            <div
+                                class="w-24 h-24 rounded-full bg-eps-darker border-2 border-eps-border flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                <img src="https://picsum.photos/seed/user/200/200" alt="Avatar"
+                                    class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity">
                             </div>
                             <div class="flex-1 w-full space-y-4">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-xs text-eps-muted uppercase tracking-wider font-semibold mb-1.5">Display Name</label>
-                                        <input type="text" value="Epsilon Gamer" class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white focus:border-eps-red focus:ring-1 focus:ring-eps-red outline-none">
+                                        <label
+                                            class="block text-xs text-eps-muted uppercase tracking-wider font-semibold mb-1.5">Display
+                                            Name</label>
+                                        <input type="text" value="Epsilon Gamer"
+                                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white focus:border-eps-red focus:ring-1 focus:ring-eps-red outline-none">
                                     </div>
                                     <div>
-                                        <label class="block text-xs text-eps-muted uppercase tracking-wider font-semibold mb-1.5">Email</label>
-                                        <input type="email" disabled value="user@example.com" class="w-full bg-eps-darker border border-eps-border rounded-lg px-4 py-2.5 text-sm text-eps-muted cursor-not-allowed">
+                                        <label
+                                            class="block text-xs text-eps-muted uppercase tracking-wider font-semibold mb-1.5">Email</label>
+                                        <input type="email" disabled value="user@example.com"
+                                            class="w-full bg-eps-darker border border-eps-border rounded-lg px-4 py-2.5 text-sm text-eps-muted cursor-not-allowed">
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block text-xs text-eps-muted uppercase tracking-wider font-semibold mb-1.5">Bio</label>
-                                    <textarea rows="3" class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white focus:border-eps-red focus:ring-1 focus:ring-eps-red outline-none">Just a gamer looking for the next indie gem.</textarea>
+                                    <label
+                                        class="block text-xs text-eps-muted uppercase tracking-wider font-semibold mb-1.5">Bio</label>
+                                    <textarea rows="3"
+                                        class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white focus:border-eps-red focus:ring-1 focus:ring-eps-red outline-none">Just a gamer looking for the next indie gem.</textarea>
                                 </div>
                                 <div class="flex justify-end">
-                                    <button onclick="showToast('Profile updated!', 'success')" class="px-5 py-2 bg-eps-red hover:bg-eps-red-dark text-white text-sm font-medium rounded-lg transition-colors">
+                                    <button onclick="showToast('Profile updated!', 'success')"
+                                        class="px-5 py-2 bg-eps-red hover:bg-eps-red-dark text-white text-sm font-medium rounded-lg transition-colors">
                                         Save Changes
                                     </button>
                                 </div>
@@ -463,11 +605,15 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <h4 class="text-white font-medium">Email Notifications</h4>
-                                    <p class="text-eps-muted text-sm mt-0.5">Receive updates about new games and features.</p>
+                                    <p class="text-eps-muted text-sm mt-0.5">Receive updates about new games and
+                                        features.</p>
                                 </div>
-                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                                    <input type="checkbox" name="toggle" id="toggle1" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-eps-border transition-all duration-300"/>
-                                    <label for="toggle1" class="toggle-label block overflow-hidden h-5 rounded-full bg-eps-border cursor-pointer"></label>
+                                <div
+                                    class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <input type="checkbox" name="toggle" id="toggle1"
+                                        class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-eps-border transition-all duration-300" />
+                                    <label for="toggle1"
+                                        class="toggle-label block overflow-hidden h-5 rounded-full bg-eps-border cursor-pointer"></label>
                                 </div>
                             </div>
 
@@ -475,23 +621,31 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <h4 class="text-white font-medium">Public Profile</h4>
-                                    <p class="text-eps-muted text-sm mt-0.5">Allow others to see your favorites list.</p>
+                                    <p class="text-eps-muted text-sm mt-0.5">Allow others to see your favorites list.
+                                    </p>
                                 </div>
-                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                                    <input type="checkbox" name="toggle" id="toggle2" checked class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-eps-border transition-all duration-300"/>
-                                    <label for="toggle2" class="toggle-label block overflow-hidden h-5 rounded-full bg-eps-border cursor-pointer"></label>
+                                <div
+                                    class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <input type="checkbox" name="toggle" id="toggle2" checked
+                                        class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-eps-border transition-all duration-300" />
+                                    <label for="toggle2"
+                                        class="toggle-label block overflow-hidden h-5 rounded-full bg-eps-border cursor-pointer"></label>
                                 </div>
                             </div>
 
-                             <!-- Setting Item -->
-                             <div class="flex items-center justify-between">
+                            <!-- Setting Item -->
+                            <div class="flex items-center justify-between">
                                 <div>
                                     <h4 class="text-white font-medium">High Contrast Mode</h4>
-                                    <p class="text-eps-muted text-sm mt-0.5">Increase border visibility and text contrast.</p>
+                                    <p class="text-eps-muted text-sm mt-0.5">Increase border visibility and text
+                                        contrast.</p>
                                 </div>
-                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                                    <input type="checkbox" name="toggle" id="toggle3" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-eps-border transition-all duration-300"/>
-                                    <label for="toggle3" class="toggle-label block overflow-hidden h-5 rounded-full bg-eps-border cursor-pointer"></label>
+                                <div
+                                    class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <input type="checkbox" name="toggle" id="toggle3"
+                                        class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-eps-border transition-all duration-300" />
+                                    <label for="toggle3"
+                                        class="toggle-label block overflow-hidden h-5 rounded-full bg-eps-border cursor-pointer"></label>
                                 </div>
                             </div>
                         </div>
@@ -499,15 +653,18 @@
 
                     <!-- Danger Zone -->
                     <div class="bg-eps-card border border-red-900/50 rounded-xl p-6">
-                         <div class="flex items-center justify-between">
-                             <div>
+                        <div class="flex items-center justify-between">
+                            <div>
                                 <h4 class="text-red-400 font-medium">Delete Account</h4>
-                                <p class="text-eps-muted text-sm mt-0.5">Permanently delete your account and all data.</p>
-                             </div>
-                             <button onclick="if(confirm('Are you sure? This cannot be undone.')) showToast('This is a demo. Nothing happened.', 'error')" class="px-4 py-2 border border-red-900 text-red-400 hover:bg-red-900/20 text-sm rounded-lg transition-colors">
-                                 Delete
-                             </button>
-                         </div>
+                                <p class="text-eps-muted text-sm mt-0.5">Permanently delete your account and all data.
+                                </p>
+                            </div>
+                            <button
+                                onclick="if(confirm('Are you sure? This cannot be undone.')) showToast('This is a demo. Nothing happened.', 'error')"
+                                class="px-4 py-2 border border-red-900 text-red-400 hover:bg-red-900/20 text-sm rounded-lg transition-colors">
+                                Delete
+                            </button>
+                        </div>
                     </div>
 
                 </div>
@@ -522,7 +679,8 @@
                     <div class="w-6 h-6 bg-eps-red rounded flex items-center justify-center">
                         <span class="font-display text-white text-sm leading-none">E</span>
                     </div>
-                    <span class="font-display text-lg tracking-wider text-eps-muted">EPSILON<span class="text-eps-red">HECKLE</span></span>
+                    <span class="font-display text-lg tracking-wider text-eps-muted">EPSILON<span
+                            class="text-eps-red">HECKLE</span></span>
                 </div>
                 <p class="text-eps-muted text-xs">&copy; 2025 Epsilon Heckle. All rights reserved.</p>
             </div>
@@ -623,6 +781,61 @@
         </div>
     </div>
 
+    <!-- ===== CREATE POST MODAL ===== -->
+    <div id="create-post-modal" class="fixed inset-0 z-[100] hidden items-center justify-center modal-backdrop overflow-y-auto py-8"
+        role="dialog" aria-modal="true" aria-label="Create Post">
+        <div class="bg-eps-card border border-eps-border rounded-xl w-full max-w-2xl mx-4 shadow-2xl relative overflow-hidden">
+            <div class="h-1 bg-eps-red"></div>
+            <button onclick="hideModal('create-post-modal')"
+                class="absolute top-4 right-4 text-eps-muted hover:text-white transition-colors z-10" aria-label="Close">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="p-8">
+                <h2 class="font-display text-3xl tracking-wider text-white mb-6">CREATE POST</h2>
+
+                <form id="create-post-form" class="space-y-5" onsubmit="handleCreatePost(event)">
+                    <div>
+                        <label class="block text-sm text-eps-muted-light mb-2 font-medium" for="post-title">Title *</label>
+                        <input type="text" id="post-title" required maxlength="200"
+                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-eps-muted focus:border-eps-red focus:ring-1 focus:ring-eps-red outline-none"
+                            placeholder="Enter post title...">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-eps-muted-light mb-2 font-medium" for="post-excerpt">Excerpt *</label>
+                        <textarea id="post-excerpt" required rows="3" maxlength="500"
+                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-eps-muted focus:border-eps-red focus:ring-1 focus:ring-eps-red outline-none resize-none"
+                            placeholder="Brief description or summary..."></textarea>
+                        <p class="text-xs text-eps-muted mt-1">Max 500 characters</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-eps-muted-light mb-2 font-medium" for="post-image">Image URL (optional)</label>
+                        <input type="url" id="post-image"
+                            class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-eps-muted focus:border-eps-red focus:ring-1 focus:ring-eps-red outline-none"
+                            placeholder="https://example.com/image.jpg">
+                        <p class="text-xs text-eps-muted mt-1">Leave blank for random placeholder</p>
+                    </div>
+
+                    <div id="create-post-error" class="hidden text-red-400 text-sm p-3 bg-red-900/20 border border-red-800/50 rounded-lg"></div>
+
+                    <div class="flex gap-3 pt-2">
+                        <button type="button" onclick="hideModal('create-post-modal')"
+                            class="flex-1 py-2.5 bg-eps-black border border-eps-border hover:border-eps-muted text-white text-sm font-medium rounded-lg transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit" id="create-post-btn"
+                            class="flex-1 py-2.5 bg-eps-red hover:bg-eps-red-dark text-white text-sm font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                            <span>Publish Post</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== TOAST CONTAINER ===== -->
     <div id="toast-container" class="fixed bottom-6 right-6 z-[200] flex flex-col gap-3 pointer-events-none"
         aria-live="polite"></div>
@@ -646,40 +859,19 @@
         let searchQuery = '';
         let searchDebounce = null;
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let playableGames = [];
+        let playSearchQuery = '';
+        let currentPlayingGame = null;
+        let postsData = [];
 
-        // Posts Mock Data
-        const postsData = [
-            {
-                id: 1,
-                title: "Top 10 Indie Games of 2025",
-                excerpt: "Discover the hidden gems that have taken the gaming world by storm this year. From pixel art to 3D masterpieces...",
-                date: "Oct 12, 2025",
-                author: "Epsilon Team",
-                image: "https://picsum.photos/seed/game1/400/200"
-            },
-            {
-                id: 2,
-                title: "Server Maintenance Update",
-                excerpt: "We will be performing scheduled maintenance on the database servers this Sunday at 3:00 AM UTC. Expect downtime.",
-                date: "Oct 10, 2025",
-                author: "System Admin",
-                image: "https://picsum.photos/seed/tech/400/200"
-            },
-            {
-                id: 3,
-                title: "Community Spotlight: Speedrunning",
-                excerpt: "Check out the latest records set by our community members in the latest platformer challenges.",
-                date: "Oct 08, 2025",
-                author: "Moderator",
-                image: "https://picsum.photos/seed/run/400/200"
-            }
-        ];
+
 
         // ===== INIT =====
         document.addEventListener('DOMContentLoaded', () => {
             initSupabase();
             loadGames();
             loadPosts();
+            loadPlayableGames();
             setupEventListeners();
             if (!prefersReducedMotion) initParticles();
             lucide.createIcons();
@@ -690,7 +882,7 @@
             // Update Sidebar Links
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('active');
-                if(link.id === `nav-${viewName}`) link.classList.add('active');
+                if (link.id === `nav-${viewName}`) link.classList.add('active');
             });
 
             // Hide all sections
@@ -698,12 +890,12 @@
 
             // Show target section
             const target = document.getElementById(`view-${viewName}`);
-            if(target) {
+            if (target) {
                 target.classList.remove('hidden');
                 // Trigger animation reflow
                 target.style.animation = 'none';
                 target.offsetHeight; /* trigger reflow */
-                target.style.animation = null; 
+                target.style.animation = null;
             }
 
             // Close mobile sidebar if open
@@ -715,7 +907,7 @@
         function toggleSidebar(forceState = null) {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
-            
+
             const isOpen = sidebar.classList.contains('translate-x-0');
             const shouldOpen = forceState !== null ? forceState : !isOpen;
 
@@ -730,27 +922,175 @@
             }
         }
 
-        function loadPosts() {
+        // ===== POSTS =====
+        async function loadPosts() {
             const container = document.getElementById('posts-grid');
-            container.innerHTML = postsData.map(post => `
+            const loadingEl = document.getElementById('posts-loading');
+            const emptyEl = document.getElementById('posts-empty');
+
+            loadingEl.classList.remove('hidden');
+            emptyEl.classList.add('hidden');
+            container.innerHTML = '';
+
+            if (!supabaseClient) {
+                // Use mock data if Supabase not configured
+                postsData = [
+                    {
+                        id: 1,
+                        title: "Top 10 Indie Games of 2025",
+                        excerpt: "Discover the hidden gems that have taken the gaming world by storm this year. From pixel art to 3D masterpieces...",
+                        created_at: new Date().toISOString(),
+                        author: "Epsilon Team",
+                        image: "https://picsum.photos/seed/game1/400/200"
+                    },
+                    {
+                        id: 2,
+                        title: "Server Maintenance Update",
+                        excerpt: "We will be performing scheduled maintenance on the database servers this Sunday at 3:00 AM UTC. Expect downtime.",
+                        created_at: new Date().toISOString(),
+                        author: "System Admin",
+                        image: "https://picsum.photos/seed/tech/400/200"
+                    }
+                ];
+                renderPosts();
+                return;
+            }
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('posts')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                postsData = data || [];
+                renderPosts();
+            } catch (err) {
+                console.error('Error loading posts:', err);
+                showToast('Failed to load posts', 'error');
+                loadingEl.classList.add('hidden');
+                emptyEl.classList.remove('hidden');
+                emptyEl.classList.add('flex');
+            }
+        }
+
+        function renderPosts() {
+            const container = document.getElementById('posts-grid');
+            const loadingEl = document.getElementById('posts-loading');
+            const emptyEl = document.getElementById('posts-empty');
+
+            loadingEl.classList.add('hidden');
+
+            if (postsData.length === 0) {
+                emptyEl.classList.remove('hidden');
+                emptyEl.classList.add('flex');
+                container.innerHTML = '';
+                lucide.createIcons();
+                return;
+            }
+
+            emptyEl.classList.add('hidden');
+            container.innerHTML = postsData.map(post => {
+                const date = post.created_at ? new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Unknown';
+                const image = post.image || `https://picsum.photos/seed/${post.id}/400/200`;
+                const author = post.author || 'Anonymous';
+
+                return `
                 <article class="bg-eps-card border border-eps-border rounded-xl overflow-hidden hover:border-eps-muted transition-colors group cursor-pointer">
                     <div class="aspect-video overflow-hidden">
-                        <img src="${post.image}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="${image}" alt="${escapeHtml(post.title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
                     </div>
                     <div class="p-5">
                         <div class="flex items-center gap-2 text-xs text-eps-muted mb-2">
-                            <span>${post.date}</span>
+                            <span>${date}</span>
                             <span class="w-1 h-1 bg-eps-muted rounded-full"></span>
-                            <span>${post.author}</span>
+                            <span>${escapeHtml(author)}</span>
                         </div>
-                        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-eps-red transition-colors">${post.title}</h3>
-                        <p class="text-eps-muted text-sm line-clamp-2">${post.excerpt}</p>
+                        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-eps-red transition-colors">${escapeHtml(post.title)}</h3>
+                        <p class="text-eps-muted text-sm line-clamp-2">${escapeHtml(post.excerpt)}</p>
                         <div class="mt-4 flex items-center text-eps-red text-sm font-medium">
                             Read More <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
                         </div>
                     </div>
                 </article>
-            `).join('');
+                `;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function openCreatePostModal() {
+            if (!currentUser) {
+                showModal('auth-modal');
+                showToast('Sign in to create posts', 'info');
+                return;
+            }
+            showModal('create-post-modal');
+        }
+
+        async function handleCreatePost(e) {
+            e.preventDefault();
+
+            if (!currentUser) {
+                showToast('You must be signed in to create posts', 'error');
+                return;
+            }
+
+            const title = document.getElementById('post-title').value.trim();
+            const excerpt = document.getElementById('post-excerpt').value.trim();
+            const image = document.getElementById('post-image').value.trim();
+            const errEl = document.getElementById('create-post-error');
+            const btn = document.getElementById('create-post-btn');
+
+            errEl.classList.add('hidden');
+
+            if (!title || !excerpt) {
+                errEl.textContent = 'Title and excerpt are required.';
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            if (!supabaseClient) {
+                errEl.textContent = 'Supabase is not configured. Cannot create posts.';
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            // Disable button
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner" style="width: 16px; height: 16px; border-width: 2px;"></div><span>Publishing...</span>';
+
+            try {
+                const postData = {
+                    title,
+                    excerpt,
+                    image: image || null,
+                    author: currentUser.email.split('@')[0],
+                    user_id: currentUser.id
+                };
+
+                const { data, error } = await supabaseClient
+                    .from('posts')
+                    .insert([postData])
+                    .select();
+
+                if (error) throw error;
+
+                showToast('Post published successfully!', 'success');
+                hideModal('create-post-modal');
+                document.getElementById('create-post-form').reset();
+                
+                // Reload posts
+                await loadPosts();
+            } catch (err) {
+                console.error('Error creating post:', err);
+                errEl.textContent = 'Failed to create post: ' + err.message;
+                errEl.classList.remove('hidden');
+            } finally {
+                // Re-enable button
+                btn.disabled = false;
+                btn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i><span>Publish Post</span>';
+                lucide.createIcons();
+            }
         }
 
         // ===== SUPABASE & AUTH =====
@@ -931,7 +1271,7 @@
                     game_url: '#'
                 }));
             }
-            
+
             buildGenreFilters();
             renderCurrentView();
         }
@@ -1185,8 +1525,14 @@
                 }, 250);
             });
 
+            // Play games search
+            document.getElementById('play-search').addEventListener('input', e => {
+                playSearchQuery = e.target.value.toLowerCase().trim();
+                renderPlayableGamesList();
+            });
+
             // Modal backdrop click to close
-            ['auth-modal', 'game-modal'].forEach(id => {
+            ['auth-modal', 'game-modal', 'create-post-modal'].forEach(id => {
                 document.getElementById(id).addEventListener('click', e => {
                     if (e.target === e.currentTarget) hideModal(id);
                 });
@@ -1195,7 +1541,7 @@
             // Escape key to close modals
             document.addEventListener('keydown', e => {
                 if (e.key === 'Escape') {
-                    ['auth-modal', 'game-modal'].forEach(id => {
+                    ['auth-modal', 'game-modal', 'create-post-modal'].forEach(id => {
                         if (!document.getElementById(id).classList.contains('hidden')) hideModal(id);
                     });
                 }
@@ -1254,6 +1600,122 @@
             return div.innerHTML;
         }
 
+        // ===== PLAYABLE GAMES =====
+        async function loadPlayableGames() {
+            try {
+                const response = await fetch('games.json');
+                playableGames = await response.json();
+                renderPlayableGamesList();
+            } catch (error) {
+                console.log('games.json not found, using mock data');
+                playableGames = [
+                    {
+                        name: 'Sample Game 1',
+                        desc: 'A fun puzzle game to test your skills',
+                        author: 'Game Dev Studio',
+                        link: 'https://example.com/game1'
+                    },
+                    {
+                        name: 'Sample Game 2',
+                        desc: 'An exciting adventure awaits',
+                        author: 'Indie Developer',
+                        link: 'https://example.com/game2'
+                    }
+                ];
+                renderPlayableGamesList();
+            }
+        }
+
+        function renderPlayableGamesList() {
+            const container = document.getElementById('playable-games-list');
+            const loadingEl = document.getElementById('play-loading');
+            const emptyEl = document.getElementById('play-empty');
+
+            loadingEl.classList.add('hidden');
+            emptyEl.classList.add('hidden');
+
+            let filtered = playableGames;
+            if (playSearchQuery) {
+                filtered = playableGames.filter(game =>
+                    game.name.toLowerCase().includes(playSearchQuery) ||
+                    (game.desc && game.desc.toLowerCase().includes(playSearchQuery)) ||
+                    (game.author && game.author.toLowerCase().includes(playSearchQuery))
+                );
+            }
+
+            if (filtered.length === 0) {
+                emptyEl.classList.remove('hidden');
+                emptyEl.classList.add('flex');
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = filtered.map((game, index) => `
+                <button onclick="loadGameInPlayer(${index})" 
+                    class="w-full text-left p-3 rounded-lg border border-eps-border hover:border-eps-red hover:bg-eps-card-hover transition-all group">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 bg-eps-red/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-eps-red/20 transition-colors">
+                            <i data-lucide="gamepad-2" class="w-5 h-5 text-eps-red"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-white font-semibold text-sm mb-0.5 truncate group-hover:text-eps-red transition-colors">${escapeHtml(game.name)}</h4>
+                            <p class="text-eps-muted text-xs mb-1 line-clamp-2">${escapeHtml(game.desc || 'No description')}</p>
+                            ${game.author ? `<p class="text-eps-muted-light text-xs flex items-center gap-1"><i data-lucide="user" class="w-3 h-3"></i>${escapeHtml(game.author)}</p>` : ''}
+                        </div>
+                    </div>
+                </button>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function loadGameInPlayer(index) {
+            const filtered = playSearchQuery
+                ? playableGames.filter(game =>
+                    game.name.toLowerCase().includes(playSearchQuery) ||
+                    (game.desc && game.desc.toLowerCase().includes(playSearchQuery)) ||
+                    (game.author && game.author.toLowerCase().includes(playSearchQuery))
+                )
+                : playableGames;
+
+            const game = filtered[index];
+            if (!game || !game.link) return;
+
+            currentPlayingGame = game;
+
+            // Update header
+            document.getElementById('player-game-title').textContent = game.name;
+            document.getElementById('player-game-author').textContent = game.author ? `By ${game.author}` : '';
+            document.getElementById('player-game-desc').textContent = game.desc || '';
+
+            // Show/hide elements
+            document.getElementById('player-placeholder').classList.add('hidden');
+            document.getElementById('player-header').classList.remove('hidden');
+            document.getElementById('player-container').classList.remove('hidden');
+            document.getElementById('iframe-loader').classList.remove('hidden');
+
+            // Load game in iframe
+            const iframe = document.getElementById('game-iframe');
+            iframe.src = game.link;
+
+            // Hide loader after iframe loads
+            iframe.onload = () => {
+                setTimeout(() => {
+                    document.getElementById('iframe-loader').classList.add('hidden');
+                }, 500);
+            };
+
+            lucide.createIcons();
+        }
+
+        function closeGamePlayer() {
+            currentPlayingGame = null;
+            document.getElementById('player-placeholder').classList.remove('hidden');
+            document.getElementById('player-header').classList.add('hidden');
+            document.getElementById('player-container').classList.add('hidden');
+            document.getElementById('game-iframe').src = '';
+            lucide.createIcons();
+        }
+
         // --- Release Modal Logic ---
         function initReleaseModal() {
             const releaseModal = document.getElementById('epsilon-release-modal');
@@ -1278,4 +1740,5 @@
         });
     </script>
 </body>
+
 </html>
