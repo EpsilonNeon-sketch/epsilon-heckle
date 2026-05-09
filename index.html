@@ -101,13 +101,6 @@
             pointer-events: none;
         }
 
-        /* Nav transition */
-        .nav-solid {
-            background: rgba(10, 10, 10, 0.92);
-            backdrop-filter: blur(16px);
-            border-bottom: 1px solid #222;
-        }
-
         /* Card */
         .game-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
@@ -148,6 +141,13 @@
             color: #ccc;
         }
 
+        /* Nav Link Active State */
+        .nav-link.active {
+            background: rgba(220, 38, 38, 0.1);
+            color: #DC2626;
+            border-right: 3px solid #DC2626;
+        }
+
         /* Modal */
         .modal-backdrop {
             backdrop-filter: blur(6px);
@@ -156,53 +156,17 @@
 
         /* Toast */
         @keyframes toastIn {
-            from {
-                transform: translateX(120%);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(120%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         @keyframes toastOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-
-            to {
-                transform: translateX(120%);
-                opacity: 0;
-            }
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(120%); opacity: 0; }
         }
 
-        .toast-enter {
-            animation: toastIn 0.35s ease forwards;
-        }
-
-        .toast-exit {
-            animation: toastOut 0.35s ease forwards;
-        }
-
-        /* Scroll indicator */
-        @keyframes scrollBounce {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(10px);
-            }
-        }
-
-        .scroll-bounce {
-            animation: scrollBounce 2s ease infinite;
-        }
+        .toast-enter { animation: toastIn 0.35s ease forwards; }
+        .toast-exit { animation: toastOut 0.35s ease forwards; }
 
         /* Spinner */
         .spinner {
@@ -214,10 +178,15 @@
             animation: spin 0.7s linear infinite;
         }
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Switch Toggle */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #DC2626;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #DC2626;
         }
 
         /* Line clamp fallback */
@@ -227,65 +196,20 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
-
-        /* Focus */
-        input:focus,
-        button:focus-visible {
-            outline: none;
-            border-color: #DC2626;
-            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.25);
-        }
-
-        /* Reduced motion */
-        @media (prefers-reduced-motion: reduce) {
-
-            .game-card,
-            .card-thumb img,
-            .genre-pill {
-                transition: none !important;
-            }
-
-            .scroll-bounce,
-            .spinner {
-                animation: none !important;
-            }
-        }
-
-        /* Tab underline */
-        .auth-tab {
-            position: relative;
-            padding-bottom: 8px;
-        }
-
-        .auth-tab::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #DC2626;
-            transition: width 0.25s ease;
-        }
-
-        .auth-tab.active::after {
-            width: 100%;
-        }
-
-        /* View tab */
-        .view-tab {
-            transition: all 0.2s ease;
-        }
-
-        .view-tab.active {
-            background: #DC2626;
-            color: #fff;
+        
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
     </style>
 </head>
+
+<!-- Release Modal -->
 <dialog 
     id="epsilon-release-modal" 
-    class="fixed inset-0 m-auto backdrop:bg-black/80 backdrop:backdrop-blur-sm bg-eps-card border border-eps-border rounded-xl p-0 w-[calc(100%-2rem)] max-w-md shadow-2xl overflow-hidden"
+    class="fixed inset-0 m-auto backdrop:bg-black/80 backdrop:backdrop-blur-sm bg-eps-card border border-eps-border rounded-xl p-0 w-[calc(100%-2rem)] max-w-md shadow-2xl overflow-hidden z-[200]"
 >
     <div class="h-1 bg-eps-red w-full"></div>
     
@@ -312,135 +236,298 @@
         </div>
     </div>
 </dialog>
-<body class="font-body">
 
-    <!-- ===== NAVIGATION ===== -->
-    <nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" role="navigation"
-        aria-label="Main navigation">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <!-- Logo -->
-                <a href="#" class="flex items-center gap-2 group" aria-label="Epsilon Heckle Home">
-                    <div
-                        class="w-8 h-8 bg-eps-red rounded flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <span class="font-display text-white text-lg leading-none">E</span>
-                    </div>
-                    <span class="font-display text-2xl tracking-wider text-white">EPSILON<span
-                            class="text-eps-red">HECKLE</span></span>
-                </a>
+<body class="font-body antialiased">
 
-                <!-- Search (desktop) -->
-                <div class="hidden md:block flex-1 max-w-md mx-8">
-                    <div class="relative">
-                        <i data-lucide="search"
-                            class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-eps-muted"></i>
-                        <input type="text" id="nav-search" placeholder="Search games..."
-                            class="w-full bg-eps-card border border-eps-border rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder-eps-muted focus:border-eps-red">
+    <!-- ===== MOBILE SIDEBAR OVERLAY ===== -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-40 hidden lg:hidden glass"></div>
+
+    <!-- ===== SIDEBAR NAVIGATION ===== -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-eps-card border-r border-eps-border transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col">
+        <!-- Logo Area -->
+        <div class="h-16 flex items-center px-6 border-b border-eps-border">
+            <a href="#" onclick="navigateTo('home')" class="flex items-center gap-2 group">
+                <div class="w-8 h-8 bg-eps-red rounded flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <span class="font-display text-white text-lg leading-none">E</span>
+                </div>
+                <span class="font-display text-xl tracking-wider text-white">EPSILON<span class="text-eps-red">HECKLE</span></span>
+            </a>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+            <div class="text-xs font-semibold text-eps-muted uppercase tracking-wider px-3 mb-2">Menu</div>
+            
+            <button onclick="navigateTo('home')" id="nav-home" class="nav-link active w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-eps-muted-light rounded-lg hover:text-white hover:bg-eps-card-hover transition-colors">
+                <i data-lucide="gamepad-2" class="w-5 h-5"></i>
+                <span>Game Library</span>
+            </button>
+            
+            <button onclick="navigateTo('posts')" id="nav-posts" class="nav-link w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-eps-muted-light rounded-lg hover:text-white hover:bg-eps-card-hover transition-colors">
+                <i data-lucide="newspaper" class="w-5 h-5"></i>
+                <span>Posts & News</span>
+            </button>
+
+            <div class="text-xs font-semibold text-eps-muted uppercase tracking-wider px-3 mb-2 mt-6">Account</div>
+
+            <button onclick="navigateTo('settings')" id="nav-settings" class="nav-link w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-eps-muted-light rounded-lg hover:text-white hover:bg-eps-card-hover transition-colors">
+                <i data-lucide="settings" class="w-5 h-5"></i>
+                <span>Settings</span>
+            </button>
+        </nav>
+
+        <!-- User Info (Bottom Sidebar) -->
+        <div class="p-4 border-t border-eps-border">
+            <div id="sidebar-user-area" class="flex items-center gap-3">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT WRAPPER ===== -->
+    <div class="lg:pl-64 flex flex-col min-h-screen transition-all duration-300">
+
+        <!-- ===== TOP HEADER ===== -->
+        <header class="h-16 bg-eps-darker/80 backdrop-blur border-b border-eps-border flex items-center justify-between px-4 lg:px-8 sticky top-0 z-30">
+            <div class="flex items-center gap-4">
+                <button id="sidebar-toggle" class="lg:hidden p-2 text-eps-muted hover:text-white rounded-md hover:bg-eps-card border border-transparent hover:border-eps-border">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                
+                <!-- Desktop Search -->
+                <div class="hidden md:flex relative max-w-md w-full ml-4">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-eps-muted"></i>
+                    <input type="text" id="nav-search" placeholder="Search games..." 
+                        class="w-full bg-eps-card border border-eps-border rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder-eps-muted focus:border-eps-red focus:ring-1 focus:ring-eps-red outline-none transition-all">
+                </div>
+            </div>
+
+            <!-- Right Header Actions -->
+            <div class="flex items-center gap-4">
+                <button class="p-2 text-eps-muted hover:text-eps-red relative transition-colors">
+                    <i data-lucide="bell" class="w-5 h-5"></i>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-eps-red rounded-full border border-eps-darker"></span>
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-1 p-4 lg:p-8 max-w-[1600px] mx-auto w-full">
+            
+            <!-- ===== VIEW: HOME (GAMES) ===== -->
+            <div id="view-home" class="view-section animate-fade-in">
+                
+                <!-- Hero Section -->
+                <section id="hero" class="relative rounded-2xl min-h-[50vh] flex items-center justify-center overflow-hidden hero-grid border border-eps-border mb-12">
+                    <canvas id="hero-canvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+                    <div class="hero-glow"></div>
+
+                    <div class="relative z-10 text-center px-4">
+                        <h1 class="font-display text-5xl sm:text-7xl md:text-8xl leading-[0.9] tracking-wider">
+                            <span class="text-white">EPSILON</span><br>
+                            <span class="text-eps-red">HECKLE</span>
+                        </h1>
+                        <p class="mt-4 text-eps-muted-light text-sm sm:text-base font-light max-w-lg mx-auto">
+                            Your gateway to free gaming. Browse, play, and save your favorites.
+                        </p>
+                        <button onclick="document.getElementById('games').scrollIntoView({behavior: 'smooth'})"
+                            class="inline-flex items-center gap-2 mt-8 px-7 py-3 bg-eps-red hover:bg-eps-red-dark text-white font-semibold rounded-lg transition-colors">
+                            <span>Browse Library</span>
+                            <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                        </button>
                     </div>
+                </section>
+
+                <!-- Games Section -->
+                <section id="games">
+                    <!-- Header row -->
+                    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+                        <div>
+                            <h2 class="font-display text-4xl tracking-wider text-white">GAME LIBRARY</h2>
+                            <p id="game-count" class="text-eps-muted text-sm mt-1"></p>
+                        </div>
+                        <div id="view-tabs" class="flex gap-2">
+                            <button class="view-tab active px-4 py-1.5 rounded-full text-sm font-medium border border-eps-border bg-transparent text-eps-muted-light" data-view="all">All Games</button>
+                            <button id="fav-tab" class="view-tab hidden px-4 py-1.5 rounded-full text-sm font-medium border border-eps-border bg-transparent text-eps-muted-light" data-view="favorites">My Favorites</button>
+                        </div>
+                    </div>
+
+                    <!-- Mobile search (visible if needed) -->
+                    <div class="md:hidden mb-6">
+                        <div class="relative">
+                            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-eps-muted"></i>
+                            <input type="text" id="mobile-search" placeholder="Search games..."
+                                class="w-full bg-eps-card border border-eps-border rounded-lg pl-10 pr-4 py-2.5 text-sm text-white placeholder-eps-muted">
+                        </div>
+                    </div>
+
+                    <!-- Genre filters -->
+                    <div id="genre-filters" class="flex flex-wrap gap-2 mb-8" role="group" aria-label="Filter by genre"></div>
+
+                    <!-- Loading/Empty States -->
+                    <div id="loading-state" class="flex flex-col items-center justify-center py-24">
+                        <div class="spinner mb-4"></div>
+                        <p class="text-eps-muted text-sm">Loading games...</p>
+                    </div>
+
+                    <div id="no-data-state" class="hidden flex-col items-center justify-center py-24 text-center">
+                        <i data-lucide="server-crash" class="w-12 h-12 text-eps-muted mb-4"></i>
+                        <p class="text-eps-muted-light">Failed to load game data.</p>
+                    </div>
+
+                    <div id="empty-state" class="hidden flex-col items-center justify-center py-24 text-center">
+                        <i data-lucide="search-x" class="w-14 h-14 text-eps-muted mb-4"></i>
+                        <p class="text-eps-muted-light text-lg mb-1">No games found</p>
+                        <p class="text-eps-muted text-sm">Try adjusting your search or filters.</p>
+                    </div>
+
+                    <div id="fav-empty-state" class="hidden flex-col items-center justify-center py-24 text-center">
+                        <i data-lucide="heart" class="w-14 h-14 text-eps-muted mb-4"></i>
+                        <p class="text-eps-muted-light text-lg mb-1">No favorites yet</p>
+                        <p class="text-eps-muted text-sm">Click the heart icon on any game to save it here.</p>
+                    </div>
+
+                    <!-- Game grid -->
+                    <div id="game-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+                </section>
+            </div>
+
+            <!-- ===== VIEW: POSTS ===== -->
+            <div id="view-posts" class="view-section hidden animate-fade-in">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                    <div>
+                        <h2 class="font-display text-4xl tracking-wider text-white">LATEST POSTS</h2>
+                        <p class="text-eps-muted text-sm mt-1">News, updates, and community highlights.</p>
+                    </div>
+                    <button onclick="showToast('Create Post feature coming soon!', 'info')" class="flex items-center gap-2 px-4 py-2 bg-eps-card border border-eps-border hover:border-eps-red text-white text-sm rounded-lg transition-colors">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span>New Post</span>
+                    </button>
                 </div>
 
-                <!-- Auth area -->
-                <div id="auth-area" class="flex items-center gap-3">
+                <!-- Posts Grid (Mock Data) -->
+                <div id="posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Populated by JS -->
                 </div>
             </div>
-        </div>
-    </nav>
 
-    <main>
-        <!-- ===== HERO ===== -->
-        <section id="hero" class="relative min-h-[75vh] flex items-center justify-center overflow-hidden hero-grid">
-            <canvas id="hero-canvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
-            <div class="hero-glow"></div>
+            <!-- ===== VIEW: SETTINGS ===== -->
+            <div id="view-settings" class="view-section hidden animate-fade-in max-w-4xl mx-auto">
+                <h2 class="font-display text-4xl tracking-wider text-white mb-8">SETTINGS</h2>
 
-            <div class="relative z-10 text-center px-4">
-                <h1 class="font-display text-7xl sm:text-8xl md:text-9xl leading-[0.9] tracking-wider">
-                    <span class="text-white">EPSILON</span><br>
-                    <span class="text-eps-red">HECKLE</span>
-                </h1>
-                <p class="mt-4 text-eps-muted-light text-base sm:text-lg font-light max-w-lg mx-auto">
-                    Your gateway to free gaming. Browse, play, and save your favorites.
-                </p>
-                <a href="#games"
-                    class="inline-flex items-center gap-2 mt-8 px-7 py-3 bg-eps-red hover:bg-eps-red-dark text-white font-semibold rounded-lg transition-colors">
-                    <span>Browse Library</span>
-                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
-                </a>
-            </div>
+                <div class="grid gap-8">
+                    
+                    <!-- Profile Section -->
+                    <div class="bg-eps-card border border-eps-border rounded-xl p-6 sm:p-8">
+                        <div class="flex items-center gap-2 mb-6 pb-4 border-b border-eps-border">
+                            <i data-lucide="user" class="w-5 h-5 text-eps-red"></i>
+                            <h3 class="text-xl font-semibold text-white">Profile</h3>
+                        </div>
 
-            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 scroll-bounce">
-                <i data-lucide="chevrons-down" class="w-5 h-5 text-eps-muted"></i>
-            </div>
-        </section>
+                        <div class="flex flex-col md:flex-row items-start gap-6">
+                            <div class="w-24 h-24 rounded-full bg-eps-darker border-2 border-eps-border flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                <img src="https://picsum.photos/seed/user/200/200" alt="Avatar" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity">
+                            </div>
+                            <div class="flex-1 w-full space-y-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs text-eps-muted uppercase tracking-wider font-semibold mb-1.5">Display Name</label>
+                                        <input type="text" value="Epsilon Gamer" class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white focus:border-eps-red focus:ring-1 focus:ring-eps-red outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-eps-muted uppercase tracking-wider font-semibold mb-1.5">Email</label>
+                                        <input type="email" disabled value="user@example.com" class="w-full bg-eps-darker border border-eps-border rounded-lg px-4 py-2.5 text-sm text-eps-muted cursor-not-allowed">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-eps-muted uppercase tracking-wider font-semibold mb-1.5">Bio</label>
+                                    <textarea rows="3" class="w-full bg-eps-black border border-eps-border rounded-lg px-4 py-2.5 text-sm text-white focus:border-eps-red focus:ring-1 focus:ring-eps-red outline-none">Just a gamer looking for the next indie gem.</textarea>
+                                </div>
+                                <div class="flex justify-end">
+                                    <button onclick="showToast('Profile updated!', 'success')" class="px-5 py-2 bg-eps-red hover:bg-eps-red-dark text-white text-sm font-medium rounded-lg transition-colors">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- ===== GAMES SECTION ===== -->
-        <section id="games" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-            <!-- Header row -->
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-                <div>
-                    <h2 class="font-display text-4xl sm:text-5xl tracking-wider text-white">GAME LIBRARY</h2>
-                    <p id="game-count" class="text-eps-muted text-sm mt-1"></p>
+                    <!-- Preferences Section -->
+                    <div class="bg-eps-card border border-eps-border rounded-xl p-6 sm:p-8">
+                        <div class="flex items-center gap-2 mb-6 pb-4 border-b border-eps-border">
+                            <i data-lucide="sliders" class="w-5 h-5 text-eps-red"></i>
+                            <h3 class="text-xl font-semibold text-white">Preferences</h3>
+                        </div>
+
+                        <div class="space-y-6">
+                            <!-- Setting Item -->
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h4 class="text-white font-medium">Email Notifications</h4>
+                                    <p class="text-eps-muted text-sm mt-0.5">Receive updates about new games and features.</p>
+                                </div>
+                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <input type="checkbox" name="toggle" id="toggle1" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-eps-border transition-all duration-300"/>
+                                    <label for="toggle1" class="toggle-label block overflow-hidden h-5 rounded-full bg-eps-border cursor-pointer"></label>
+                                </div>
+                            </div>
+
+                            <!-- Setting Item -->
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h4 class="text-white font-medium">Public Profile</h4>
+                                    <p class="text-eps-muted text-sm mt-0.5">Allow others to see your favorites list.</p>
+                                </div>
+                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <input type="checkbox" name="toggle" id="toggle2" checked class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-eps-border transition-all duration-300"/>
+                                    <label for="toggle2" class="toggle-label block overflow-hidden h-5 rounded-full bg-eps-border cursor-pointer"></label>
+                                </div>
+                            </div>
+
+                             <!-- Setting Item -->
+                             <div class="flex items-center justify-between">
+                                <div>
+                                    <h4 class="text-white font-medium">High Contrast Mode</h4>
+                                    <p class="text-eps-muted text-sm mt-0.5">Increase border visibility and text contrast.</p>
+                                </div>
+                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <input type="checkbox" name="toggle" id="toggle3" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-eps-border transition-all duration-300"/>
+                                    <label for="toggle3" class="toggle-label block overflow-hidden h-5 rounded-full bg-eps-border cursor-pointer"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Danger Zone -->
+                    <div class="bg-eps-card border border-red-900/50 rounded-xl p-6">
+                         <div class="flex items-center justify-between">
+                             <div>
+                                <h4 class="text-red-400 font-medium">Delete Account</h4>
+                                <p class="text-eps-muted text-sm mt-0.5">Permanently delete your account and all data.</p>
+                             </div>
+                             <button onclick="if(confirm('Are you sure? This cannot be undone.')) showToast('This is a demo. Nothing happened.', 'error')" class="px-4 py-2 border border-red-900 text-red-400 hover:bg-red-900/20 text-sm rounded-lg transition-colors">
+                                 Delete
+                             </button>
+                         </div>
+                    </div>
+
                 </div>
-                <div id="view-tabs" class="flex gap-2">
-                    <button
-                        class="view-tab active px-4 py-1.5 rounded-full text-sm font-medium border border-eps-border bg-transparent text-eps-muted-light"
-                        data-view="all">All Games</button>
-                    <button id="fav-tab"
-                        class="view-tab hidden px-4 py-1.5 rounded-full text-sm font-medium border border-eps-border bg-transparent text-eps-muted-light"
-                        data-view="favorites">My Favorites</button>
+            </div>
+
+        </main>
+
+        <!-- ===== FOOTER ===== -->
+        <footer class="border-t border-eps-border py-8 px-4 lg:px-8 mt-auto">
+            <div class="max-w-[1600px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 bg-eps-red rounded flex items-center justify-center">
+                        <span class="font-display text-white text-sm leading-none">E</span>
+                    </div>
+                    <span class="font-display text-lg tracking-wider text-eps-muted">EPSILON<span class="text-eps-red">HECKLE</span></span>
                 </div>
+                <p class="text-eps-muted text-xs">&copy; 2025 Epsilon Heckle. All rights reserved.</p>
             </div>
-
-            <!-- Mobile search -->
-            <div class="md:hidden mb-6">
-                <div class="relative">
-                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-eps-muted"></i>
-                    <input type="text" id="mobile-search" placeholder="Search games..."
-                        class="w-full bg-eps-card border border-eps-border rounded-lg pl-10 pr-4 py-2.5 text-sm text-white placeholder-eps-muted">
-                </div>
-            </div>
-
-            <!-- Genre filters -->
-            <div id="genre-filters" class="flex flex-wrap gap-2 mb-8" role="group" aria-label="Filter by genre"></div>
-
-            <!-- Loading state -->
-            <div id="loading-state" class="flex flex-col items-center justify-center py-24">
-                <div class="spinner mb-4"></div>
-                <p class="text-eps-muted text-sm">Loading games...</p>
-            </div>
-
-            <!-- Empty filter state -->
-            <div id="empty-state" class="hidden flex-col items-center justify-center py-24 text-center">
-                <i data-lucide="search-x" class="w-14 h-14 text-eps-muted mb-4"></i>
-                <p class="text-eps-muted-light text-lg mb-1">No games found</p>
-                <p class="text-eps-muted text-sm">Try adjusting your search or filters.</p>
-            </div>
-
-            <!-- Favorites empty state -->
-            <div id="fav-empty-state" class="hidden flex-col items-center justify-center py-24 text-center">
-                <i data-lucide="heart" class="w-14 h-14 text-eps-muted mb-4"></i>
-                <p class="text-eps-muted-light text-lg mb-1">No favorites yet</p>
-                <p class="text-eps-muted text-sm">Click the heart icon on any game to save it here.</p>
-            </div>
-
-            <!-- Game grid -->
-            <div id="game-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
-        </section>
-    </main>
-
-    <!-- ===== FOOTER ===== -->
-    <footer class="border-t border-eps-border py-8 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-2">
-                <div class="w-6 h-6 bg-eps-red rounded flex items-center justify-center">
-                    <span class="font-display text-white text-sm leading-none">E</span>
-                </div>
-                <span class="font-display text-lg tracking-wider text-eps-muted">EPSILON<span
-                        class="text-eps-red">HECKLE</span></span>
-            </div>
-            <p class="text-eps-muted text-xs">&copy; 2025 Epsilon Heckle. All rights reserved.</p>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <!-- ===== AUTH MODAL ===== -->
     <div id="auth-modal" class="fixed inset-0 z-[100] hidden items-center justify-center modal-backdrop" role="dialog"
@@ -545,40 +632,9 @@
     <script>
         // ================================================================
         //  SUPABASE CONFIGURATION
-        //  Replace the values below with your Supabase project credentials.
-        //  You can find these in: Supabase Dashboard > Settings > API
         // ================================================================
         const SUPABASE_URL = 'https://uyjsgapinpfzkjvawfdp.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5anNnYXBpbnBmemtqdmF3ZmRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDUyMTMsImV4cCI6MjA5MTIyMTIxM30.WkwcEx3YCb6ITR_h1HGR22cc2X_gP_1q9ulb1_IXL9o';
-
-        /*
-        ================================================================
-        SQL to run in Supabase SQL Editor for the favorites table:
-    
-        create table public.favorites (
-            id uuid default gen_random_uuid() primary key,
-            user_id uuid references auth.users(id) on delete cascade not null,
-            game_id integer not null,
-            created_at timestamptz default now()
-        );
-    
-        alter table public.favorites enable row level security;
-    
-        create policy "Users can read own favorites"
-            on public.favorites for select
-            using (auth.uid() = user_id);
-    
-        create policy "Users can insert own favorites"
-            on public.favorites for insert
-            with check (auth.uid() = user_id);
-    
-        create policy "Users can delete own favorites"
-            on public.favorites for delete
-            using (auth.uid() = user_id);
-    
-        create unique index idx_favorites_user_game on public.favorites(user_id, game_id);
-        ================================================================
-        */
 
         // ===== STATE =====
         let supabaseClient = null;
@@ -591,16 +647,113 @@
         let searchDebounce = null;
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+        // Posts Mock Data
+        const postsData = [
+            {
+                id: 1,
+                title: "Top 10 Indie Games of 2025",
+                excerpt: "Discover the hidden gems that have taken the gaming world by storm this year. From pixel art to 3D masterpieces...",
+                date: "Oct 12, 2025",
+                author: "Epsilon Team",
+                image: "https://picsum.photos/seed/game1/400/200"
+            },
+            {
+                id: 2,
+                title: "Server Maintenance Update",
+                excerpt: "We will be performing scheduled maintenance on the database servers this Sunday at 3:00 AM UTC. Expect downtime.",
+                date: "Oct 10, 2025",
+                author: "System Admin",
+                image: "https://picsum.photos/seed/tech/400/200"
+            },
+            {
+                id: 3,
+                title: "Community Spotlight: Speedrunning",
+                excerpt: "Check out the latest records set by our community members in the latest platformer challenges.",
+                date: "Oct 08, 2025",
+                author: "Moderator",
+                image: "https://picsum.photos/seed/run/400/200"
+            }
+        ];
+
         // ===== INIT =====
         document.addEventListener('DOMContentLoaded', () => {
             initSupabase();
             loadGames();
+            loadPosts();
             setupEventListeners();
             if (!prefersReducedMotion) initParticles();
             lucide.createIcons();
         });
 
-        // ===== SUPABASE =====
+        // ===== NAVIGATION LOGIC =====
+        function navigateTo(viewName) {
+            // Update Sidebar Links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if(link.id === `nav-${viewName}`) link.classList.add('active');
+            });
+
+            // Hide all sections
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+
+            // Show target section
+            const target = document.getElementById(`view-${viewName}`);
+            if(target) {
+                target.classList.remove('hidden');
+                // Trigger animation reflow
+                target.style.animation = 'none';
+                target.offsetHeight; /* trigger reflow */
+                target.style.animation = null; 
+            }
+
+            // Close mobile sidebar if open
+            if (window.innerWidth < 1024) {
+                toggleSidebar(false);
+            }
+        }
+
+        function toggleSidebar(forceState = null) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            
+            const isOpen = sidebar.classList.contains('translate-x-0');
+            const shouldOpen = forceState !== null ? forceState : !isOpen;
+
+            if (shouldOpen) {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('translate-x-0');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                sidebar.classList.remove('translate-x-0');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function loadPosts() {
+            const container = document.getElementById('posts-grid');
+            container.innerHTML = postsData.map(post => `
+                <article class="bg-eps-card border border-eps-border rounded-xl overflow-hidden hover:border-eps-muted transition-colors group cursor-pointer">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="${post.image}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-center gap-2 text-xs text-eps-muted mb-2">
+                            <span>${post.date}</span>
+                            <span class="w-1 h-1 bg-eps-muted rounded-full"></span>
+                            <span>${post.author}</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-eps-red transition-colors">${post.title}</h3>
+                        <p class="text-eps-muted text-sm line-clamp-2">${post.excerpt}</p>
+                        <div class="mt-4 flex items-center text-eps-red text-sm font-medium">
+                            Read More <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // ===== SUPABASE & AUTH =====
         function initSupabase() {
             const notice = document.getElementById('supabase-notice');
             if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
@@ -610,9 +763,8 @@
                 return;
             }
             if (typeof supabase === 'undefined') {
-                notice.textContent = 'Supabase JS library failed to load. Check your internet connection.';
+                notice.textContent = 'Supabase JS library failed to load.';
                 notice.classList.remove('hidden');
-                notice.classList.add('block');
                 updateAuthUI();
                 return;
             }
@@ -632,7 +784,6 @@
                     renderCurrentView();
                 });
 
-                // Check existing session
                 supabaseClient.auth.getSession().then(({ data: { session } }) => {
                     if (session) {
                         currentUser = session.user;
@@ -643,7 +794,6 @@
             } catch (err) {
                 notice.textContent = 'Failed to initialize Supabase: ' + err.message;
                 notice.classList.remove('hidden');
-                notice.classList.add('block');
                 updateAuthUI();
             }
         }
@@ -706,6 +856,7 @@
             if (!supabaseClient) return;
             await supabaseClient.auth.signOut();
             showToast('Signed out', 'info');
+            navigateTo('home');
         }
 
         // ===== FAVORITES =====
@@ -751,7 +902,6 @@
                     showToast('Added to favorites', 'success');
                 }
                 renderCurrentView();
-                // Re-render detail modal if open
                 if (!document.getElementById('game-modal').classList.contains('hidden')) {
                     const game = gamesData.find(g => g.id === gameId);
                     if (game) renderGameDetail(game);
@@ -762,38 +912,29 @@
         }
 
         // ===== GAMES LOADING =====
-        // Fetch and display games
         async function loadGames() {
-            const grid = document.getElementById('game-grid'); // Ensure your grid has this ID
+            const grid = document.getElementById('game-grid');
+            // Simulating the data.json fetch with mock data for immediate functionality if fetch fails
             try {
                 const response = await fetch('data.json');
                 const games = await response.json();
-
-                grid.innerHTML = games.map(game => `
-            <div class="game-card bg-eps-card border border-eps-border rounded-xl overflow-hidden group cursor-pointer" onclick="openGame('${game.game_url}')">
-                <div class="card-thumb relative aspect-video overflow-hidden">
-                    <img src="${game.thumbnail}" alt="${game.title}" class="w-full h-full object-cover">
-                    <div class="thumb-gradient absolute inset-0 opacity-60"></div>
-                    <span class="absolute bottom-3 left-3 bg-eps-red text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
-                        ${game.genre}
-                    </span>
-                </div>
-                <div class="p-4">
-                    <h3 class="font-display text-xl mb-1 group-hover:text-eps-red transition-colors">${game.title}</h3>
-                    <p class="text-eps-muted text-sm line-clamp-2">${game.short_description}</p>
-                </div>
-            </div>
-        `).join('');
+                gamesData = games;
             } catch (error) {
-                console.error("Failed to load games:", error);
+                console.log("Using mock data because data.json not found");
+                gamesData = Array.from({ length: 8 }).map((_, i) => ({
+                    id: i + 1,
+                    title: `Cyber Game ${i + 1}`,
+                    thumbnail: `https://picsum.photos/seed/${i + 10}/400/225`,
+                    genre: i % 2 === 0 ? 'Action' : 'RPG',
+                    short_description: 'A thrilling experience in a dystopian world.',
+                    platform: 'Browser',
+                    game_url: '#'
+                }));
             }
+            
+            buildGenreFilters();
+            renderCurrentView();
         }
-
-        function openGame(url) {
-            window.open(url, '_blank');
-        }
-
-        document.addEventListener('DOMContentLoaded', loadGames);
 
         function buildGenreFilters() {
             const container = document.getElementById('genre-filters');
@@ -806,26 +947,19 @@
 
         function getFilteredGames() {
             let games = [...gamesData];
-
             if (activeView === 'favorites') {
                 games = games.filter(g => userFavorites.includes(g.id));
             }
-
             if (activeGenre !== 'All') {
                 games = games.filter(g => g.genre === activeGenre);
             }
-
             if (searchQuery.trim()) {
                 const q = searchQuery.toLowerCase().trim();
                 games = games.filter(g =>
                     (g.title && g.title.toLowerCase().includes(q)) ||
-                    (g.genre && g.genre.toLowerCase().includes(q)) ||
-                    (g.platform && g.platform.toLowerCase().includes(q)) ||
-                    (g.publisher && g.publisher.toLowerCase().includes(q)) ||
-                    (g.developer && g.developer.toLowerCase().includes(q))
+                    (g.genre && g.genre.toLowerCase().includes(q))
                 );
             }
-
             return games;
         }
 
@@ -838,17 +972,13 @@
             const countEl = document.getElementById('game-count');
 
             loadingEl.classList.add('hidden');
-            loadingEl.classList.remove('flex');
             noDataEl.classList.add('hidden');
-            noDataEl.classList.remove('flex');
             emptyEl.classList.add('hidden');
-            emptyEl.classList.remove('flex');
             favEmptyEl.classList.add('hidden');
-            favEmptyEl.classList.remove('flex');
+            gridEl.classList.remove('hidden');
 
             if (gamesData.length === 0) {
                 noDataEl.classList.remove('hidden');
-                noDataEl.classList.add('flex');
                 return;
             }
 
@@ -857,7 +987,6 @@
             if (activeView === 'favorites' && games.length === 0 && userFavorites.length === 0) {
                 countEl.textContent = '';
                 favEmptyEl.classList.remove('hidden');
-                favEmptyEl.classList.add('flex');
                 gridEl.classList.add('hidden');
                 return;
             }
@@ -865,13 +994,11 @@
             if (games.length === 0) {
                 countEl.textContent = '0 games found';
                 emptyEl.classList.remove('hidden');
-                emptyEl.classList.add('flex');
                 gridEl.classList.add('hidden');
                 return;
             }
 
             countEl.textContent = `${games.length} game${games.length !== 1 ? 's' : ''}`;
-            gridEl.classList.remove('hidden');
             renderGameGrid(games);
         }
 
@@ -880,11 +1007,11 @@
             grid.innerHTML = games.map(game => {
                 const isFav = userFavorites.includes(game.id);
                 return `
-            <article class="game-card bg-eps-card rounded-lg overflow-hidden border border-eps-border cursor-pointer" onclick="openGameDetail(${game.id})" tabindex="0" role="button" aria-label="View details for ${escapeHtml(game.title)}">
+            <article class="game-card bg-eps-card rounded-lg overflow-hidden border border-eps-border cursor-pointer" onclick="openGameDetail(${game.id})" tabindex="0" role="button">
                 <div class="card-thumb relative aspect-video overflow-hidden bg-eps-black">
-                    <img src="${escapeHtml(game.thumbnail)}" alt="${escapeHtml(game.title)}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22225%22><rect fill=%22%23111111%22 width=%22400%22 height=%22225%22/><text x=%2250%25%22 y=%2250%25%22 fill=%22%23333%22 font-family=%22sans-serif%22 font-size=%2214%22 text-anchor=%22middle%22 dy=%22.3em%22>No Image</text></svg>'">
+                    <img src="${game.thumbnail}" alt="${game.title}" class="w-full h-full object-cover" loading="lazy">
                     <div class="thumb-gradient absolute inset-0"></div>
-                    ${game.genre ? `<span class="absolute top-3 left-3 bg-eps-red/90 text-white text-[11px] font-semibold px-2.5 py-1 rounded uppercase tracking-wide">${escapeHtml(game.genre)}</span>` : ''}
+                    ${game.genre ? `<span class="absolute top-3 left-3 bg-eps-red/90 text-white text-[11px] font-semibold px-2.5 py-1 rounded uppercase tracking-wide">${game.genre}</span>` : ''}
                     <button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 hover:bg-eps-red/90 flex items-center justify-center transition-colors"
                         onclick="event.stopPropagation(); toggleFavorite(${game.id})"
                         aria-label="${isFav ? 'Remove from favorites' : 'Add to favorites'}">
@@ -892,12 +1019,12 @@
                     </button>
                 </div>
                 <div class="p-4">
-                    <h3 class="font-semibold text-white text-base mb-1 truncate">${escapeHtml(game.title)}</h3>
-                    <p class="text-eps-muted text-sm line-clamp-2 mb-3 leading-relaxed">${escapeHtml(game.short_description)}</p>
+                    <h3 class="font-semibold text-white text-base mb-1 truncate">${game.title}</h3>
+                    <p class="text-eps-muted text-sm line-clamp-2 mb-3 leading-relaxed">${game.short_description}</p>
                     <div class="flex items-center justify-between">
                         <span class="text-[11px] text-eps-muted flex items-center gap-1">
                             <i data-lucide="monitor" class="w-3 h-3"></i>
-                            ${escapeHtml(game.platform || 'N/A')}
+                            ${game.platform || 'Browser'}
                         </span>
                         <span class="text-[11px] text-eps-red font-semibold tracking-wide flex items-center gap-1 uppercase">
                             Play <i data-lucide="arrow-right" class="w-3 h-3"></i>
@@ -922,31 +1049,23 @@
             content.innerHTML = `
             <div class="flex flex-col md:flex-row gap-6">
                 <div class="md:w-1/2 flex-shrink-0">
-                    <img src="${escapeHtml(game.thumbnail)}" alt="${escapeHtml(game.title)}" class="w-full rounded-lg object-cover aspect-video"
-                        onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22225%22><rect fill=%22%23111111%22 width=%22400%22 height=%22225%22/><text x=%2250%25%22 y=%2250%25%22 fill=%22%23333%22 font-family=%22sans-serif%22 font-size=%2214%22 text-anchor=%22middle%22 dy=%22.3em%22>No Image</text></svg>'">
+                    <img src="${game.thumbnail}" alt="${game.title}" class="w-full rounded-lg object-cover aspect-video">
                 </div>
                 <div class="flex-1 flex flex-col">
                     <div class="flex items-start justify-between gap-3 mb-3">
-                        <h2 class="font-display text-3xl sm:text-4xl tracking-wider text-white">${escapeHtml(game.title)}</h2>
-                        <button onclick="toggleFavorite(${game.id})" class="flex-shrink-0 w-10 h-10 rounded-full border ${isFav ? 'bg-eps-red/20 border-eps-red' : 'border-eps-border hover:border-eps-red'} flex items-center justify-center transition-colors"
-                            aria-label="${isFav ? 'Remove from favorites' : 'Add to favorites'}">
+                        <h2 class="font-display text-3xl sm:text-4xl tracking-wider text-white">${game.title}</h2>
+                        <button onclick="toggleFavorite(${game.id})" class="flex-shrink-0 w-10 h-10 rounded-full border ${isFav ? 'bg-eps-red/20 border-eps-red' : 'border-eps-border hover:border-eps-red'} flex items-center justify-center transition-colors">
                             <i data-lucide="heart" class="w-5 h-5 ${isFav ? 'fill-eps-red text-eps-red' : 'text-eps-muted'}"></i>
                         </button>
                     </div>
-                    ${game.genre ? `<span class="inline-block bg-eps-red text-white text-xs font-semibold px-3 py-1 rounded uppercase tracking-wider mb-4 self-start">${escapeHtml(game.genre)}</span>` : ''}
-                    <p class="text-eps-muted-light text-sm leading-relaxed mb-5">${escapeHtml(game.short_description)}</p>
+                    ${game.genre ? `<span class="inline-block bg-eps-red text-white text-xs font-semibold px-3 py-1 rounded uppercase tracking-wider mb-4 self-start">${game.genre}</span>` : ''}
+                    <p class="text-eps-muted-light text-sm leading-relaxed mb-5">${game.short_description}</p>
                     <div class="grid grid-cols-2 gap-3 mb-6 text-sm">
-                        ${game.platform ? `<div><span class="text-eps-muted block text-xs mb-0.5">Platform</span><span class="text-white flex items-center gap-1.5"><i data-lucide="monitor" class="w-3.5 h-3.5 text-eps-muted"></i>${escapeHtml(game.platform)}</span></div>` : ''}
-                        ${game.publisher ? `<div><span class="text-eps-muted block text-xs mb-0.5">Publisher</span><span class="text-white">${escapeHtml(game.publisher)}</span></div>` : ''}
-                        ${game.developer ? `<div><span class="text-eps-muted block text-xs mb-0.5">Developer</span><span class="text-white">${escapeHtml(game.developer)}</span></div>` : ''}
-                        ${game.release_date ? `<div><span class="text-eps-muted block text-xs mb-0.5">Release Date</span><span class="text-white flex items-center gap-1.5"><i data-lucide="calendar" class="w-3.5 h-3.5 text-eps-muted"></i>${escapeHtml(game.release_date)}</span></div>` : ''}
+                        <div><span class="text-eps-muted block text-xs mb-0.5">Platform</span><span class="text-white flex items-center gap-1.5"><i data-lucide="monitor" class="w-3.5 h-3.5 text-eps-muted"></i>${game.platform || 'Browser'}</span></div>
                     </div>
                     <div class="mt-auto flex gap-3">
-                        ${game.game_url ? `<a href="${escapeHtml(game.game_url)}" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center gap-2 py-3 bg-eps-red hover:bg-eps-red-dark text-white font-semibold rounded-lg transition-colors text-sm">
+                        ${game.game_url ? `<a href="${game.game_url}" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center gap-2 py-3 bg-eps-red hover:bg-eps-red-dark text-white font-semibold rounded-lg transition-colors text-sm">
                             <i data-lucide="play" class="w-4 h-4"></i> Play Now
-                        </a>` : ''}
-                        ${game.freetogame_profile_url ? `<a href="${escapeHtml(game.freetogame_profile_url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-3 border border-eps-border hover:border-eps-muted text-eps-muted-light hover:text-white rounded-lg transition-colors text-sm">
-                            <i data-lucide="external-link" class="w-4 h-4"></i> Profile
                         </a>` : ''}
                     </div>
                 </div>
@@ -956,7 +1075,7 @@
 
         // ===== UI UPDATES =====
         function updateAuthUI() {
-            const area = document.getElementById('auth-area');
+            const area = document.getElementById('sidebar-user-area');
             const favTab = document.getElementById('fav-tab');
 
             if (currentUser) {
@@ -964,11 +1083,13 @@
                 const email = currentUser.email || 'Account';
                 const displayEmail = email.length > 20 ? email.substring(0, 18) + '...' : email;
                 area.innerHTML = `
-                <span class="hidden sm:block text-eps-muted-light text-sm truncate max-w-[160px]" title="${escapeHtml(email)}">${escapeHtml(displayEmail)}</span>
-                <button onclick="handleSignOut()" class="inline-flex items-center gap-1.5 px-4 py-1.5 border border-eps-border hover:border-red-600 hover:text-eps-red text-eps-muted-light rounded-lg text-sm transition-colors">
-                    <i data-lucide="log-out" class="w-4 h-4"></i>
-                    <span class="hidden sm:inline">Sign Out</span>
-                </button>`;
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-white truncate">${displayEmail}</p>
+                    <button onclick="handleSignOut()" class="text-xs text-eps-muted hover:text-eps-red mt-0.5">Sign Out</button>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-eps-darker border border-eps-border flex items-center justify-center text-eps-muted-light">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                </div>`;
             } else {
                 favTab.classList.add('hidden');
                 if (activeView === 'favorites') {
@@ -977,12 +1098,8 @@
                     renderCurrentView();
                 }
                 area.innerHTML = `
-                <button onclick="showModal('auth-modal')" class="inline-flex items-center gap-1.5 px-4 py-1.5 border border-eps-border hover:border-eps-muted text-eps-muted-light hover:text-white rounded-lg text-sm transition-colors">
-                    <i data-lucide="log-in" class="w-4 h-4"></i>
-                    <span class="hidden sm:inline">Sign In</span>
-                </button>
-                <button onclick="showModal('auth-modal'); switchAuthTab('signup');" class="inline-flex items-center gap-1.5 px-4 py-1.5 bg-eps-red hover:bg-eps-red-dark text-white rounded-lg text-sm font-medium transition-colors">
-                    Sign Up
+                <button onclick="showModal('auth-modal')" class="w-full py-2 bg-eps-red hover:bg-eps-red-dark text-white text-sm font-medium rounded-lg transition-colors">
+                    Sign In
                 </button>`;
             }
             lucide.createIcons();
@@ -1023,8 +1140,8 @@
             };
             const icons = { success: 'check-circle-2', error: 'alert-circle', info: 'info' };
             const toast = document.createElement('div');
-            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg border ${colors[type] || colors.info} text-sm shadow-xl toast-enter max-w-sm`;
-            toast.innerHTML = `<i data-lucide="${icons[type] || icons.info}" class="w-4 h-4 flex-shrink-0"></i><span>${escapeHtml(message)}</span>`;
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg border ${colors[type]} text-sm shadow-xl toast-enter max-w-sm`;
+            toast.innerHTML = `<i data-lucide="${icons[type]}" class="w-4 h-4 flex-shrink-0"></i><span>${message}</span>`;
             container.appendChild(toast);
             lucide.createIcons({ nodes: [toast] });
 
@@ -1037,13 +1154,9 @@
 
         // ===== EVENT LISTENERS =====
         function setupEventListeners() {
-            // Nav scroll effect
-            const nav = document.getElementById('main-nav');
-            const hero = document.getElementById('hero');
-            const observer = new IntersectionObserver(entries => {
-                nav.classList.toggle('nav-solid', !entries[0].isIntersecting);
-            }, { threshold: 0.1 });
-            observer.observe(hero);
+            // Sidebar Toggle
+            document.getElementById('sidebar-toggle').addEventListener('click', () => toggleSidebar());
+            document.getElementById('sidebar-overlay').addEventListener('click', () => toggleSidebar(false));
 
             // Genre filters (delegated)
             document.getElementById('genre-filters').addEventListener('click', e => {
@@ -1054,7 +1167,7 @@
                 renderCurrentView();
             });
 
-            // View tabs
+            // View tabs (All/Fav)
             document.getElementById('view-tabs').addEventListener('click', e => {
                 const tab = e.target.closest('.view-tab');
                 if (!tab) return;
@@ -1068,17 +1181,6 @@
                 clearTimeout(searchDebounce);
                 searchDebounce = setTimeout(() => {
                     searchQuery = e.target.value;
-                    document.getElementById('mobile-search').value = searchQuery;
-                    renderCurrentView();
-                }, 250);
-            });
-
-            // Search - mobile
-            document.getElementById('mobile-search').addEventListener('input', e => {
-                clearTimeout(searchDebounce);
-                searchDebounce = setTimeout(() => {
-                    searchQuery = e.target.value;
-                    document.getElementById('nav-search').value = searchQuery;
                     renderCurrentView();
                 }, 250);
             });
@@ -1096,14 +1198,6 @@
                     ['auth-modal', 'game-modal'].forEach(id => {
                         if (!document.getElementById(id).classList.contains('hidden')) hideModal(id);
                     });
-                }
-            });
-
-            // Enter on game cards
-            document.getElementById('game-grid').addEventListener('keydown', e => {
-                if (e.key === 'Enter') {
-                    const card = e.target.closest('.game-card');
-                    if (card) card.click();
                 }
             });
         }
@@ -1153,96 +1247,35 @@
             animate();
         }
 
-        // ===== UTILITIES =====
         function escapeHtml(str) {
             if (!str) return '';
             const div = document.createElement('div');
             div.textContent = str;
             return div.innerHTML;
         }
-        (function () {
-            // --- Search Logic Fix ---
-            // This connects your search inputs to the rendering engine
-            const performSearch = (e) => {
-                const query = e.target.value.toLowerCase().trim();
-                const gameCards = document.querySelectorAll('#game-grid > div, .game-card');
 
-                gameCards.forEach(card => {
-                    const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
-                    const description = card.querySelector('p')?.textContent.toLowerCase() || '';
+        // --- Release Modal Logic ---
+        function initReleaseModal() {
+            const releaseModal = document.getElementById('epsilon-release-modal');
+            const hasSeen = sessionStorage.getItem('epsilon_release_seen');
 
-                    if (title.includes(query) || description.includes(query)) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
+            if (!hasSeen && releaseModal) {
+                setTimeout(() => {
+                    releaseModal.showModal();
+                    if (typeof lucide !== 'undefined') {
+                        lucide.createIcons({
+                            attrs: { class: 'lucide' },
+                            nameAttr: 'data-lucide'
+                        });
                     }
-                });
-            };
-
-            const navSearch = document.getElementById('nav-search');
-            const mobileSearch = document.getElementById('mobile-search');
-
-            if (navSearch) navSearch.addEventListener('input', performSearch);
-            if (mobileSearch) mobileSearch.addEventListener('input', performSearch);
-
-
-            // --- Right-Click to Favorite ---
-            // Detects right-click on game cards to toggle favorites without opening the game
-            document.getElementById('game-grid').addEventListener('contextmenu', function (e) {
-                const card = e.target.closest('.game-card');
-                if (card) {
-                    e.preventDefault(); // Stop the annoying browser menu
-
-                    // Extract the ID if it's stored in the card, or find it from the data
-                    // Since your loadGames doesn't set an ID on the element, 
-                    // we'll find the game by title as a fallback for this snippet
-                    const gameTitle = card.querySelector('h3')?.textContent;
-                    const game = gamesData.find(g => g.title === gameTitle);
-
-                    if (game && typeof toggleFavorite === 'function') {
-                        toggleFavorite(game.id);
-
-                        // Visual feedback for the right-click
-                        card.classList.add('ring-2', 'ring-eps-red');
-                        setTimeout(() => card.classList.remove('ring-2', 'ring-eps-red'), 500);
-                    } else {
-                        // If it's a simple URL-based game from your loadGames function:
-                        showToast("Right-click detected! Log in to save to favorites.", "info");
-                    }
-                }
-            });
-        })();
-        // --- Release Announcement Logic ---
-function initReleaseModal() {
-    const releaseModal = document.getElementById('epsilon-release-modal');
-    
-    // Check if they've already seen it this session so we don't annoy them
-    const hasSeen = sessionStorage.getItem('epsilon_release_seen');
-
-    if (!hasSeen && releaseModal) {
-        // Short delay so it doesn't jump scare them immediately
-        setTimeout(() => {
-            releaseModal.showModal();
-            // Refresh icons inside the modal
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons({
-                    attrs: {
-                        class: 'lucide'
-                    },
-                    nameAttr: 'data-lucide'
-                });
+                    sessionStorage.setItem('epsilon_release_seen', 'true');
+                }, 1500);
             }
-            sessionStorage.setItem('epsilon_release_seen', 'true');
-        }, 1500);
-    }
-}
+        }
 
-// Call this in your DOMContentLoaded listener
-document.addEventListener('DOMContentLoaded', () => {
-    // ... your other init code
-    initReleaseModal();
-});
+        document.addEventListener('DOMContentLoaded', () => {
+            initReleaseModal();
+        });
     </script>
 </body>
-
 </html>
