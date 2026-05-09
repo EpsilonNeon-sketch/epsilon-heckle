@@ -1,0 +1,50 @@
+[
+  {
+    "name": "2048",
+    "desc": "Join the numbers and get to the 2048 tile! A classic puzzle game.",
+    "author": "Gabriele Cirulli",
+    "link": "https://play2048.co/"
+  },
+  {
+    "name": "Tetris",
+    "desc": "The classic block-stacking puzzle game that started it all.",
+    "author": "Classic Games",
+    "link": "https://tetris.com/play-tetris"
+  },
+  {
+    "name": "Pac-Man",
+    "desc": "Navigate the maze and eat all the dots while avoiding ghosts.",
+    "author": "Namco",
+    "link": "https://www.google.com/logos/2010/pacman10-i.html"
+  },
+  {
+    "name": "Slither.io",
+    "desc": "Control a snake and eat glowing orbs to grow larger in this multiplayer game.",
+    "author": "Steve Howse",
+    "link": "https://slither.io/"
+  },
+  {
+    "name": "Agar.io",
+    "desc": "Eat cells smaller than you and avoid being eaten in this multiplayer game.",
+    "author": "Matheus Valadares",
+    "link": "https://agar.io/"
+  },
+  {
+    "name": "Krunker.io",
+    "desc": "Fast-paced pixelated first-person shooter with multiple game modes.",
+    "author": "Yendis Entertainment",
+    "link": "https://krunker.io/"
+  },
+  {
+    "name": "Shell Shockers",
+    "desc": "Multiplayer FPS game where you play as an egg with weapons.",
+    "author": "Blue Wizard Digital",
+    "link": "https://shellshock.io/"
+  },
+  {
+    "name": "Slope",
+    "desc": "Control a ball rolling down a slope at increasing speeds.",
+    "author": "Rob Kay",
+    "link": "https://slope-game.github.io/"
+  }
+]
