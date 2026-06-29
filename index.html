@@ -7,7 +7,6 @@
     <title>Epsilon Heckle</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link rel="icon" href="icon.png" type="image/png">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
@@ -145,6 +144,35 @@
             box-shadow: 0 0 30px rgba(220, 38, 38, 0.1), 0 12px 32px rgba(0, 0, 0, 0.4);
         }
 
+        .video-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .video-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0 30px rgba(220, 38, 38, 0.12), 0 12px 32px rgba(0, 0, 0, 0.4);
+            border-color: rgba(220, 38, 38, 0.35) !important;
+        }
+
+        .video-card:hover .vid-thumb {
+            transform: scale(1.04);
+        }
+
+        .vid-thumb {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .video-card:hover .play-icon {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .play-icon {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.7);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         .nav-item {
             transition: all 0.2s;
             position: relative;
@@ -233,11 +261,13 @@
             transform: translateY(0);
         }
 
-        #iframeOverlay {
+        #iframeOverlay,
+        #videoOverlay {
             transition: opacity 0.3s;
         }
 
-        #minimizedGame {
+        #minimizedGame,
+        #minimizedVideo {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -303,6 +333,34 @@
                 padding: 1rem !important;
             }
         }
+
+        .yt-thumb {
+            position: relative;
+            padding-bottom: 56.25%;
+            overflow: hidden;
+            background: #111;
+        }
+
+        .yt-thumb img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .yt-duration {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            background: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 5px;
+            border-radius: 3px;
+            letter-spacing: 0.02em;
+        }
     </style>
 </head>
 
@@ -313,8 +371,7 @@
         <div class="relative z-10 w-full max-w-md">
             <div class="text-center mb-8 fade-up">
                 <h1 class="text-4xl md:text-5xl font-black tracking-tight">
-                    <span class="text-eh-red">ε</span><span class="text-eh-text">PSILON</span>
-                    <br>
+                    <span class="text-eh-red">ε</span><span class="text-eh-text">PSILON</span><br>
                     <span class="text-eh-text">HECK</span><span class="text-eh-red">LE</span>
                 </h1>
                 <p class="text-eh-muted mt-2 text-sm tracking-wide">YOUR GAMING HUB</p>
@@ -356,7 +413,6 @@
 
     <!-- ===== DASHBOARD ===== -->
     <div id="dashboardPage" class="hidden">
-        <!-- Sidebar -->
         <aside id="sidebar"
             class="fixed left-0 top-0 h-screen w-[260px] bg-eh-surface border-r border-eh-border z-[100] flex flex-col transition-transform duration-300">
             <div class="p-5 pb-4">
@@ -366,7 +422,7 @@
                 </h2>
             </div>
             <div class="h-px bg-eh-border mx-4"></div>
-            <nav class="flex-1 py-4 px-3 space-y-1">
+            <nav class="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
                 <button onclick="navigateTo('library')" data-nav="library"
                     class="nav-item active w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-eh-muted">
                     <i data-lucide="library" class="w-[18px] h-[18px]"></i> Library
@@ -374,6 +430,10 @@
                 <button onclick="navigateTo('play')" data-nav="play"
                     class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-eh-muted">
                     <i data-lucide="gamepad-2" class="w-[18px] h-[18px]"></i> Play Games
+                </button>
+                <button onclick="navigateTo('videos')" data-nav="videos"
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-eh-muted">
+                    <i data-lucide="play-circle" class="w-[18px] h-[18px]"></i> Videos
                 </button>
                 <button onclick="navigateTo('news')" data-nav="news"
                     class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-eh-muted">
@@ -401,19 +461,16 @@
             </div>
         </aside>
 
-        <!-- Sidebar Overlay (mobile) -->
         <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-[99] hidden" onclick="toggleSidebar()"></div>
 
-        <!-- Menu Toggle -->
         <button id="menuToggle" onclick="toggleSidebar()"
             class="fixed top-4 left-4 z-[101] md:hidden w-10 h-10 rounded-xl bg-eh-surface border border-eh-border flex items-center justify-center text-eh-muted hover:text-eh-red transition-colors">
             <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
 
-        <!-- Main Content -->
         <main id="mainContent" class="md:ml-[260px] min-h-screen p-5 md:p-8">
 
-            <!-- LIBRARY SECTION -->
+            <!-- ===== LIBRARY ===== -->
             <section id="librarySection" class="page-section">
                 <div class="mb-6">
                     <h1 class="text-2xl md:text-3xl font-black tracking-tight">Game <span
@@ -436,7 +493,7 @@
                 </div>
             </section>
 
-            <!-- PLAY SECTION -->
+            <!-- ===== PLAY GAMES ===== -->
             <section id="playSection" class="page-section hidden">
                 <div class="mb-6">
                     <h1 class="text-2xl md:text-3xl font-black tracking-tight">Play <span
@@ -446,7 +503,70 @@
                 <div id="playGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
             </section>
 
-            <!-- NEWS SECTION -->
+            <!-- ===== VIDEOS ===== -->
+            <section id="videosSection" class="page-section hidden">
+                <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-black tracking-tight">Gaming <span
+                                class="text-eh-red">Videos</span></h1>
+                        <p class="text-eh-muted text-sm mt-1">Watch the best gaming content from top creators</p>
+                    </div>
+                    <span id="videoCount" class="text-xs text-eh-dim font-medium"></span>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                    <div class="relative flex-1">
+                        <i data-lucide="search"
+                            class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-eh-dim"></i>
+                        <input type="text" id="videoSearch" oninput="filterVideos()"
+                            placeholder="Search videos, YouTubers..."
+                            class="w-full bg-eh-surface border border-eh-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-eh-text placeholder-eh-dim focus:outline-none focus:border-eh-red transition-colors">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="filter" class="w-4 h-4 text-eh-dim flex-shrink-0"></i>
+                        <select id="videoYoutuberFilter" onchange="filterVideos()"
+                            class="bg-eh-surface border border-eh-border rounded-xl px-3 py-2.5 text-sm text-eh-text focus:outline-none focus:border-eh-red transition-colors cursor-pointer">
+                            <option value="All">All YouTubers</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="videoGameFilters" class="flex gap-2 flex-wrap mb-6"></div>
+                <div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+                <div id="videoEmpty" class="hidden text-center py-20">
+                    <i data-lucide="video-off" class="w-12 h-12 text-eh-dim mx-auto mb-3"></i>
+                    <p class="text-eh-muted">No videos found</p>
+                </div>
+                <div id="videoLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <div class="bg-eh-card border border-eh-border rounded-2xl overflow-hidden">
+                        <div class="skeleton h-44"></div>
+                        <div class="p-4">
+                            <div class="skeleton h-4 w-3/4 mb-2"></div>
+                            <div class="skeleton h-3 w-1/2 mb-3"></div>
+                            <div class="skeleton h-3 w-full mb-1.5"></div>
+                            <div class="skeleton h-3 w-5/6"></div>
+                        </div>
+                    </div>
+                    <div class="bg-eh-card border border-eh-border rounded-2xl overflow-hidden hidden sm:block">
+                        <div class="skeleton h-44"></div>
+                        <div class="p-4">
+                            <div class="skeleton h-4 w-2/3 mb-2"></div>
+                            <div class="skeleton h-3 w-2/5 mb-3"></div>
+                            <div class="skeleton h-3 w-full mb-1.5"></div>
+                            <div class="skeleton h-3 w-4/5"></div>
+                        </div>
+                    </div>
+                    <div class="bg-eh-card border border-eh-border rounded-2xl overflow-hidden hidden lg:block">
+                        <div class="skeleton h-44"></div>
+                        <div class="p-4">
+                            <div class="skeleton h-4 w-4/5 mb-2"></div>
+                            <div class="skeleton h-3 w-1/3 mb-3"></div>
+                            <div class="skeleton h-3 w-full mb-1.5"></div>
+                            <div class="skeleton h-3 w-3/4"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== NEWS ===== -->
             <section id="newsSection" class="page-section hidden">
                 <div class="mb-6">
                     <h1 class="text-2xl md:text-3xl font-black tracking-tight">Gaming <span
@@ -475,7 +595,7 @@
                 </div>
             </section>
 
-            <!-- COMMUNITY SECTION -->
+            <!-- ===== COMMUNITY ===== -->
             <section id="communitySection" class="page-section hidden">
                 <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
                     <div>
@@ -483,9 +603,7 @@
                                 class="text-eh-red">nity</span></h1>
                         <p class="text-eh-muted text-sm mt-1">Find gamers, follow friends, build your squad</p>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <span id="memberCount" class="text-xs text-eh-dim font-medium"></span>
-                    </div>
+                    <span id="memberCount" class="text-xs text-eh-dim font-medium"></span>
                 </div>
                 <div class="flex flex-col sm:flex-row gap-3 mb-6">
                     <div class="relative flex-1">
@@ -512,9 +630,8 @@
                 </div>
                 <div id="communityError" class="hidden text-center py-20">
                     <i data-lucide="alert-triangle" class="w-12 h-12 text-yellow-500 mx-auto mb-3"></i>
-                    <p class="text-eh-muted text-sm">Could not load profiles. The <code
-                            class="text-eh-red">profiles</code> table may not be accessible.</p>
-                    <p class="text-eh-dim text-xs mt-2">Make sure RLS policies allow SELECT for all users.</p>
+                    <p class="text-eh-muted text-sm">Could not load profiles. Check RLS policies on the <code
+                            class="text-eh-red">profiles</code> table.</p>
                 </div>
                 <div id="communityLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     <div class="bg-eh-card border border-eh-border rounded-2xl p-5">
@@ -528,7 +645,6 @@
                         <div class="skeleton h-3 w-full mb-2"></div>
                         <div class="skeleton h-3 w-3/4 mb-4"></div>
                         <div class="flex gap-2">
-                            <div class="skeleton h-8 w-20 rounded-lg"></div>
                             <div class="skeleton h-8 w-20 rounded-lg"></div>
                         </div>
                     </div>
@@ -544,7 +660,6 @@
                         <div class="skeleton h-3 w-2/3 mb-4"></div>
                         <div class="flex gap-2">
                             <div class="skeleton h-8 w-20 rounded-lg"></div>
-                            <div class="skeleton h-8 w-20 rounded-lg"></div>
                         </div>
                     </div>
                     <div class="bg-eh-card border border-eh-border rounded-2xl p-5 hidden lg:block">
@@ -558,22 +673,6 @@
                         <div class="skeleton h-3 w-full mb-2"></div>
                         <div class="skeleton h-3 w-4/5 mb-4"></div>
                         <div class="flex gap-2">
-                            <div class="skeleton h-8 w-20 rounded-lg"></div>
-                            <div class="skeleton h-8 w-20 rounded-lg"></div>
-                        </div>
-                    </div>
-                    <div class="bg-eh-card border border-eh-border rounded-2xl p-5 hidden xl:block">
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-14 h-14 rounded-full skeleton"></div>
-                            <div class="flex-1">
-                                <div class="skeleton h-4 w-32 mb-2"></div>
-                                <div class="skeleton h-3 w-18"></div>
-                            </div>
-                        </div>
-                        <div class="skeleton h-3 w-full mb-2"></div>
-                        <div class="skeleton h-3 w-1/2 mb-4"></div>
-                        <div class="flex gap-2">
-                            <div class="skeleton h-8 w-20 rounded-lg"></div>
                             <div class="skeleton h-8 w-20 rounded-lg"></div>
                         </div>
                     </div>
@@ -628,7 +727,7 @@
         </div>
     </div>
 
-    <!-- ===== IFRAME OVERLAY ===== -->
+    <!-- ===== GAME IFRAME OVERLAY ===== -->
     <div id="iframeOverlay" class="fixed inset-0 z-[500] bg-eh-bg hidden flex-col">
         <div class="h-12 bg-eh-surface border-b border-eh-border flex items-center justify-between px-4 flex-shrink-0">
             <div class="flex items-center gap-2 min-w-0">
@@ -638,21 +737,43 @@
             <div class="flex items-center gap-2">
                 <button onclick="minimizeGame()"
                     class="w-8 h-8 rounded-lg bg-eh-bg border border-eh-border flex items-center justify-center text-eh-muted hover:text-eh-red hover:border-eh-red transition-all"
-                    title="Minimize">
-                    <i data-lucide="minus" class="w-4 h-4"></i>
-                </button>
+                    title="Minimize"><i data-lucide="minus" class="w-4 h-4"></i></button>
                 <button onclick="closeGame()"
                     class="w-8 h-8 rounded-lg bg-eh-bg border border-eh-border flex items-center justify-center text-eh-muted hover:text-red-400 hover:border-red-400 transition-all"
-                    title="Close">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
+                    title="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
             </div>
         </div>
         <iframe id="gameIframe" class="flex-1 w-full border-0" allow="autoplay; fullscreen; gamepad"
             sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
     </div>
 
-    <!-- ===== MINIMIZED GAME INDICATOR ===== -->
+    <!-- ===== VIDEO OVERLAY ===== -->
+    <div id="videoOverlay" class="fixed inset-0 z-[500] bg-eh-bg hidden flex-col">
+        <div class="h-14 bg-eh-surface border-b border-eh-border flex items-center justify-between px-4 flex-shrink-0">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse flex-shrink-0"></div>
+                <div class="min-w-0">
+                    <p id="videoOverlayTitle" class="text-sm font-semibold text-eh-text truncate"></p>
+                    <p id="videoOverlayYoutuber" class="text-[11px] text-eh-dim truncate"></p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <button onclick="minimizeVideo()"
+                    class="w-9 h-9 rounded-lg bg-eh-bg border border-eh-border flex items-center justify-center text-eh-muted hover:text-eh-red hover:border-eh-red transition-all"
+                    title="Minimize"><i data-lucide="minus" class="w-4 h-4"></i></button>
+                <button onclick="closeVideo()"
+                    class="w-9 h-9 rounded-lg bg-eh-bg border border-eh-border flex items-center justify-center text-eh-muted hover:text-red-400 hover:border-red-400 transition-all"
+                    title="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+        </div>
+        <div class="flex-1 flex items-center justify-center bg-black p-0" id="videoContainer">
+            <iframe id="videoIframe" class="w-full h-full border-0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+                allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <!-- ===== MINIMIZED GAME ===== -->
     <div id="minimizedGame" class="fixed bottom-5 right-5 z-[499] hidden cursor-pointer" onclick="restoreGame()">
         <div
             class="bg-eh-surface border border-eh-border rounded-xl px-4 py-3 flex items-center gap-3 shadow-2xl hover:border-eh-red/50 transition-all">
@@ -662,9 +783,23 @@
                 <p class="text-[10px] text-eh-dim">Click to restore</p>
             </div>
             <button onclick="event.stopPropagation();closeGame()"
-                class="ml-2 w-6 h-6 rounded-md bg-eh-bg flex items-center justify-center text-eh-dim hover:text-red-400 transition-colors">
-                <i data-lucide="x" class="w-3 h-3"></i>
-            </button>
+                class="ml-2 w-6 h-6 rounded-md bg-eh-bg flex items-center justify-center text-eh-dim hover:text-red-400 transition-colors"><i
+                    data-lucide="x" class="w-3 h-3"></i></button>
+        </div>
+    </div>
+
+    <!-- ===== MINIMIZED VIDEO ===== -->
+    <div id="minimizedVideo" class="fixed bottom-5 right-5 z-[499] hidden cursor-pointer" onclick="restoreVideo()">
+        <div class="bg-eh-surface border border-eh-border rounded-xl px-4 py-3 flex items-center gap-3 shadow-2xl hover:border-red-500/50 transition-all"
+            style="border-left: 3px solid #dc2626;">
+            <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+            <div class="min-w-0">
+                <p class="text-xs font-semibold text-eh-text truncate" id="minimizedVideoTitle">Video</p>
+                <p class="text-[10px] text-eh-dim">Click to restore</p>
+            </div>
+            <button onclick="event.stopPropagation();closeVideo()"
+                class="ml-2 w-6 h-6 rounded-md bg-eh-bg flex items-center justify-center text-eh-dim hover:text-red-400 transition-colors"><i
+                    data-lucide="x" class="w-3 h-3"></i></button>
         </div>
     </div>
 
@@ -674,20 +809,16 @@
     </div>
 
     <script>
-        // ===== SUPABASE INIT =====
+        // ===== SUPABASE =====
         const { createClient } = supabase;
         const supabaseClient = createClient('https://gfsqzkyviivhvyqadpeg.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdmc3F6a3l2aWl2aHZ5cWFkcGVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NDI0NDQsImV4cCI6MjA4NjAxODQ0NH0.MwC6dMZKFZMyklCJKqr4DPek8dxR-EswBZSd1L_AkMA', {
             auth: { persistSession: true, storageKey: 'epsilon-heckle-auth' }
         });
 
-        // ===== THEME COLOR MAP =====
-        const THEME_COLORS = {
-            purple: '#a855f7', pink: '#ec4899', red: '#ef4444',
-            orange: '#f97316', yellow: '#eab308', blue: '#3b82f6',
-            green: '#22c55e', white: '#e5e7eb'
-        };
+        // ===== THEME COLORS =====
+        const THEME_COLORS = { purple: '#a855f7', pink: '#ec4899', red: '#ef4444', orange: '#f97316', yellow: '#eab308', blue: '#3b82f6', green: '#22c55e', white: '#e5e7eb' };
 
-        // ===== FALLBACK GAME DATA =====
+        // ===== FALLBACK DATA =====
         const FALLBACK_LIBRARY = [
             { id: 540, title: "Overwatch", thumbnail: "https://www.freetogame.com/g/540/thumbnail.jpg", short_description: "A hero-focused first-person team shooter from Blizzard Entertainment.", game_url: "https://www.freetogame.com/open/overwatch", genre: "Shooter", platform: "PC (Windows)", publisher: "Activision Blizzard", developer: "Blizzard Entertainment", release_date: "2022-10-04", freetogame_profile_url: "https://www.freetogame.com/overwatch" },
             { id: 1, title: "Dauntless", thumbnail: "https://www.freetogame.com/g/1/thumbnail.jpg", short_description: "A free-to-play co-op action RPG with monster hunting mechanics.", game_url: "https://www.freetogame.com/open/dauntless", genre: "RPG", platform: "PC (Windows)", publisher: "Phoenix Labs", developer: "Phoenix Labs", release_date: "2019-05-21", freetogame_profile_url: "https://www.freetogame.com/dauntless" },
@@ -714,101 +845,93 @@
             { name: "Crossy Road", desc: "Help the chicken cross the road, river, and train tracks safely.", author: "Hipster Whale", link: "https://crossyroad.io/" }
         ];
 
+        const FALLBACK_VIDEOS = [
+            { name: "Overwatch 2 - BEST NEW HERO RANKED GAMEPLAY", youtuber: "Flankspeed", link: "https://www.youtube.com/watch?v=XZk2hJ7Wq44", desc: "Insane ranked gameplay with the newest Overwatch 2 hero. High-level positioning and ability usage breakdown.", game: "Overwatch" },
+            { name: "Fortnite Chapter 5 SEASON FINALE Event Live Reaction", youtuber: "SypherPK", link: "https://www.youtube.com/watch?v=Z3FBKk0aXbM", desc: "Watching the Fortnite Chapter 5 season finale live event with reactions and thoughts on what's next.", game: "Fortnite" },
+            { name: "I Played 100 Hours of Valorant... Here's What Happened", youtuber: "ProdigyAces", link: "https://www.youtube.com/watch?v=7bCJkFVpRvE", desc: "A journey from Iron to Diamond in 100 hours of pure Valorant grind. Tips, tricks, and full rank up montage.", game: "Valorant" },
+            { name: "Genshin Impact 5.0 - Full Story Quest Walkthrough", youtuber: "Tectone", link: "https://www.youtube.com/watch?v=LrJ3CK5wMko", desc: "Complete walkthrough of the new Natlan archon quest in Genshin Impact 5.0 with all dialogue and cutscenes.", game: "Genshin Impact" },
+            { name: "Apex Legends ALGS Championship - Grand Finals Highlights", youtuber: "Respawn", link: "https://www.youtube.com/watch?v=VfOa_0d74yY", desc: "The best moments from the Apex Legends Global Series championship grand finals. Insane clutch plays.", game: "Apex Legends" },
+            { name: "Dauntless - New Behemoth Boss Fight First Look", youtuber: "Kobu", link: "https://www.youtube.com/watch?v=HSN2sfJQaOc", desc: "First look at the latest behemoth added to Dauntless. Full fight breakdown with weapon recommendations.", game: "Dauntless" },
+            { name: "Warframe 1999 Update - Everything New Explained", youtuber: "Mogamu", link: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", desc: "Deep dive into the Warframe 1999 update including new frames, weapons, story missions, and QoL changes.", game: "Warframe" },
+            { name: "World of Tanks - How to Carry Every Game (Guide)", youtuber: "Skill4ltu", link: "https://www.youtube.com/watch?v=bP_2Ej3QDEA", desc: "Advanced guide on map awareness, position play, and damage farming to consistently carry games.", game: "World of Tanks" },
+            { name: "League of Legends - NEW CHAMPION Full Abilities Showcase", youtuber: "League of Legends", link: "https://www.youtube.com/watch?v=AzYDfMrDZyI", desc: "Official champion spotlight for the newest League of Legends champion. All abilities, skins, and lore.", game: "League of Legends" },
+            { name: "Lost Ark - Endgame Raid Guide Valtan Normal Mode", youtuber: "SaintOne", link: "https://www.youtube.com/watch?v=eGqLRsYk5Wc", desc: "Complete mech guide for Valtan normal raid in Lost Ark. All patterns explained with visual callouts.", game: "Lost Ark" },
+            { name: "Fortnite Zero Build - Tournament Finals Full VOD", youtuber: "Mongraal", link: "https://www.youtube.com/watch?v=qFZj2c9F5aU", desc: "Full VOD from the Fortnite Zero Build tournament finals. Every elimination and rotation in real time.", game: "Fortnite" },
+            { name: "Valorant - Jett Movement Guide 2024 (Advanced)", youtuber: "AverageJonas", link: "https://www.youtube.com/watch?v=wRzFLMfKMrE", desc: "Master Jett's advanced movement tech including dash combos, updraft floats, and operator jump spots.", game: "Valorant" },
+            { name: "MultiVersus - Best Combos For Every Character Tier List", youtuber: "Zylo", link: "https://www.youtube.com/watch?v=N8k4Z5mGXFo", desc: "Complete combo guide and tier list for all MultiVersus characters after the latest balance patch.", game: "MultiVersus" },
+            { name: "Overwatch 2 - Top 500 Ana Healing Guide", youtuber: "Kelley", link: "https://www.youtube.com/watch?v=JcXvYkR5xGw", desc: "How to climb to Top 500 playing Ana in Overwatch 2. Positioning, sleep dart tips, and nano boost usage.", game: "Overwatch" },
+            { name: "Genshin Impact - F2P Primogem Farming Guide 2024", youtuber: "Mtashed", link: "https://www.youtube.com/watch?v=PpXHkVzMq7s", desc: "Maximize your primogem income as a free-to-play player. Every source of free primogems explained.", game: "Genshin Impact" },
+            { name: "Apex Legends - Wraith Main Goes 30 Kills in Ranked", youtuber: "ImperialHal", link: "https://www.youtube.com/watch?v=HtR9cLaEXzI", desc: "Absolutely insane 30 kill game on Wraith in Apex Legends ranked. Full aggressive gameplay with comms.", game: "Apex Legends" }
+        ];
+
         // ===== STATE =====
         let authMode = 'login';
         let libraryGames = [];
         let playGames = [];
+        let videoData = [];
         let allProfiles = [];
         let currentGenre = 'All';
+        let currentVideoGame = 'All';
         let currentGameUrl = '';
         let currentGameName = '';
+        let currentVideoId = '';
+        let currentVideoName = '';
+        let currentVideoYoutuber = '';
         let currentUser = null;
         let viewingProfileId = null;
 
         // ===== AUTH =====
         function toggleAuthMode(mode) {
             authMode = mode;
-            const lt = document.getElementById('loginTab');
-            const st = document.getElementById('signupTab');
-            const bt = document.getElementById('authBtnText');
-            if (mode === 'login') {
-                lt.className = 'flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all bg-eh-red text-white';
-                st.className = 'flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all text-eh-muted hover:text-eh-text';
-                bt.textContent = 'Sign In';
-            } else {
-                st.className = 'flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all bg-eh-red text-white';
-                lt.className = 'flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all text-eh-muted hover:text-eh-text';
-                bt.textContent = 'Create Account';
-            }
+            const lt = document.getElementById('loginTab'), st = document.getElementById('signupTab'), bt = document.getElementById('authBtnText');
+            if (mode === 'login') { lt.className = 'flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all bg-eh-red text-white'; st.className = 'flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all text-eh-muted hover:text-eh-text'; bt.textContent = 'Sign In'; }
+            else { st.className = 'flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all bg-eh-red text-white'; lt.className = 'flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all text-eh-muted hover:text-eh-text'; bt.textContent = 'Create Account'; }
             document.getElementById('authError').classList.add('hidden');
         }
 
         async function handleAuth(e) {
             e.preventDefault();
-            const email = document.getElementById('authEmail').value.trim();
-            const password = document.getElementById('authPassword').value;
-            const errEl = document.getElementById('authError');
-            const btnText = document.getElementById('authBtnText');
-            const btnLoader = document.getElementById('authBtnLoader');
-            errEl.classList.add('hidden');
-            btnText.classList.add('hidden');
-            btnLoader.classList.remove('hidden');
+            const email = document.getElementById('authEmail').value.trim(), password = document.getElementById('authPassword').value;
+            const errEl = document.getElementById('authError'), btnText = document.getElementById('authBtnText'), btnLoader = document.getElementById('authBtnLoader');
+            errEl.classList.add('hidden'); btnText.classList.add('hidden'); btnLoader.classList.remove('hidden');
             try {
                 let result;
-                if (authMode === 'login') {
-                    result = await supabaseClient.auth.signInWithPassword({ email, password });
-                } else {
-                    result = await supabaseClient.auth.signUp({ email, password });
-                }
+                if (authMode === 'login') result = await supabaseClient.auth.signInWithPassword({ email, password });
+                else result = await supabaseClient.auth.signUp({ email, password });
                 if (result.error) throw result.error;
-                if (authMode === 'signup' && !result.data.session) {
-                    errEl.textContent = 'Check your email for a confirmation link!';
-                    errEl.classList.remove('hidden');
-                }
-            } catch (err) {
-                errEl.textContent = err.message || 'Authentication failed';
-                errEl.classList.remove('hidden');
-            } finally {
-                btnText.classList.remove('hidden');
-                btnLoader.classList.add('hidden');
-            }
+                if (authMode === 'signup' && !result.data.session) { errEl.textContent = 'Check your email for a confirmation link!'; errEl.classList.remove('hidden'); }
+            } catch (err) { errEl.textContent = err.message || 'Authentication failed'; errEl.classList.remove('hidden'); }
+            finally { btnText.classList.remove('hidden'); btnLoader.classList.add('hidden'); }
         }
 
         async function handleLogout() {
-            await supabaseClient.auth.signOut();
-            currentUser = null;
+            await supabaseClient.auth.signOut(); currentUser = null;
             document.getElementById('dashboardPage').classList.add('hidden');
-            document.getElementById('authPage').classList.remove('hidden');
-            document.getElementById('authPage').style.display = 'flex';
-            closeGame();
+            document.getElementById('authPage').classList.remove('hidden'); document.getElementById('authPage').style.display = 'flex';
+            closeGame(); closeVideo();
         }
 
         function showDashboard(user) {
-            currentUser = user;
-            document.getElementById('authPage').style.display = 'none';
-            document.getElementById('dashboardPage').classList.remove('hidden');
-            const email = user.email || 'Gamer';
-            document.getElementById('userEmail').textContent = email;
-            document.getElementById('userAvatar').textContent = email.charAt(0).toUpperCase();
+            currentUser = user; document.getElementById('authPage').style.display = 'none'; document.getElementById('dashboardPage').classList.remove('hidden');
+            const email = user.email || 'Gamer'; document.getElementById('userEmail').textContent = email; document.getElementById('userAvatar').textContent = email.charAt(0).toUpperCase();
             lucide.createIcons();
         }
 
-        // ===== NAVIGATION =====
+        // ===== NAV =====
         function navigateTo(page) {
             document.querySelectorAll('.page-section').forEach(s => s.classList.add('hidden'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(page + 'Section').classList.remove('hidden');
-            const navBtn = document.querySelector(`[data-nav="${page}"]`);
-            if (navBtn) navBtn.classList.add('active');
+            const navBtn = document.querySelector(`[data-nav="${page}"]`); if (navBtn) navBtn.classList.add('active');
             if (page === 'news') loadNews();
             if (page === 'community') loadCommunity();
+            if (page === 'videos') loadVideos();
             if (window.innerWidth < 768) toggleSidebar(false);
             window.scrollTo(0, 0);
         }
 
         function toggleSidebar(forceState) {
-            const sb = document.getElementById('sidebar');
-            const ov = document.getElementById('sidebarOverlay');
+            const sb = document.getElementById('sidebar'), ov = document.getElementById('sidebarOverlay');
             const isOpen = sb.classList.contains('sidebar-open');
             const shouldOpen = forceState !== undefined ? forceState : !isOpen;
             if (shouldOpen) { sb.classList.add('sidebar-open'); ov.classList.remove('hidden'); }
@@ -816,106 +939,176 @@
         }
 
         // ===== LIBRARY =====
-        async function loadLibraryGames() {
-            try { const res = await fetch('data.json'); if (res.ok) { libraryGames = await res.json(); return; } } catch { }
-            libraryGames = [...FALLBACK_LIBRARY];
-        }
+        async function loadLibraryGames() { try { const r = await fetch('data.json'); if (r.ok) { libraryGames = await r.json(); return; } } catch { } libraryGames = [...FALLBACK_LIBRARY]; }
 
         function renderLibrary() {
             const search = document.getElementById('librarySearch').value.toLowerCase();
-            const filtered = libraryGames.filter(g => {
-                const matchSearch = g.title.toLowerCase().includes(search) || g.short_description.toLowerCase().includes(search);
-                const matchGenre = currentGenre === 'All' || g.genre.trim() === currentGenre;
-                return matchSearch && matchGenre;
-            });
-            const grid = document.getElementById('libraryGrid');
-            const empty = document.getElementById('libraryEmpty');
+            const filtered = libraryGames.filter(g => { const ms = g.title.toLowerCase().includes(search) || g.short_description.toLowerCase().includes(search); const mg = currentGenre === 'All' || g.genre.trim() === currentGenre; return ms && mg; });
+            const grid = document.getElementById('libraryGrid'), empty = document.getElementById('libraryEmpty');
             if (filtered.length === 0) { grid.innerHTML = ''; empty.classList.remove('hidden'); return; }
             empty.classList.add('hidden');
-            grid.innerHTML = filtered.map((g, i) => `
-        <div class="game-card bg-eh-card border border-eh-border rounded-2xl overflow-hidden fade-up" style="animation-delay:${i * 0.04}s">
-            <div class="relative h-40 overflow-hidden bg-eh-bg">
-                <img src="${g.thumbnail}" alt="${g.title}" class="card-thumb w-full h-full object-cover" loading="lazy" onerror="this.style.display='none'">
-                <div class="absolute top-2.5 right-2.5"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-eh-red/90 text-white backdrop-blur-sm">${g.genre.trim()}</span></div>
-            </div>
-            <div class="p-4">
-                <h3 class="text-sm font-bold text-eh-text mb-1 truncate">${g.title}</h3>
-                <p class="text-xs text-eh-muted leading-relaxed mb-3" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${g.short_description}</p>
-                <div class="flex items-center gap-2 text-[10px] text-eh-dim mb-3">
-                    <span class="flex items-center gap-1"><i data-lucide="monitor" class="w-3 h-3"></i>${g.platform}</span><span>•</span><span>${g.release_date ? g.release_date.split('-')[0] : 'N/A'}</span>
-                </div>
-                <a href="${g.game_url}" target="_blank" rel="noopener" class="red-btn block text-center py-2.5 rounded-xl text-white text-xs font-bold tracking-wide">Get Game</a>
-            </div>
-        </div>`).join('');
+            grid.innerHTML = filtered.map((g, i) => `<div class="game-card bg-eh-card border border-eh-border rounded-2xl overflow-hidden fade-up" style="animation-delay:${i * 0.04}s"><div class="relative h-40 overflow-hidden bg-eh-bg"><img src="${g.thumbnail}" alt="${g.title}" class="card-thumb w-full h-full object-cover" loading="lazy" onerror="this.style.display='none'"><div class="absolute top-2.5 right-2.5"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-eh-red/90 text-white backdrop-blur-sm">${g.genre.trim()}</span></div></div><div class="p-4"><h3 class="text-sm font-bold text-eh-text mb-1 truncate">${g.title}</h3><p class="text-xs text-eh-muted leading-relaxed mb-3" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${g.short_description}</p><div class="flex items-center gap-2 text-[10px] text-eh-dim mb-3"><span class="flex items-center gap-1"><i data-lucide="monitor" class="w-3 h-3"></i>${g.platform}</span><span>•</span><span>${g.release_date ? g.release_date.split('-')[0] : 'N/A'}</span></div><a href="${g.game_url}" target="_blank" rel="noopener" class="red-btn block text-center py-2.5 rounded-xl text-white text-xs font-bold tracking-wide">Get Game</a></div></div>`).join('');
             lucide.createIcons();
         }
 
-        function buildGenreFilters() {
-            const genres = ['All', ...new Set(libraryGames.map(g => g.genre.trim()))];
-            document.getElementById('genreFilters').innerHTML = genres.map(g =>
-                `<button onclick="setGenre('${g}')" class="genre-filter px-3 py-1.5 rounded-full text-xs font-semibold border transition-all whitespace-nowrap ${g === currentGenre ? 'bg-eh-red text-white border-eh-red' : 'border-eh-border text-eh-muted hover:border-eh-red hover:text-eh-red'}">${g}</button>`
-            ).join('');
-        }
-
-        function setGenre(genre) { currentGenre = genre; buildGenreFilters(); renderLibrary(); }
+        function buildGenreFilters() { const g = ['All', ...new Set(libraryGames.map(x => x.genre.trim()))]; document.getElementById('genreFilters').innerHTML = g.map(x => `<button onclick="setGenre('${x}')" class="genre-filter px-3 py-1.5 rounded-full text-xs font-semibold border transition-all whitespace-nowrap ${x === currentGenre ? 'bg-eh-red text-white border-eh-red' : 'border-eh-border text-eh-muted hover:border-eh-red hover:text-eh-red'}">${x}</button>`).join(''); }
+        function setGenre(g) { currentGenre = g; buildGenreFilters(); renderLibrary(); }
         function filterLibrary() { renderLibrary(); }
 
-        // ===== PLAY GAMES =====
-        async function loadPlayGames() {
-            try { const res = await fetch('games.json'); if (res.ok) { playGames = await res.json(); return; } } catch { }
-            playGames = [...FALLBACK_PLAY];
-        }
+        // ===== PLAY =====
+        async function loadPlayGames() { try { const r = await fetch('games.json'); if (r.ok) { playGames = await r.json(); return; } } catch { } playGames = [...FALLBACK_PLAY]; }
 
         function renderPlayGames() {
             const icons = ['🎯', '🦖', '❌', '🔢', '🐍', '💣', '🍬', '🐔'];
-            document.getElementById('playGrid').innerHTML = playGames.map((g, i) => `
-        <div class="play-card bg-eh-card border border-eh-border rounded-2xl overflow-hidden fade-up cursor-pointer" style="animation-delay:${i * 0.05}s" onclick="launchGame('${g.link.replace(/'/g, "\\'")}', '${g.name.replace(/'/g, "\\'")}')">
-            <div class="h-28 bg-gradient-to-br from-eh-red/20 via-eh-surface to-eh-card flex items-center justify-center"><span class="text-4xl">${icons[i % icons.length]}</span></div>
-            <div class="p-4">
-                <h3 class="text-sm font-bold text-eh-text mb-0.5">${g.name}</h3>
-                <p class="text-[11px] text-eh-dim mb-1">by ${g.author}</p>
-                <p class="text-xs text-eh-muted leading-relaxed mb-3" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${g.desc}</p>
-                <div class="red-btn block text-center py-2 rounded-xl text-white text-xs font-bold tracking-wide">Play Now</div>
-            </div>
-        </div>`).join('');
+            document.getElementById('playGrid').innerHTML = playGames.map((g, i) => `<div class="play-card bg-eh-card border border-eh-border rounded-2xl overflow-hidden fade-up cursor-pointer" style="animation-delay:${i * 0.05}s" onclick="launchGame('${g.link.replace(/'/g, "\\'")}','${g.name.replace(/'/g, "\\'")}')"><div class="h-28 bg-gradient-to-br from-eh-red/20 via-eh-surface to-eh-card flex items-center justify-center"><span class="text-4xl">${icons[i % icons.length]}</span></div><div class="p-4"><h3 class="text-sm font-bold text-eh-text mb-0.5">${g.name}</h3><p class="text-[11px] text-eh-dim mb-1">by ${g.author}</p><p class="text-xs text-eh-muted leading-relaxed mb-3" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${g.desc}</p><div class="red-btn block text-center py-2 rounded-xl text-white text-xs font-bold tracking-wide">Play Now</div></div></div>`).join('');
             lucide.createIcons();
         }
 
-        // ===== IFRAME GAME =====
+        // ===== GAME IFRAME =====
         function launchGame(url, name) {
             currentGameUrl = url; currentGameName = name;
             document.getElementById('iframeTitle').textContent = name;
             document.getElementById('gameIframe').src = url;
-            document.getElementById('iframeOverlay').classList.remove('hidden');
-            document.getElementById('iframeOverlay').style.display = 'flex';
-            document.getElementById('minimizedGame').classList.add('hidden');
+            document.getElementById('iframeOverlay').classList.remove('hidden'); document.getElementById('iframeOverlay').style.display = 'flex';
+            document.getElementById('minimizedGame').classList.add('hidden'); document.body.style.overflow = 'hidden';
+        }
+        function minimizeGame() { document.getElementById('iframeOverlay').style.display = 'none'; document.getElementById('minimizedTitle').textContent = currentGameName; document.getElementById('minimizedGame').classList.remove('hidden'); document.body.style.overflow = ''; }
+        function restoreGame() { document.getElementById('iframeOverlay').style.display = 'flex'; document.getElementById('minimizedGame').classList.add('hidden'); document.body.style.overflow = 'hidden'; }
+        function closeGame() { document.getElementById('iframeOverlay').style.display = 'none'; document.getElementById('iframeOverlay').classList.add('hidden'); document.getElementById('gameIframe').src = ''; document.getElementById('minimizedGame').classList.add('hidden'); document.body.style.overflow = ''; currentGameUrl = ''; currentGameName = ''; }
+
+        // ===== VIDEOS =====
+        function extractYouTubeId(url) {
+            if (!url) return null;
+            const patterns = [
+                /(?:youtube\.com\/watch\?v=|youtube\.com\/embed\/|youtu\.be\/|youtube\.com\/v\/|youtube\.com\/watch\?.+&v=)([a-zA-Z0-9_-]{11})/,
+                /^([a-zA-Z0-9_-]{11})$/
+            ];
+            for (const p of patterns) { const m = url.match(p); if (m) return m[1]; }
+            return null;
+        }
+
+        function getYouTubeThumb(videoId) {
+            return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+        }
+
+        async function loadVideos() {
+            const grid = document.getElementById('videoGrid');
+            const empty = document.getElementById('videoEmpty');
+            const loading = document.getElementById('videoLoading');
+            grid.innerHTML = ''; empty.classList.add('hidden'); loading.classList.remove('hidden');
+
+            try {
+                const r = await fetch('vid.json');
+                if (r.ok) { videoData = await r.json(); } else { throw new Error('fetch failed'); }
+            } catch { videoData = [...FALLBACK_VIDEOS]; }
+
+            loading.classList.add('hidden');
+            buildVideoFilters();
+            filterVideos();
+        }
+
+        function buildVideoFilters() {
+            // Game filter pills
+            const games = ['All', ...new Set(videoData.map(v => v.game).filter(Boolean))];
+            document.getElementById('videoGameFilters').innerHTML = games.map(g =>
+                `<button onclick="setVideoGame('${g.replace(/'/g, "\\'")}')" class="vid-game-filter px-3 py-1.5 rounded-full text-xs font-semibold border transition-all whitespace-nowrap ${g === currentVideoGame ? 'bg-eh-red text-white border-eh-red' : 'border-eh-border text-eh-muted hover:border-eh-red hover:text-eh-red'}">${g}</button>`
+            ).join('');
+
+            // YouTuber dropdown
+            const youtubers = [...new Set(videoData.map(v => v.youtuber).filter(Boolean))].sort();
+            const sel = document.getElementById('videoYoutuberFilter');
+            sel.innerHTML = '<option value="All">All YouTubers</option>' + youtubers.map(y => `<option value="${y}">${y}</option>`).join('');
+        }
+
+        function setVideoGame(game) { currentVideoGame = game; buildVideoFilters(); filterVideos(); }
+
+        function filterVideos() {
+            const search = (document.getElementById('videoSearch').value || '').toLowerCase();
+            const youtuber = document.getElementById('videoYoutuberFilter').value;
+
+            const filtered = videoData.filter(v => {
+                const haystack = [v.name, v.youtuber, v.desc, v.game].filter(Boolean).join(' ').toLowerCase();
+                const matchSearch = haystack.includes(search);
+                const matchGame = currentVideoGame === 'All' || v.game === currentVideoGame;
+                const matchYoutuber = youtuber === 'All' || v.youtuber === youtuber;
+                return matchSearch && matchGame && matchYoutuber;
+            });
+
+            document.getElementById('videoCount').textContent = filtered.length + ' video' + (filtered.length !== 1 ? 's' : '');
+            const grid = document.getElementById('videoGrid'), empty = document.getElementById('videoEmpty');
+
+            if (filtered.length === 0) { grid.innerHTML = ''; empty.classList.remove('hidden'); return; }
+            empty.classList.add('hidden');
+
+            grid.innerHTML = filtered.map((v, i) => {
+                const ytId = extractYouTubeId(v.link);
+                const thumb = ytId ? getYouTubeThumb(ytId) : '';
+                return `<div class="video-card bg-eh-card border border-eh-border rounded-2xl overflow-hidden fade-up cursor-pointer" style="animation-delay:${i * 0.04}s" onclick="playVideo('${v.link.replace(/'/g, "\\'")}','${v.name.replace(/'/g, "\\'")}','${v.youtuber.replace(/'/g, "\\'")}')">
+            <div class="yt-thumb relative">
+                ${thumb ? `<img src="${thumb}" alt="${v.name}" class="vid-thumb" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'flex items-center justify-center h-full text-eh-dim\\'><i data-lucide=\\'video\\' class=\\'w-10 h-10\\'></i></div>'">` : `<div class="flex items-center justify-center h-full text-eh-dim"><i data-lucide="video" class="w-10 h-10"></i></div>`}
+                <div class="play-icon absolute top-1/2 left-1/2 w-14 h-14 rounded-full bg-eh-red/90 backdrop-blur-sm flex items-center justify-center shadow-lg shadow-red-900/40">
+                    <i data-lucide="play" class="w-6 h-6 text-white ml-0.5"></i>
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div class="absolute bottom-2.5 left-2.5 right-2.5">
+                    <span class="inline-block px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-eh-red/80 text-white backdrop-blur-sm">${v.game || 'Gaming'}</span>
+                </div>
+            </div>
+            <div class="p-4">
+                <h3 class="text-sm font-bold text-eh-text mb-1.5 leading-snug" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${escapeHtml(v.name)}</h3>
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-5 h-5 rounded-full bg-eh-red/15 flex items-center justify-center text-eh-red text-[9px] font-bold flex-shrink-0">${(v.youtuber || '?').charAt(0)}</div>
+                    <span class="text-xs text-eh-muted font-medium truncate">${escapeHtml(v.youtuber || 'Unknown')}</span>
+                </div>
+                <p class="text-[11px] text-eh-dim leading-relaxed" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${escapeHtml(v.desc)}</p>
+            </div>
+        </div>`;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        // ===== VIDEO PLAYER =====
+        function playVideo(link, name, youtuber) {
+            const ytId = extractYouTubeId(link);
+            if (!ytId) { showToast('Could not load this video', 'error'); return; }
+
+            currentVideoId = ytId; currentVideoName = name; currentVideoYoutuber = youtuber;
+
+            document.getElementById('videoOverlayTitle').textContent = name;
+            document.getElementById('videoOverlayYoutuber').textContent = youtuber;
+            document.getElementById('videoIframe').src = `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1`;
+
+            document.getElementById('videoOverlay').classList.remove('hidden');
+            document.getElementById('videoOverlay').style.display = 'flex';
+            document.getElementById('minimizedVideo').classList.add('hidden');
             document.body.style.overflow = 'hidden';
         }
-        function minimizeGame() {
-            document.getElementById('iframeOverlay').style.display = 'none';
-            document.getElementById('minimizedTitle').textContent = currentGameName;
-            document.getElementById('minimizedGame').classList.remove('hidden');
+
+        function minimizeVideo() {
+            document.getElementById('videoOverlay').style.display = 'none';
+            document.getElementById('minimizedVideoTitle').textContent = currentVideoName;
+            document.getElementById('minimizedVideo').classList.remove('hidden');
             document.body.style.overflow = '';
         }
-        function restoreGame() {
-            document.getElementById('iframeOverlay').style.display = 'flex';
-            document.getElementById('minimizedGame').classList.add('hidden');
+
+        function restoreVideo() {
+            document.getElementById('videoOverlay').style.display = 'flex';
+            document.getElementById('minimizedVideo').classList.add('hidden');
             document.body.style.overflow = 'hidden';
         }
-        function closeGame() {
-            document.getElementById('iframeOverlay').style.display = 'none';
-            document.getElementById('iframeOverlay').classList.add('hidden');
-            document.getElementById('gameIframe').src = '';
-            document.getElementById('minimizedGame').classList.add('hidden');
+
+        function closeVideo() {
+            document.getElementById('videoOverlay').style.display = 'none';
+            document.getElementById('videoOverlay').classList.add('hidden');
+            document.getElementById('videoIframe').src = '';
+            document.getElementById('minimizedVideo').classList.add('hidden');
             document.body.style.overflow = '';
-            currentGameUrl = ''; currentGameName = '';
+            currentVideoId = ''; currentVideoName = ''; currentVideoYoutuber = '';
         }
 
         // ===== NEWS =====
         async function loadNews() {
-            const feed = document.getElementById('newsFeed');
-            const empty = document.getElementById('newsEmpty');
-            const errEl = document.getElementById('newsError');
+            const feed = document.getElementById('newsFeed'), empty = document.getElementById('newsEmpty'), errEl = document.getElementById('newsError');
             feed.innerHTML = ''; empty.classList.add('hidden'); errEl.classList.add('hidden');
             try {
                 const { data, error } = await supabaseClient.from('news').select('*').order('created_at', { ascending: false });
@@ -924,26 +1117,16 @@
                 feed.innerHTML = data.map((n, i) => {
                     const d = new Date(n.created_at);
                     const ts = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' at ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-                    return `<div class="news-card bg-eh-card border border-eh-border rounded-xl p-4 fade-up" style="animation-delay:${i * 0.05}s">
-                <div class="flex items-start gap-3">
-                    <div class="w-9 h-9 rounded-full bg-eh-red/15 flex items-center justify-center text-eh-red font-bold text-sm flex-shrink-0 mt-0.5">${(n.user_email || '?').charAt(0).toUpperCase()}</div>
-                    <div class="min-w-0 flex-1">
-                        <h4 class="text-sm font-bold text-eh-text mb-1">${escapeHtml(n.title)}</h4>
-                        <p class="text-xs text-eh-muted leading-relaxed mb-2">${escapeHtml(n.description)}</p>
-                        <div class="flex items-center gap-2 text-[10px] text-eh-dim"><span>${n.user_email || 'Anonymous'}</span><span>•</span><span>${ts}</span></div>
-                    </div>
-                </div></div>`;
+                    return `<div class="news-card bg-eh-card border border-eh-border rounded-xl p-4 fade-up" style="animation-delay:${i * 0.05}s"><div class="flex items-start gap-3"><div class="w-9 h-9 rounded-full bg-eh-red/15 flex items-center justify-center text-eh-red font-bold text-sm flex-shrink-0 mt-0.5">${(n.user_email || '?').charAt(0).toUpperCase()}</div><div class="min-w-0 flex-1"><h4 class="text-sm font-bold text-eh-text mb-1">${escapeHtml(n.title)}</h4><p class="text-xs text-eh-muted leading-relaxed mb-2">${escapeHtml(n.description)}</p><div class="flex items-center gap-2 text-[10px] text-eh-dim"><span>${n.user_email || 'Anonymous'}</span><span>•</span><span>${ts}</span></div></div></div></div>`;
                 }).join('');
             } catch (e) { console.error(e); errEl.classList.remove('hidden'); }
         }
 
         async function postNews() {
             if (!currentUser) { showToast('Sign in to post news', 'error'); return; }
-            const title = document.getElementById('newsTitle').value.trim();
-            const desc = document.getElementById('newsDesc').value.trim();
+            const title = document.getElementById('newsTitle').value.trim(), desc = document.getElementById('newsDesc').value.trim();
             if (!title || !desc) { showToast('Title and description are required', 'error'); return; }
-            const btn = document.getElementById('newsPostBtn');
-            btn.disabled = true; btn.textContent = 'Posting...';
+            const btn = document.getElementById('newsPostBtn'); btn.disabled = true; btn.textContent = 'Posting...';
             try {
                 const { error } = await supabaseClient.from('news').insert({ title, description: desc, user_id: currentUser.id, user_email: currentUser.email });
                 if (error) throw error;
@@ -955,40 +1138,21 @@
 
         // ===== COMMUNITY =====
         async function loadCommunity() {
-            const grid = document.getElementById('communityGrid');
-            const empty = document.getElementById('communityEmpty');
-            const errEl = document.getElementById('communityError');
-            const loading = document.getElementById('communityLoading');
-            const countEl = document.getElementById('memberCount');
-            grid.innerHTML = ''; empty.classList.add('hidden'); errEl.classList.add('hidden');
-            loading.classList.remove('hidden');
-            countEl.textContent = '';
-
+            const grid = document.getElementById('communityGrid'), empty = document.getElementById('communityEmpty'), errEl = document.getElementById('communityError'), loading = document.getElementById('communityLoading'), countEl = document.getElementById('memberCount');
+            grid.innerHTML = ''; empty.classList.add('hidden'); errEl.classList.add('hidden'); loading.classList.remove('hidden'); countEl.textContent = '';
             try {
                 const { data, error } = await supabaseClient.from('profiles').select('*');
-                loading.classList.add('hidden');
-                if (error) throw error;
+                loading.classList.add('hidden'); if (error) throw error;
                 allProfiles = data || [];
                 countEl.textContent = allProfiles.length + ' member' + (allProfiles.length !== 1 ? 's' : '');
                 if (allProfiles.length === 0) { empty.classList.remove('hidden'); return; }
                 filterCommunity();
-            } catch (e) {
-                console.error('Community load error:', e);
-                loading.classList.add('hidden');
-                errEl.classList.remove('hidden');
-            }
+            } catch (e) { console.error(e); loading.classList.add('hidden'); errEl.classList.remove('hidden'); }
         }
 
         function filterCommunity() {
-            const search = (document.getElementById('communitySearch').value || '').toLowerCase();
-            const sort = document.getElementById('communitySort').value;
-
-            let filtered = allProfiles.filter(p => {
-                const haystack = [p.username, p.display_name, p.email, p.location, p.bio].filter(Boolean).join(' ').toLowerCase();
-                return haystack.includes(search);
-            });
-
-            // Sort
+            const search = (document.getElementById('communitySearch').value || '').toLowerCase(), sort = document.getElementById('communitySort').value;
+            let filtered = allProfiles.filter(p => { const h = [p.username, p.display_name, p.email, p.location, p.bio].filter(Boolean).join(' ').toLowerCase(); return h.includes(search); });
             switch (sort) {
                 case 'newest': filtered.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)); break;
                 case 'oldest': filtered.sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0)); break;
@@ -996,283 +1160,104 @@
                 case 'most-tokens': filtered.sort((a, b) => (b.tokens || 0) - (a.tokens || 0)); break;
                 case 'username-az': filtered.sort((a, b) => (a.username || '').localeCompare(b.username || '')); break;
             }
-
-            const grid = document.getElementById('communityGrid');
-            const empty = document.getElementById('communityEmpty');
+            const grid = document.getElementById('communityGrid'), empty = document.getElementById('communityEmpty');
             if (filtered.length === 0) { grid.innerHTML = ''; empty.classList.remove('hidden'); return; }
             empty.classList.add('hidden');
-
             grid.innerHTML = filtered.map((p, i) => {
-                const tc = THEME_COLORS[p.theme] || THEME_COLORS.red;
-                const initials = getInitials(p);
-                const fCount = (p.followers || []).length;
-                const fgCount = (p.following || []).length;
-                const isMe = currentUser && p.id === currentUser.id;
-                const isFollowing = currentUser && !isMe && (p.followers || []).includes(currentUser.id);
-                const joinDate = p.created_at ? new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '';
-
+                const tc = THEME_COLORS[p.theme] || THEME_COLORS.red, initials = getInitials(p), fCount = (p.followers || []).length, fgCount = (p.following || []).length;
+                const isMe = currentUser && p.id === currentUser.id, isFollowing = currentUser && !isMe && (p.followers || []).includes(currentUser.id);
                 return `<div class="profile-card bg-eh-card border border-eh-border rounded-2xl overflow-hidden fade-up cursor-pointer" style="animation-delay:${i * 0.04}s" onclick="openProfileModal('${p.id}')">
-            <div class="h-16 relative" style="background:linear-gradient(135deg, ${tc}22, ${tc}08)">
-                <div class="theme-dot absolute top-3 right-3" style="background:${tc}"></div>
-            </div>
+            <div class="h-16 relative" style="background:linear-gradient(135deg,${tc}22,${tc}08)"><div class="theme-dot absolute top-3 right-3" style="background:${tc}"></div></div>
             <div class="px-4 pb-4 -mt-8">
-                <div class="w-14 h-14 rounded-xl border-3 border-eh-card overflow-hidden flex items-center justify-center text-lg font-black flex-shrink-0 mb-3" style="background:linear-gradient(135deg, ${tc}30, ${tc}10); color:${tc}; border: 3px solid #151515;">
-                    ${p.profile_pic ? `<img src="${p.profile_pic}" class="w-full h-full object-cover" onerror="this.outerHTML='${initials}'">` : initials}
-                </div>
+                <div class="w-14 h-14 rounded-xl overflow-hidden flex items-center justify-center text-lg font-black flex-shrink-0 mb-3" style="background:linear-gradient(135deg,${tc}30,${tc}10);color:${tc};border:3px solid #151515">${p.profile_pic ? `<img src="${p.profile_pic}" class="w-full h-full object-cover" onerror="this.outerHTML='${initials}'">` : initials}</div>
                 <h3 class="text-sm font-bold text-eh-text truncate">${escapeHtml(p.display_name || p.username || 'Unknown')}</h3>
                 <p class="text-xs text-eh-muted mb-2">${p.username ? '@' + escapeHtml(p.username) : ''}</p>
                 ${p.bio ? `<p class="text-[11px] text-eh-dim leading-relaxed mb-3" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${escapeHtml(p.bio)}</p>` : '<div class="mb-3"></div>'}
-                <div class="flex items-center gap-4 text-[11px] text-eh-dim mb-3">
-                    <span class="flex items-center gap-1"><strong class="text-eh-text font-semibold">${fCount}</strong> followers</span>
-                    <span class="flex items-center gap-1"><strong class="text-eh-text font-semibold">${fgCount}</strong> following</span>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-[10px] text-eh-dim">${p.location ? '📍 ' + escapeHtml(p.location) : joinDate}</span>
-                    ${isMe ? '<span class="text-[10px] text-eh-dim font-semibold">You</span>' :
-                        `<button onclick="event.stopPropagation();toggleFollow('${p.id}',this)" class="outline-btn px-3 py-1.5 rounded-lg text-[11px] font-semibold ${isFollowing ? 'following' : 'text-eh-muted'}">${isFollowing ? 'Following' : 'Follow'}</button>`}
-                </div>
-            </div>
-        </div>`;
+                <div class="flex items-center gap-4 text-[11px] text-eh-dim mb-3"><span><strong class="text-eh-text font-semibold">${fCount}</strong> followers</span><span><strong class="text-eh-text font-semibold">${fgCount}</strong> following</span></div>
+                <div class="flex items-center justify-between"><span class="text-[10px] text-eh-dim">${p.location ? '📍 ' + escapeHtml(p.location) : (p.created_at ? new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '')}</span>
+                ${isMe ? '<span class="text-[10px] text-eh-dim font-semibold">You</span>' : `<button onclick="event.stopPropagation();toggleFollow('${p.id}',this)" class="outline-btn px-3 py-1.5 rounded-lg text-[11px] font-semibold ${isFollowing ? 'following' : 'text-eh-muted'}">${isFollowing ? 'Following' : 'Follow'}</button>`}</div>
+            </div></div>`;
             }).join('');
             lucide.createIcons();
         }
 
         function getInitials(p) {
-            if (p.display_name) {
-                const parts = p.display_name.trim().split(/\s+/);
-                return parts.length >= 2 ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase() : parts[0][0].toUpperCase();
-            }
-            if (p.username) return p.username[0].toUpperCase();
-            if (p.email) return p.email[0].toUpperCase();
-            return '?';
+            if (p.display_name) { const s = p.display_name.trim().split(/\s+/); return s.length >= 2 ? (s[0][0] + s[s.length - 1][0]).toUpperCase() : s[0][0].toUpperCase(); }
+            if (p.username) return p.username[0].toUpperCase(); if (p.email) return p.email[0].toUpperCase(); return '?';
         }
 
         async function toggleFollow(targetId, btnEl) {
-            if (!currentUser) { showToast('Sign in to follow users', 'error'); return; }
-            if (targetId === currentUser.id) return;
-
-            const isFollowing = btnEl.classList.contains('following');
-            btnEl.disabled = true;
-            btnEl.textContent = '...';
-
+            if (!currentUser) { showToast('Sign in to follow users', 'error'); return; } if (targetId === currentUser.id) return;
+            const isFollowing = btnEl.classList.contains('following'); btnEl.disabled = true; btnEl.textContent = '...';
             try {
-                // Fetch current followers array
-                const { data: profile, error: fetchErr } = await supabaseClient
-                    .from('profiles').select('followers').eq('id', targetId).single();
-                if (fetchErr) throw fetchErr;
-
+                const { data: profile } = await supabaseClient.from('profiles').select('followers').eq('id', targetId).single();
                 let followers = profile.followers || [];
-                if (isFollowing) {
-                    followers = followers.filter(id => id !== currentUser.id);
-                } else {
-                    if (!followers.includes(currentUser.id)) followers.push(currentUser.id);
-                }
-
-                const { error: updateErr } = await supabaseClient
-                    .from('profiles').update({ followers }).eq('id', targetId);
-                if (updateErr) throw updateErr;
-
-                // Also update the viewer's following array
-                const { data: myProfile, error: myFetchErr } = await supabaseClient
-                    .from('profiles').select('following').eq('id', currentUser.id).single();
-                if (!myFetchErr && myProfile) {
-                    let following = myProfile.following || [];
-                    if (isFollowing) {
-                        following = following.filter(id => id !== targetId);
-                    } else {
-                        if (!following.includes(targetId)) following.push(targetId);
-                    }
-                    await supabaseClient.from('profiles').update({ following }).eq('id', currentUser.id);
-                }
-
-                // Update local state
-                const targetProfile = allProfiles.find(p => p.id === targetId);
-                if (targetProfile) targetProfile.followers = followers;
-
-                if (isFollowing) {
-                    btnEl.classList.remove('following');
-                    btnEl.textContent = 'Follow';
-                } else {
-                    btnEl.classList.add('following');
-                    btnEl.textContent = 'Following';
-                }
-                btnEl.disabled = false;
-            } catch (e) {
-                console.error('Follow error:', e);
-                showToast('Failed to update follow status', 'error');
-                btnEl.disabled = false;
-                btnEl.textContent = isFollowing ? 'Following' : 'Follow';
-            }
+                if (isFollowing) followers = followers.filter(id => id !== currentUser.id); else { if (!followers.includes(currentUser.id)) followers.push(currentUser.id); }
+                await supabaseClient.from('profiles').update({ followers }).eq('id', targetId);
+                const { data: myP } = await supabaseClient.from('profiles').select('following').eq('id', currentUser.id).single();
+                if (myP) { let following = myP.following || []; if (isFollowing) following = following.filter(id => id !== targetId); else { if (!following.includes(targetId)) following.push(targetId); } await supabaseClient.from('profiles').update({ following }).eq('id', currentUser.id); }
+                const tp = allProfiles.find(p => p.id === targetId); if (tp) tp.followers = followers;
+                btnEl.classList.toggle('following', !isFollowing); btnEl.textContent = isFollowing ? 'Follow' : 'Following'; btnEl.disabled = false;
+            } catch (e) { console.error(e); showToast('Failed to update follow', 'error'); btnEl.disabled = false; btnEl.textContent = isFollowing ? 'Following' : 'Follow'; }
         }
 
         // ===== PROFILE MODAL =====
         function openProfileModal(profileId) {
-            const p = allProfiles.find(pr => pr.id === profileId);
-            if (!p) return;
-            viewingProfileId = profileId;
-
-            const tc = THEME_COLORS[p.theme] || THEME_COLORS.red;
-            const initials = getInitials(p);
-            const fCount = (p.followers || []).length;
-            const fgCount = (p.following || []).length;
-            const isMe = currentUser && p.id === currentUser.id;
-            const isFollowing = currentUser && !isMe && (p.followers || []).includes(currentUser.id);
-
-            // Banner
-            document.getElementById('profileModalBanner').style.background = `linear-gradient(135deg, ${tc}40, ${tc}15, #101010)`;
-
-            // Avatar
-            const avatarEl = document.getElementById('modalAvatar');
-            avatarEl.style.background = `linear-gradient(135deg, ${tc}35, ${tc}15)`;
-            avatarEl.style.color = tc;
-            if (p.profile_pic) {
-                avatarEl.innerHTML = `<img src="${p.profile_pic}" class="w-full h-full object-cover" onerror="this.outerHTML='${escapeHtml(initials)}'">`;
-            } else {
-                avatarEl.textContent = initials;
-            }
-
-            // Name
+            const p = allProfiles.find(pr => pr.id === profileId); if (!p) return; viewingProfileId = profileId;
+            const tc = THEME_COLORS[p.theme] || THEME_COLORS.red, initials = getInitials(p), fCount = (p.followers || []).length, fgCount = (p.following || []).length;
+            const isMe = currentUser && p.id === currentUser.id, isFollowing = currentUser && !isMe && (p.followers || []).includes(currentUser.id);
+            document.getElementById('profileModalBanner').style.background = `linear-gradient(135deg,${tc}40,${tc}15,#101010)`;
+            const av = document.getElementById('modalAvatar'); av.style.background = `linear-gradient(135deg,${tc}35,${tc}15)`; av.style.color = tc;
+            av.innerHTML = p.profile_pic ? `<img src="${p.profile_pic}" class="w-full h-full object-cover" onerror="this.outerHTML='${escapeHtml(initials)}'">` : initials;
             document.getElementById('modalDisplayName').textContent = p.display_name || p.username || 'Unknown';
             document.getElementById('modalUsername').textContent = p.username ? '@' + p.username : '';
-
-            // Bio
-            const bioEl = document.getElementById('modalBio');
-            if (p.bio) { bioEl.textContent = p.bio; bioEl.classList.remove('hidden'); }
-            else { bioEl.classList.add('hidden'); }
-
-            // Stats
-            document.getElementById('modalFollowers').textContent = fCount;
-            document.getElementById('modalFollowing').textContent = fgCount;
-            document.getElementById('modalTokens').textContent = (p.tokens || 0).toLocaleString();
-
-            // Details
-            const detailsEl = document.getElementById('modalDetails');
-            let detailsHtml = '';
-            if (p.email) detailsHtml += `<div class="flex items-center gap-2.5 text-xs"><i data-lucide="mail" class="w-3.5 h-3.5 text-eh-dim flex-shrink-0"></i><span class="text-eh-muted truncate">${escapeHtml(p.email)}</span></div>`;
-            if (p.location) detailsHtml += `<div class="flex items-center gap-2.5 text-xs"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-eh-dim flex-shrink-0"></i><span class="text-eh-muted">${escapeHtml(p.location)}</span></div>`;
-            if (p.website) detailsHtml += `<div class="flex items-center gap-2.5 text-xs"><i data-lucide="globe" class="w-3.5 h-3.5 text-eh-dim flex-shrink-0"></i><a href="${p.website.startsWith('http') ? p.website : 'https://' + p.website}" target="_blank" rel="noopener" class="text-eh-red hover:underline truncate">${escapeHtml(p.website.replace(/^https?:\/\//, ''))}</a></div>`;
-            if (p.peer_id) detailsHtml += `<div class="flex items-center gap-2.5 text-xs"><i data-lucide="wifi" class="w-3.5 h-3.5 text-eh-dim flex-shrink-0"></i><span class="text-eh-muted font-mono text-[11px]">${escapeHtml(p.peer_id)}</span></div>`;
-            if (p.created_at) {
-                const jd = new Date(p.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-                detailsHtml += `<div class="flex items-center gap-2.5 text-xs"><i data-lucide="calendar" class="w-3.5 h-3.5 text-eh-dim flex-shrink-0"></i><span class="text-eh-muted">Joined ${jd}</span></div>`;
-            }
-            if (p.theme) detailsHtml += `<div class="flex items-center gap-2.5 text-xs"><i data-lucide="palette" class="w-3.5 h-3.5 text-eh-dim flex-shrink-0"></i><span class="text-eh-muted capitalize">${p.theme}</span><div class="theme-dot" style="background:${tc}"></div></div>`;
-            detailsEl.innerHTML = detailsHtml;
-
-            // Garage cars
-            const carsWrap = document.getElementById('modalCars');
-            const carsList = document.getElementById('modalCarsList');
-            if (p.garage_cars && Array.isArray(p.garage_cars) && p.garage_cars.length > 0) {
-                carsWrap.classList.remove('hidden');
-                carsList.innerHTML = p.garage_cars.map(c => {
-                    const carName = c.name || c.model || 'Unknown Car';
-                    return `<span class="px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-eh-bg border border-eh-border text-eh-muted">${escapeHtml(carName)}</span>`;
-                }).join('');
-            } else {
-                carsWrap.classList.add('hidden');
-            }
-
-            // Follow button
-            const followBtn = document.getElementById('modalFollowBtn');
-            if (isMe) {
-                followBtn.textContent = 'This Is You';
-                followBtn.className = 'w-full py-3 rounded-xl text-sm font-bold tracking-wide border border-eh-border text-eh-dim cursor-default';
-                followBtn.style.background = 'transparent';
-                followBtn.onclick = null;
-            } else {
-                followBtn.style.background = '';
-                if (isFollowing) {
-                    followBtn.textContent = 'Unfollow';
-                    followBtn.className = 'outline-btn following w-full py-3 rounded-xl text-sm font-bold tracking-wide';
-                } else {
-                    followBtn.textContent = 'Follow';
-                    followBtn.className = 'red-btn w-full py-3 rounded-xl text-white text-sm font-bold tracking-wide';
-                }
-                followBtn.onclick = toggleFollowFromModal;
-            }
-
-            document.getElementById('profileModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-            lucide.createIcons();
+            const bioEl = document.getElementById('modalBio'); if (p.bio) { bioEl.textContent = p.bio; bioEl.classList.remove('hidden'); } else bioEl.classList.add('hidden');
+            document.getElementById('modalFollowers').textContent = fCount; document.getElementById('modalFollowing').textContent = fgCount; document.getElementById('modalTokens').textContent = (p.tokens || 0).toLocaleString();
+            let dHtml = '';
+            if (p.email) dHtml += `<div class="flex items-center gap-2.5 text-xs"><i data-lucide="mail" class="w-3.5 h-3.5 text-eh-dim flex-shrink-0"></i><span class="text-eh-muted truncate">${escapeHtml(p.email)}</span></div>`;
+            if (p.location) dHtml += `<div class="flex items-center gap-2.5 text-xs"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-eh-dim flex-shrink-0"></i><span class="text-eh-muted">${escapeHtml(p.location)}</span></div>`;
+            if (p.website) dHtml += `<div class="flex items-center gap-2.5 text-xs"><i data-lucide="globe" class="w-3.5 h-3.5 text-eh-dim flex-shrink-0"></i><a href="${p.website.startsWith('http') ? p.website : 'https://' + p.website}" target="_blank" rel="noopener" class="text-eh-red hover:underline truncate">${escapeHtml(p.website.replace(/^https?:\/\//, ''))}</a></div>`;
+            if (p.peer_id) dHtml += `<div class="flex items-center gap-2.5 text-xs"><i data-lucide="wifi" class="w-3.5 h-3.5 text-eh-dim flex-shrink-0"></i><span class="text-eh-muted font-mono text-[11px]">${escapeHtml(p.peer_id)}</span></div>`;
+            if (p.created_at) dHtml += `<div class="flex items-center gap-2.5 text-xs"><i data-lucide="calendar" class="w-3.5 h-3.5 text-eh-dim flex-shrink-0"></i><span class="text-eh-muted">Joined ${new Date(p.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span></div>`;
+            if (p.theme) dHtml += `<div class="flex items-center gap-2.5 text-xs"><i data-lucide="palette" class="w-3.5 h-3.5 text-eh-dim flex-shrink-0"></i><span class="text-eh-muted capitalize">${p.theme}</span><div class="theme-dot" style="background:${tc}"></div></div>`;
+            document.getElementById('modalDetails').innerHTML = dHtml;
+            const cw = document.getElementById('modalCars'), cl = document.getElementById('modalCarsList');
+            if (p.garage_cars && Array.isArray(p.garage_cars) && p.garage_cars.length > 0) { cw.classList.remove('hidden'); cl.innerHTML = p.garage_cars.map(c => `<span class="px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-eh-bg border border-eh-border text-eh-muted">${escapeHtml(c.name || c.model || 'Car')}</span>`).join(''); } else cw.classList.add('hidden');
+            const fb = document.getElementById('modalFollowBtn');
+            if (isMe) { fb.textContent = 'This Is You'; fb.className = 'w-full py-3 rounded-xl text-sm font-bold tracking-wide border border-eh-border text-eh-dim cursor-default'; fb.style.background = 'transparent'; fb.onclick = null; }
+            else { fb.style.background = ''; if (isFollowing) { fb.textContent = 'Unfollow'; fb.className = 'outline-btn following w-full py-3 rounded-xl text-sm font-bold tracking-wide'; } else { fb.textContent = 'Follow'; fb.className = 'red-btn w-full py-3 rounded-xl text-white text-sm font-bold tracking-wide'; } fb.onclick = toggleFollowFromModal; }
+            document.getElementById('profileModal').classList.add('active'); document.body.style.overflow = 'hidden'; lucide.createIcons();
         }
 
         async function toggleFollowFromModal() {
             if (!viewingProfileId || !currentUser) return;
-            const followBtn = document.getElementById('modalFollowBtn');
-            const isFollowing = followBtn.classList.contains('following');
-            followBtn.disabled = true;
-            followBtn.textContent = '...';
-
+            const fb = document.getElementById('modalFollowBtn'), isFollowing = fb.classList.contains('following'); fb.disabled = true; fb.textContent = '...';
             try {
                 const { data: profile } = await supabaseClient.from('profiles').select('followers').eq('id', viewingProfileId).single();
                 let followers = profile.followers || [];
-                if (isFollowing) {
-                    followers = followers.filter(id => id !== currentUser.id);
-                } else {
-                    if (!followers.includes(currentUser.id)) followers.push(currentUser.id);
-                }
+                if (isFollowing) followers = followers.filter(id => id !== currentUser.id); else { if (!followers.includes(currentUser.id)) followers.push(currentUser.id); }
                 await supabaseClient.from('profiles').update({ followers }).eq('id', viewingProfileId);
-
-                // Update my following
-                const { data: myProfile } = await supabaseClient.from('profiles').select('following').eq('id', currentUser.id).single();
-                if (myProfile) {
-                    let following = myProfile.following || [];
-                    if (isFollowing) { following = following.filter(id => id !== viewingProfileId); }
-                    else { if (!following.includes(viewingProfileId)) following.push(viewingProfileId); }
-                    await supabaseClient.from('profiles').update({ following }).eq('id', currentUser.id);
-                }
-
-                // Update local
-                const target = allProfiles.find(p => p.id === viewingProfileId);
-                if (target) target.followers = followers;
-
+                const { data: myP } = await supabaseClient.from('profiles').select('following').eq('id', currentUser.id).single();
+                if (myP) { let f = myP.following || []; if (isFollowing) f = f.filter(id => id !== viewingProfileId); else { if (!f.includes(viewingProfileId)) f.push(viewingProfileId); } await supabaseClient.from('profiles').update({ following: f }).eq('id', currentUser.id); }
+                const tp = allProfiles.find(p => p.id === viewingProfileId); if (tp) tp.followers = followers;
                 document.getElementById('modalFollowers').textContent = followers.length;
-
-                if (isFollowing) {
-                    followBtn.textContent = 'Follow';
-                    followBtn.className = 'red-btn w-full py-3 rounded-xl text-white text-sm font-bold tracking-wide';
-                } else {
-                    followBtn.textContent = 'Unfollow';
-                    followBtn.className = 'outline-btn following w-full py-3 rounded-xl text-sm font-bold tracking-wide';
-                }
-                followBtn.disabled = false;
-                filterCommunity(); // Refresh cards
-            } catch (e) {
-                console.error(e);
-                showToast('Failed to update follow', 'error');
-                followBtn.disabled = false;
-                followBtn.textContent = isFollowing ? 'Unfollow' : 'Follow';
-            }
+                if (isFollowing) { fb.textContent = 'Follow'; fb.className = 'red-btn w-full py-3 rounded-xl text-white text-sm font-bold tracking-wide'; } else { fb.textContent = 'Unfollow'; fb.className = 'outline-btn following w-full py-3 rounded-xl text-sm font-bold tracking-wide'; }
+                fb.disabled = false; filterCommunity();
+            } catch (e) { console.error(e); showToast('Failed to update follow', 'error'); fb.disabled = false; fb.textContent = isFollowing ? 'Unfollow' : 'Follow'; }
         }
 
-        function closeProfileModal() {
-            document.getElementById('profileModal').classList.remove('active');
-            document.body.style.overflow = '';
-            viewingProfileId = null;
-        }
+        function closeProfileModal() { document.getElementById('profileModal').classList.remove('active'); document.body.style.overflow = ''; viewingProfileId = null; }
 
         // ===== UTILITIES =====
-        function escapeHtml(str) {
-            if (!str) return '';
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-
+        function escapeHtml(str) { if (!str) return ''; const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
         let toastTimer;
-        function showToast(msg, type = 'success') {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.className = `toast fixed bottom-5 left-1/2 -translate-x-1/2 z-[600] px-5 py-3 rounded-xl text-sm font-medium shadow-2xl ${type === 'error' ? 'bg-red-600 text-white' : 'bg-eh-surface border border-eh-border text-eh-text'}`;
-            clearTimeout(toastTimer);
-            requestAnimationFrame(() => t.classList.add('show'));
-            toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
-        }
+        function showToast(msg, type = 'success') { const t = document.getElementById('toast'); t.textContent = msg; t.className = `toast fixed bottom-5 left-1/2 -translate-x-1/2 z-[600] px-5 py-3 rounded-xl text-sm font-medium shadow-2xl ${type === 'error' ? 'bg-red-600 text-white' : 'bg-eh-surface border border-eh-border text-eh-text'}`; clearTimeout(toastTimer); requestAnimationFrame(() => t.classList.add('show')); toastTimer = setTimeout(() => t.classList.remove('show'), 3000); }
 
-        // ===== KEYBOARD SHORTCUTS =====
+        // ===== KEYBOARD =====
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape') {
                 if (document.getElementById('profileModal').classList.contains('active')) closeProfileModal();
+                else if (document.getElementById('videoOverlay').style.display === 'flex') minimizeVideo();
                 else if (document.getElementById('iframeOverlay').style.display === 'flex') minimizeGame();
             }
         });
@@ -1284,18 +1269,11 @@
             if (session && session.user) showDashboard(session.user);
             supabaseClient.auth.onAuthStateChange((event, session) => {
                 if (event === 'SIGNED_IN' && session) showDashboard(session.user);
-                if (event === 'SIGNED_OUT') {
-                    currentUser = null;
-                    document.getElementById('dashboardPage').classList.add('hidden');
-                    document.getElementById('authPage').style.display = 'flex';
-                }
+                if (event === 'SIGNED_OUT') { currentUser = null; document.getElementById('dashboardPage').classList.add('hidden'); document.getElementById('authPage').style.display = 'flex'; }
             });
             await Promise.all([loadLibraryGames(), loadPlayGames()]);
-            buildGenreFilters();
-            renderLibrary();
-            renderPlayGames();
+            buildGenreFilters(); renderLibrary(); renderPlayGames();
         }
-
         init();
     </script>
 </body>
