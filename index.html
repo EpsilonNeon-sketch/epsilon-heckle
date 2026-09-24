@@ -1387,6 +1387,95 @@ You are embedded inside Epsilon Heckle, which has:
         // ===== THEME COLORS =====
         const THEME_COLORS = { purple: '#a855f7', pink: '#ec4899', red: '#ef4444', orange: '#f97316', yellow: '#eab308', blue: '#3b82f6', green: '#22c55e', white: '#e5e7eb' };
 
+// ============================================
+// PAUI CONFIG — Epsilon Heckle (hck)
+// ============================================
+const PAUI_CONFIG = {
+    ssn: 'hck',
+    lsn: 'Epsilon Heckle',
+    pnb: [],
+    npnb: ['library', 'play', 'videos', 'news', 'community'],
+};
+// ============================================
+// PAUI CORE — don't touch below
+// ============================================
+
+// Resolve a nav element by id first, then by data-page attribute
+function pauiResolveNavEl(value) {
+    const byId = document.getElementById(value);
+    if (byId) return byId;
+
+    const byDataPage = document.querySelector(`[data-page="${value}"]`);
+    if (byDataPage) return byDataPage;
+
+    console.warn(`PAUI: nav element "${value}" not found by id or data-page`);
+    return null;
+}
+
+// Show nav buttons (accepts array of ids or data-page values)
+function showNavBtn(btns) {
+    btns.forEach(val => {
+        const el = pauiResolveNavEl(val);
+        if (el) el.style.display = '';
+    });
+}
+
+// Hide nav buttons (accepts array of ids or data-page values)
+function hideNavBtn(btns) {
+    btns.forEach(val => {
+        const el = pauiResolveNavEl(val);
+        if (el) el.style.display = 'none';
+    });
+}
+
+// Load premium status from Supabase and toggle nav visibility
+async function pauiLoadAccess() {
+    // Get current logged-in user
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+
+    if (!user || authError) {
+        // Not logged in — hide premium, show non-premium
+        hideNavBtn(PAUI_CONFIG.pnb);
+        showNavBtn(PAUI_CONFIG.npnb);
+        return false;
+    }
+
+    // Query profiles table for the paui_<ssn> column
+    const columnName = `paui_${PAUI_CONFIG.ssn}`;
+
+    const { data, error } = await supabaseClient
+        .from('profiles')
+        .select(columnName)
+        .eq('id', user.id)
+        .single();
+
+    if (error || !data) {
+        console.error('PAUI: error fetching premium status', error);
+        hideNavBtn(PAUI_CONFIG.pnb);
+        showNavBtn(PAUI_CONFIG.npnb);
+        return false;
+    }
+
+    const isPremium = data[columnName];
+
+    if (isPremium === true) {
+        // Premium user — show premium btns AND non-premium btns
+        showNavBtn(PAUI_CONFIG.pnb);
+        showNavBtn(PAUI_CONFIG.npnb);
+    } else {
+        // Free user — hide premium btns, show non-premium btns
+        hideNavBtn(PAUI_CONFIG.pnb);
+        showNavBtn(PAUI_CONFIG.npnb);
+    }
+
+    return isPremium;
+}
+
+// ============================================
+// INIT — run on page load
+// ============================================
+pauiLoadAccess();
+
         // ===== FALLBACK DATA =====
         const FALLBACK_LIBRARY = [
             { id: 540, title: "Overwatch", thumbnail: "https://www.freetogame.com/g/540/thumbnail.jpg", short_description: "A hero-focused first-person team shooter from Blizzard Entertainment.", game_url: "https://www.freetogame.com/open/overwatch", genre: "Shooter", platform: "PC (Windows)", publisher: "Activision Blizzard", developer: "Blizzard Entertainment", release_date: "2022-10-04", freetogame_profile_url: "https://www.freetogame.com/overwatch" },
