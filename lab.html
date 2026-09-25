@@ -7,6 +7,7 @@
 <title>Epsilon Heckle Studio</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
 <script type="importmap">
 {
   "imports": {
@@ -198,6 +199,118 @@
     animation: slideUp 0.2s ease;
   }
   @keyframes slideUp { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  /* Dialog (alert/confirm/prompt replacement) */
+  .dialog-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(6px); z-index: 300;
+    display: flex; align-items: center; justify-content: center;
+    animation: fadeIn 0.15s ease;
+  }
+  .dialog-box {
+    background: var(--bg-1); border: 1px solid var(--border-2);
+    border-radius: 10px; min-width: 360px; max-width: 90vw;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 0 1px var(--red-glow);
+    animation: slideUp 0.2s ease; overflow: hidden;
+  }
+  .dialog-box .dialog-header {
+    padding: 14px 18px; border-bottom: 1px solid var(--border-1);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .dialog-box .dialog-icon {
+    width: 32px; height: 32px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .dialog-box .dialog-icon.info { background: rgba(59,130,246,0.2); color: #60a5fa; }
+  .dialog-box .dialog-icon.warning { background: rgba(245,158,11,0.2); color: #fbbf24; }
+  .dialog-box .dialog-icon.danger { background: rgba(225,29,42,0.2); color: var(--red-bright); }
+  .dialog-box .dialog-icon.success { background: rgba(34,197,94,0.2); color: #4ade80; }
+  .dialog-box .dialog-title {
+    font-size: 14px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--text-0);
+  }
+  .dialog-box .dialog-body { padding: 18px; }
+  .dialog-box .dialog-message {
+    color: var(--text-1); font-size: 13px; line-height: 1.5;
+  }
+  .dialog-box .dialog-input {
+    width: 100%; margin-top: 12px;
+  }
+  .dialog-box .dialog-actions {
+    padding: 12px 18px; border-top: 1px solid var(--border-1);
+    display: flex; justify-content: flex-end; gap: 8px;
+    background: var(--bg-0);
+  }
+
+  /* Input text color fix: inputs with light backgrounds get dark text */
+  input.input[type="text"], input.input[type="number"], input.input[type="email"],
+  input.input[type="url"], input.input[type="search"], textarea.input,
+  select.input {
+    color: var(--text-0);
+  }
+  input[type="color"].input-color {
+    background: var(--bg-0); cursor: pointer;
+  }
+  /* When an input has a light background (e.g., set via inline style), use dark text */
+  input.light-input, textarea.light-input, select.light-input {
+    background: #ffffff; color: #000000;
+  }
+  .dialog-input-field {
+    width: 100%; padding: 8px 10px; border-radius: 5px;
+    border: 1px solid var(--border-2); background: #ffffff; color: #000000;
+    font-size: 13px; outline: none;
+  }
+  .dialog-input-field:focus { border-color: var(--red); box-shadow: 0 0 0 2px var(--red-glow); }
+
+  /* Keybind capture */
+  .keybind-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 12px; border-bottom: 1px solid var(--border-1);
+  }
+  .keybind-row label { font-size: 12px; color: var(--text-1); }
+  .keybind-btn {
+    padding: 4px 12px; border-radius: 4px; cursor: pointer;
+    background: var(--bg-3); border: 1px solid var(--border-2);
+    color: var(--text-0); font-size: 11px; font-family: monospace;
+    min-width: 80px; text-align: center; transition: all 0.1s;
+  }
+  .keybind-btn:hover { border-color: var(--red); }
+  .keybind-btn.capturing {
+    background: var(--red); border-color: var(--red-bright);
+    color: #fff; animation: pulse 1s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+  /* JSON code editor */
+  .json-editor {
+    width: 100%; min-height: 400px; padding: 12px;
+    background: #0d0d0d; color: #d4d4d4;
+    border: 1px solid var(--border-1); border-radius: 6px;
+    font-family: 'JetBrains Mono', 'Consolas', monospace;
+    font-size: 12px; line-height: 1.5; resize: vertical;
+    outline: none; tab-size: 2;
+  }
+  .json-editor:focus { border-color: var(--red); box-shadow: 0 0 0 2px var(--red-glow); }
+
+  /* Prefab cards */
+  .prefab-card {
+    background: var(--bg-2); border: 1px solid var(--border-1);
+    border-radius: 6px; padding: 8px; cursor: pointer;
+    transition: all 0.15s; display: flex; flex-direction: column;
+    align-items: center; gap: 4px; aspect-ratio: 1;
+  }
+  .prefab-card:hover {
+    border-color: var(--red); background: var(--bg-3);
+    transform: translateY(-1px);
+  }
+
+  /* Portal marker */
+  .portal-marker {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none; z-index: 5;
+  }
 
   .toast-container {
     position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
@@ -445,6 +558,7 @@
   .role-patrol { background: #581c87; color: #d8b4fe; }
   .role-stationary { background: #44403c; color: #d6d3d1; }
   .role-pickup { background: #713f12; color: #fde047; }
+  .role-portal { background: #581c87; color: #d8b4fe; }
 
   .template-card {
     background: var(--bg-2); border: 1px solid var(--border-1);
@@ -513,8 +627,11 @@
       <button class="btn btn-ghost" onclick="Scenes.newScene()" title="New Scene"><i data-lucide="file-plus"></i><span class="hidden sm:inline">New</span></button>
       <button class="btn btn-ghost" onclick="Projects.saveCurrent()" title="Save Project"><i data-lucide="save"></i><span class="hidden sm:inline">Save</span></button>
       <button class="btn btn-ghost" onclick="UI.openExportModal()" title="Export"><i data-lucide="download"></i><span class="hidden sm:inline">Export</span></button>
+      <button class="btn btn-ghost" onclick="JsonCoder.openModal()" title="JSON Coder"><i data-lucide="braces"></i><span class="hidden sm:inline">JSON</span></button>
       <div class="w-px h-6 bg-neutral-800 mx-1"></div>
+      <button class="btn btn-ghost" onclick="Portals.openPortalModal()" title="Create Portal"><i data-lucide="circle-dot"></i><span class="hidden sm:inline">Portal</span></button>
       <button class="btn btn-ghost" onclick="UI.openRulesModal()" title="Game Rules"><i data-lucide="heart-pulse"></i><span class="hidden sm:inline">Rules</span></button>
+      <button class="btn btn-ghost" onclick="ActionMap.openSettingsModal()" title="Action Map"><i data-lucide="keyboard"></i></button>
       <button class="btn btn-ghost" onclick="UI.openSettingsModal()" title="Settings"><i data-lucide="settings"></i></button>
       <button class="btn btn-ghost" onclick="UI.openHelpModal()" title="Help"><i data-lucide="help-circle"></i></button>
       <div class="w-px h-6 bg-neutral-800 mx-1"></div>
@@ -546,6 +663,12 @@
       </div>
       <div class="tab-btn" data-tab="entities" onclick="UI.switchTab('entities')">
         <i data-lucide="bot" class="w-4 h-4"></i>Entities
+      </div>
+      <div class="tab-btn" data-tab="effects" onclick="UI.switchTab('effects')">
+        <i data-lucide="sparkles" class="w-4 h-4"></i>FX
+      </div>
+      <div class="tab-btn" data-tab="prefabs" onclick="UI.switchTab('prefabs')">
+        <i data-lucide="package-2" class="w-4 h-4"></i>Prefabs
       </div>
       <div class="tab-btn" data-tab="env" onclick="UI.switchTab('env')">
         <i data-lucide="cloud-sun" class="w-4 h-4"></i>World
@@ -597,6 +720,34 @@
       </div>
     </div>
 
+    <div id="tab-effects" class="tab-content flex-1 overflow-auto hidden">
+      <div class="section-title">Effects & Animations</div>
+      <div class="text-[10px] text-neutral-500 px-3 pb-2">Click any effect to test it at the origin. Use scripts or JSON to trigger during play.</div>
+      <div class="grid grid-cols-3 gap-2 p-3" id="effectsGrid"></div>
+      <div class="section-title">Trigger on Selected</div>
+      <div class="p-3">
+        <select id="effectSelectForObj" class="input mb-2"></select>
+        <button class="btn btn-primary w-full justify-center" onclick="UI.triggerEffectOnSelected()"><i data-lucide="play"></i>Trigger Effect</button>
+      </div>
+      <div class="section-title">Smart Helpers</div>
+      <div class="p-3 text-[10px] text-neutral-500 space-y-1">
+        <div><code class="text-red-400">Effects.spawn('fire', position)</code></div>
+        <div><code class="text-red-400">Effects.triggerAt('explosion', obj)</code></div>
+        <div><code class="text-red-400">Effects.triggerBetween('lightning', obj1, obj2)</code></div>
+      </div>
+    </div>
+
+    <div id="tab-prefabs" class="tab-content flex-1 overflow-auto hidden">
+      <div class="section-title flex items-center justify-between">
+        <span>Prefabs</span>
+        <button class="btn btn-primary btn-icon" onclick="Prefabs.saveFromSelected()" title="Save Selected as Prefab"><i data-lucide="plus" class="w-3 h-3"></i></button>
+      </div>
+      <div class="text-[10px] text-neutral-500 px-3 pb-2">Save any object as a reusable prefab. Click to instantiate.</div>
+      <div id="prefabsList" class="p-2 space-y-1">
+        <div class="text-neutral-600 text-xs px-3 py-4 text-center">No prefabs yet. Select an object and click +.</div>
+      </div>
+    </div>
+
     <div id="tab-env" class="tab-content flex-1 overflow-auto hidden">
       <div class="section-title">Sky & Lighting</div>
       <div class="inspector-row"><label>Sky Color</label><input type="color" id="envSkyColor" class="input-color" value="#0a0a12" onchange="Engine.setSkyColor(this.value)"></div>
@@ -625,6 +776,12 @@
         <div class="inspector-row"><label>Height Scale</label><input type="range" id="terrainHeight" min="0" max="50" step="1" value="10" oninput="Engine.setTerrainHeight(this.value)"></div>
         <div class="inspector-row"><label>Regenerate</label><button class="btn w-full justify-center" onclick="Engine.regenerateTerrain()"><i data-lucide="refresh-cw"></i>Regenerate</button></div>
       </div>
+
+      <div class="section-title">Day / Night Cycle</div>
+      <div class="inspector-row"><label>Enable</label><input type="checkbox" id="dnEnable" onchange="DayNight.setEnabled(this.checked)"></div>
+      <div class="inspector-row"><label>Time of Day</label><input type="range" id="dnTime" min="0" max="1" step="0.01" value="0.3" oninput="DayNight.setTime(parseFloat(this.value))"></div>
+      <div class="inspector-row"><label>Cycle Speed</label><input type="range" id="dnSpeed" min="0" max="0.05" step="0.001" value="0.005" oninput="DayNight.setSpeed(parseFloat(this.value))"></div>
+      <div class="inspector-row"><label>Status</label><div class="text-xs text-neutral-400" id="dnStatus">Disabled</div></div>
     </div>
   </aside>
 
@@ -752,6 +909,108 @@ function showLoading(text='Loading...') {
   $('#loadingOverlay').classList.remove('hidden');
 }
 function hideLoading() { $('#loadingOverlay').classList.add('hidden'); }
+
+// ============================================================
+// DIALOG MODULE — replaces native alert/confirm/prompt
+// All methods return Promises. Use: await Dialog.confirm('Delete?')
+// ============================================================
+const Dialog = (() => {
+  const ICONS = {
+    info: 'info',
+    warning: 'alert-triangle',
+    danger: 'alert-octagon',
+    success: 'check-circle',
+  };
+
+  function _create(type, title, message, opts = {}) {
+    return new Promise((resolve) => {
+      const backdrop = document.createElement('div');
+      backdrop.className = 'dialog-backdrop';
+      const icon = ICONS[type] || ICONS.info;
+      const hasInput = opts.input !== undefined;
+      const inputValue = opts.input ?? '';
+      const placeholder = opts.placeholder || '';
+      const confirmText = opts.confirmText || 'OK';
+      const cancelText = opts.cancelText || 'Cancel';
+      const isConfirm = opts.mode === 'confirm';
+      const isPrompt = opts.mode === 'prompt';
+
+      backdrop.innerHTML = `
+        <div class="dialog-box">
+          <div class="dialog-header">
+            <div class="dialog-icon ${type}">
+              <i data-lucide="${icon}" class="w-5 h-5"></i>
+            </div>
+            <div class="dialog-title">${escapeHtml(title)}</div>
+          </div>
+          <div class="dialog-body">
+            <div class="dialog-message">${escapeHtml(message)}</div>
+            ${isPrompt ? `<input type="text" class="dialog-input-field" id="__dialogInput" value="${escapeAttr(inputValue)}" placeholder="${escapeAttr(placeholder)}">` : ''}
+          </div>
+          <div class="dialog-actions">
+            ${isConfirm || isPrompt ? `<button class="btn" id="__dialogCancel">${escapeHtml(cancelText)}</button>` : ''}
+            <button class="btn btn-primary" id="__dialogOk">${escapeHtml(confirmText)}</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(backdrop);
+      lucide.createIcons();
+
+      const input = backdrop.querySelector('#__dialogInput');
+      if (input) setTimeout(() => input.focus(), 50);
+
+      function close(result) {
+        backdrop.style.opacity = '0';
+        backdrop.style.transition = 'opacity 0.15s';
+        setTimeout(() => backdrop.remove(), 150);
+        resolve(result);
+      }
+
+      backdrop.querySelector('#__dialogOk').onclick = () => {
+        if (isPrompt) close(input.value);
+        else if (isConfirm) close(true);
+        else close(true);
+      };
+      const cancelBtn = backdrop.querySelector('#__dialogCancel');
+      if (cancelBtn) cancelBtn.onclick = () => close(isPrompt ? null : false);
+      backdrop.onclick = (e) => { if (e.target === backdrop && !isConfirm && !isPrompt) close(true); };
+      if (input) {
+        input.onkeydown = (e) => { if (e.key === 'Enter') close(input.value); if (e.key === 'Escape') close(null); };
+      }
+      // Esc to dismiss
+      const escHandler = (e) => {
+        if (e.key === 'Escape') {
+          document.removeEventListener('keydown', escHandler);
+          if (isConfirm) close(false);
+          else if (isPrompt) close(null);
+          else close(true);
+        } else if (e.key === 'Enter' && !isPrompt) {
+          document.removeEventListener('keydown', escHandler);
+          if (isConfirm) close(true);
+          else close(true);
+        }
+      };
+      document.addEventListener('keydown', escHandler);
+    });
+  }
+
+  function alert(message, title = 'Notice', type = 'info') {
+    return _create(type, title, message, { mode: 'alert', confirmText: 'OK' });
+  }
+  function confirm(message, title = 'Confirm', type = 'warning') {
+    return _create(type, title, message, { mode: 'confirm', confirmText: 'Yes', cancelText: 'No' });
+  }
+  function prompt(message, defaultValue = '', title = 'Input', placeholder = '') {
+    return _create('info', title, message, { mode: 'prompt', input: defaultValue, placeholder, confirmText: 'Submit', cancelText: 'Cancel' });
+  }
+  function info(message, title = 'Info') { return alert(message, title, 'info'); }
+  function warning(message, title = 'Warning') { return alert(message, title, 'warning'); }
+  function danger(message, title = 'Danger') { return alert(message, title, 'danger'); }
+  function success(message, title = 'Success') { return alert(message, title, 'success'); }
+
+  return { alert, confirm, prompt, info, warning, danger, success, _create };
+})();
+window.Dialog = Dialog;
 
 function sanitizeFilename(name) {
   return String(name || 'untitled').replace(/[^a-zA-Z0-9_\-\. ]/g, '_').slice(0, 64);
@@ -1261,6 +1520,8 @@ const Engine = (() => {
     UI.buildShapesGrid();
     UI.buildLightsGrid();
     UI.buildAssetsGrid();
+    UI.buildEffectsGrid?.();
+    UI.refreshDayNightUI?.();
     lucide.createIcons();
   }
 
@@ -1289,7 +1550,17 @@ const Engine = (() => {
       state.fpsCounter.frames = 0;
       state.fpsCounter.lastTime = now;
       $('#statusFps').textContent = state.fpsCounter.fps + ' FPS';
+      // Update Day/Night UI label
+      if (typeof DayNight !== 'undefined' && DayNight.getState().enabled) {
+        UI.refreshDayNightUI?.();
+      }
     }
+
+    // Update Day/Night cycle
+    if (typeof DayNight !== 'undefined') DayNight.update(delta);
+
+    // Update Effects
+    if (typeof Effects !== 'undefined') Effects.updateAll(delta);
 
     if (state.play.active) {
       updatePlayMode(delta);
@@ -1539,15 +1810,19 @@ const Engine = (() => {
     state.orbit.update();
   }
 
-  function clearScene() {
+  async function clearScene() {
     if (state.objects.length === 0) { toast('Scene is already empty', 'info'); return; }
-    if (!confirm('Remove all objects from the scene?')) return;
+    const ok = await Dialog.confirm('Remove all objects from the scene?', 'Clear Scene', 'warning');
+    if (!ok) return;
     [...state.objects].forEach(o => deleteObject(o));
     toast('Scene cleared', 'success');
   }
 
-  function newScene() {
-    if (state.objects.length > 0 && !confirm('Start a new scene? Unsaved changes will be lost.')) return;
+  async function newScene() {
+    if (state.objects.length > 0) {
+      const ok = await Dialog.confirm('Start a new scene? Unsaved changes will be lost.', 'New Scene', 'warning');
+      if (!ok) return;
+    }
     [...state.objects].forEach(o => deleteObject(o));
     localStorage.removeItem('eh_autosave');
     addStarterContent();
@@ -1920,10 +2195,10 @@ const Engine = (() => {
     rebuildGround();
   }
 
-  function saveScene() {
+  async function saveScene() {
     try {
       const data = serialize();
-      const name = prompt('Save scene as:', 'MyScene');
+      const name = await Dialog.prompt('Save scene as:', 'MyScene', 'Save Scene', 'Scene name');
       if (!name) return;
       const saves = JSON.parse(localStorage.getItem('eh_saves') || '{}');
       saves[sanitizeFilename(name)] = { data, savedAt: Date.now() };
@@ -2145,22 +2420,29 @@ const Engine = (() => {
     const p = state.play;
     const char = p.character;
     const rules = Rules.getRules();
-    const isRunning = (p.keys['ShiftLeft'] || p.keys['ShiftRight']);
+    const am = ActionMap.getBindings();
+    const isRunning = am.run.some(c => p.keys[c]);
     // Check stamina: if running requires stamina and out of stamina, can't run
     const canRun = isRunning && (!rules.runRequiresStamina || Rules.hasStamina(rules.staminaDrainRun * delta));
     const speed = canRun ? p.runSpeed : p.walkSpeed;
 
+    // Use ActionMap for movement
+    const isFwd = am.forward.some(c => p.keys[c]);
+    const isBack = am.back.some(c => p.keys[c]);
+    const isLeft = am.left.some(c => p.keys[c]);
+    const isRight = am.right.some(c => p.keys[c]);
+
     // Drain stamina if running
-    if (canRun && (p.keys['KeyW'] || p.keys['KeyS'] || p.keys['KeyA'] || p.keys['KeyD'] || p.joystick.active)) {
+    if (canRun && (isFwd || isBack || isLeft || isRight || p.joystick.active)) {
       Rules.drainStamina(rules.staminaDrainRun * delta);
     }
 
     // Input vector
     let ix = 0, iz = 0;
-    if (p.keys['KeyW'] || p.keys['ArrowUp']) iz -= 1;
-    if (p.keys['KeyS'] || p.keys['ArrowDown']) iz += 1;
-    if (p.keys['KeyA'] || p.keys['ArrowLeft']) ix -= 1;
-    if (p.keys['KeyD'] || p.keys['ArrowRight']) ix += 1;
+    if (isFwd) iz -= 1;
+    if (isBack) iz += 1;
+    if (isLeft) ix -= 1;
+    if (isRight) ix += 1;
     if (p.joystick.active) { ix = p.joystick.x; iz = p.joystick.y; }
     const len = Math.hypot(ix, iz);
     if (len > 1) { ix /= len; iz /= len; }
@@ -2181,7 +2463,8 @@ const Engine = (() => {
     // Gravity & jump
     p.velocity.y -= p.gravity * delta;
     const canJump = p.onGround && (!rules.runRequiresStamina || Rules.hasStamina(rules.staminaDrainJump));
-    if (p.keys['Space'] && canJump) {
+    const jumpPressed = am.jump.some(c => p.keys[c]);
+    if (jumpPressed && canJump) {
       p.velocity.y = p.jumpForce;
       p.onGround = false;
       Rules.drainStamina(rules.staminaDrainJump);
@@ -2241,6 +2524,13 @@ const Engine = (() => {
 
     // Update Entities
     try { Entities.updateAll(delta, p); } catch (e) { console.warn('Entity update error', e); }
+
+    // Portal interaction (press interact key)
+    if (p.keys['KeyE'] && !p._portalCooldown) {
+      p._portalCooldown = 1.0;
+      try { Portals.tryInteract(p); } catch (e) { console.warn('Portal error', e); }
+    }
+    if (p._portalCooldown > 0) p._portalCooldown -= delta;
 
     // Camera follow (third-person)
     const camTarget = char.position.clone();
@@ -2453,6 +2743,7 @@ const Engine = (() => {
     saveScene, loadSceneByName, deleteSave, listSaves, exportScene, importScene, serialize, deserialize, deserializeObjectsOnly,
     togglePlay, startPlay, stopPlay,
     getGroundHeightAt, applyEnvironment,
+    finalizeObject,
   };
 })();
 
@@ -2828,8 +3119,9 @@ const UI = (() => {
     Engine.loadSceneByName(name);
   }
 
-  function deleteSave(name) {
-    if (!confirm('Delete save "' + name + '"?')) return;
+  async function deleteSave(name) {
+    const ok = await Dialog.confirm('Delete save "' + name + '"?', 'Delete Save', 'danger');
+    if (!ok) return;
     Engine.deleteSave(name);
     openLoadModal();
     toast('Deleted save', 'success');
@@ -2971,7 +3263,7 @@ const UI = (() => {
           <span class="flex-1 truncate">${escapeHtml(e.name)}</span>
           <span class="role-pill role-${e.role}">${e.role}</span>
           <button class="btn-ghost btn-icon btn" title="Edit" onclick="event.stopPropagation(); Entities.openEntityEditor('${e.id}')"><i data-lucide="pencil" class="w-3 h-3"></i></button>
-          <button class="btn-ghost btn-icon btn" title="Delete" onclick="event.stopPropagation(); if(confirm('Delete ${escapeAttr(e.name)}?')) Entities.remove('${e.id}')"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+          <button class="btn-ghost btn-icon btn" title="Delete" onclick="event.stopPropagation(); Dialog.confirm('Delete ${escapeAttr(e.name)}?', 'Delete Entity', 'danger').then(ok => { if (ok) Entities.remove('${e.id}') })"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
         `;
         row.onclick = () => Entities.select(e.id);
         list.appendChild(row);
@@ -3005,7 +3297,7 @@ const UI = (() => {
         <div class="inspector-row"><label>Max Textures</label><div class="text-xs">${s.renderer?.capabilities?.maxTextures || '-'}</div></div>
         <div class="inspector-row"><label>Platform</label><div class="text-xs">${isMobile ? 'Mobile / Touch' : 'Desktop'}</div></div>
         <div class="border-t border-neutral-800 pt-3">
-          <button class="btn btn-danger w-full justify-center" onclick="if(confirm('Clear all saves and autosave?')) { localStorage.removeItem('eh_saves'); localStorage.removeItem('eh_autosave'); toast('Storage cleared','success'); UI.closeModal(); }">
+          <button class="btn btn-danger w-full justify-center" onclick="Dialog.confirm('Clear all saves and autosave?', 'Clear Storage', 'danger').then(ok => { if (ok) { localStorage.removeItem('eh_saves'); localStorage.removeItem('eh_autosave'); toast('Storage cleared','success'); UI.closeModal(); } })">
             <i data-lucide="trash-2"></i>Clear All Saves
           </button>
         </div>
@@ -3085,6 +3377,89 @@ const UI = (() => {
     return v || 0;
   }
 
+  // ====================== EFFECTS TAB ======================
+  function buildEffectsGrid() {
+    const grid = $('#effectsGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    const effects = Effects.list();
+    effects.forEach(e => {
+      const card = document.createElement('div');
+      card.className = 'asset-card';
+      card.innerHTML = `
+        <div class="icon-wrap" style="color: ${e.color}"><i data-lucide="${e.icon}" class="w-7 h-7"></i></div>
+        <div class="name">${e.name}</div>
+      `;
+      card.title = e.desc;
+      card.onclick = () => {
+        Effects.spawn(e.id, new THREE.Vector3(0, 1, 0));
+        toast(e.name + ' effect triggered', 'success', 1200);
+      };
+      grid.appendChild(card);
+    });
+    // Populate effect select
+    const sel = document.getElementById('effectSelectForObj');
+    if (sel) {
+      sel.innerHTML = effects.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
+    }
+    lucide.createIcons();
+  }
+
+  function triggerEffectOnSelected() {
+    const sel = document.getElementById('effectSelectForObj');
+    const effectId = sel?.value || 'explosion';
+    const obj = Engine.state.selected;
+    if (obj) {
+      Effects.triggerAt(effectId, obj);
+      toast(effectId + ' triggered on ' + obj.userData.name, 'success', 1200);
+    } else {
+      Effects.spawn(effectId, new THREE.Vector3(0, 1, 0));
+      toast(effectId + ' triggered at origin', 'success', 1200);
+    }
+  }
+
+  // ====================== PREFABS TAB ======================
+  function refreshPrefabs() {
+    const list = $('#prefabsList');
+    if (!list) return;
+    const prefabs = Prefabs.list();
+    if (prefabs.length === 0) {
+      list.innerHTML = '<div class="text-neutral-600 text-xs px-3 py-4 text-center">No prefabs yet. Select an object and click +.</div>';
+      return;
+    }
+    list.innerHTML = '';
+    prefabs.forEach(p => {
+      const row = document.createElement('div');
+      row.className = 'entity-row';
+      row.innerHTML = `
+        <i data-lucide="package-2" class="w-3.5 h-3.5"></i>
+        <span class="flex-1 truncate">${escapeHtml(p.name)}</span>
+        <button class="btn-ghost btn-icon btn" title="Instantiate" onclick="Prefabs.instantiate('${p.id}')"><i data-lucide="plus-circle" class="w-3 h-3"></i></button>
+        <button class="btn-ghost btn-icon btn" title="Delete" onclick="Prefabs.remove('${p.id}')"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+      `;
+      row.onclick = () => Prefabs.instantiate(p.id);
+      list.appendChild(row);
+    });
+    lucide.createIcons();
+  }
+
+  // ====================== KEYBINDS / DAYNIGHT UI ======================
+  function openKeybindsModal() {
+    ActionMap.openSettingsModal();
+  }
+
+  function refreshDayNightUI() {
+    const s = DayNight.getState();
+    const dnEnable = document.getElementById('dnEnable');
+    const dnTime = document.getElementById('dnTime');
+    const dnSpeed = document.getElementById('dnSpeed');
+    const dnStatus = document.getElementById('dnStatus');
+    if (dnEnable) dnEnable.checked = s.enabled;
+    if (dnTime) dnTime.value = s.time;
+    if (dnSpeed) dnSpeed.value = s.speed;
+    if (dnStatus) dnStatus.textContent = s.enabled ? (DayNight.getTimeLabel() + ' — ' + DayNight.getPhase()) : 'Disabled';
+  }
+
   return {
     initAssetCategories, buildShapesGrid, buildLightsGrid, buildAssetsGrid, filterAssets,
     switchTab, refreshSceneList, refreshInspector, updateName,
@@ -3095,6 +3470,8 @@ const UI = (() => {
     openRulesModal, updateRule, updateRespawnPoint,
     openNewSceneModal, confirmNewScene,
     refreshEntities,
+    buildEffectsGrid, triggerEffectOnSelected, refreshPrefabs,
+    openKeybindsModal, refreshDayNightUI,
     toggleLeftPanel, toggleRightPanel,
   };
 })();
@@ -3447,11 +3824,12 @@ const Scenes = (() => {
     if (s) { s.name = name; Projects.save(proj); refreshTabs(); }
   }
 
-  function deleteScene(sceneId) {
+  async function deleteScene(sceneId) {
     const proj = Projects.getActive();
     if (!proj) return;
     if (proj.scenes.length <= 1) { toast('Cannot delete the only scene', 'error'); return; }
-    if (!confirm('Delete this scene?')) return;
+    const ok = await Dialog.confirm('Delete this scene?', 'Delete Scene', 'danger');
+    if (!ok) return;
     proj.scenes = proj.scenes.filter(s => s.id !== sceneId);
     if (proj.activeSceneId === sceneId) {
       proj.activeSceneId = proj.scenes[0].id;
@@ -3513,8 +3891,8 @@ const Scenes = (() => {
           switchScene(s.id);
         }
       };
-      tab.ondblclick = () => {
-        const newName = prompt('Rename scene:', s.name);
+      tab.ondblclick = async () => {
+        const newName = await Dialog.prompt('Rename scene:', s.name, 'Rename Scene', 'Scene name');
         if (newName) renameScene(s.id, newName);
       };
       list.appendChild(tab);
@@ -3696,6 +4074,7 @@ const Entities = (() => {
     patrol: { label: 'Patrol', icon: 'route', desc: 'Walks between waypoints.' },
     stationary: { label: 'Stationary', icon: 'pin', desc: 'Does not move.' },
     pickup: { label: 'Pickup', icon: 'package-plus', desc: 'Disappears on contact, restores stats.' },
+    portal: { label: 'Portal', icon: 'circle-dot', desc: 'Teleports player to another scene on interact.' },
   };
 
   const TYPE_INFO = {
@@ -3755,6 +4134,7 @@ const Entities = (() => {
       case 'patrol': return { speed: 2, waypoints: [[3,0,0],[3,0,3],[-3,0,3],[-3,0,0]], currentWaypoint: 0, damageOnContact: 0 };
       case 'stationary': return { damageOnContact: 0 };
       case 'pickup': return { healAmount: 20, staminaAmount: 30, pickupRange: 1.5, respawn: false };
+      case 'portal': return { targetSceneId: null, spawnPoint: [0, 2, 0], pickupRange: 2.0, autoTeleport: false };
       default: return {};
     }
   }
@@ -3921,7 +4301,7 @@ const Entities = (() => {
         <div class="text-[10px] text-neutral-500">${e.script?.length || 0} blocks</div>
       </div>
       <div class="border-t border-neutral-800 pt-3 flex justify-between">
-        <button class="btn btn-danger" onclick="if(confirm('Delete entity?')){Entities.remove('${e.id}'); UI.closeModal();}"><i data-lucide="trash-2"></i>Delete Entity</button>
+        <button class="btn btn-danger" onclick="Dialog.confirm('Delete entity?', 'Delete Entity', 'danger').then(ok => { if (ok) { Entities.remove('${e.id}'); UI.closeModal(); } })"><i data-lucide="trash-2"></i>Delete Entity</button>
         <button class="btn" onclick="UI.closeModal()">Close</button>
       </div>
       </div>
@@ -4230,10 +4610,11 @@ const Blocks = (() => {
     renderScript(e.script);
   }
 
-  function clearScript() {
+  async function clearScript() {
     const e = Entities.get(editingEntityId);
     if (!e) return;
-    if (!confirm('Clear all blocks?')) return;
+    const ok = await Dialog.confirm('Clear all blocks?', 'Clear Script', 'warning');
+    if (!ok) return;
     e.script = [];
     renderScript([]);
   }
@@ -4402,10 +4783,11 @@ const Dashboard = (() => {
     Projects.openProject(proj);
   }
 
-  function deleteProject(id) {
+  async function deleteProject(id) {
     const proj = Projects.load(id);
     if (!proj) return;
-    if (!confirm('Delete project "' + proj.name + '"? This cannot be undone.')) return;
+    const ok = await Dialog.confirm('Delete project "' + proj.name + '"? This cannot be undone.', 'Delete Project', 'danger');
+    if (!ok) return;
     Projects.remove(id);
     refresh();
     toast('Project deleted', 'success');
@@ -4485,6 +4867,1011 @@ const Dashboard = (() => {
   return { show, refresh, openProject, deleteProject, exportProject, openNewProjectWizard, selectTemplate, createProject };
 })();
 window.Dashboard = Dashboard;
+
+// ============================================================
+// ACTION MAP MODULE — rebindable key bindings
+// ============================================================
+const ActionMap = (() => {
+  const DEFAULT_BINDINGS = {
+    forward: ['KeyW', 'ArrowUp'],
+    back: ['KeyS', 'ArrowDown'],
+    left: ['KeyA', 'ArrowLeft'],
+    right: ['KeyD', 'ArrowRight'],
+    run: ['ShiftLeft', 'ShiftRight'],
+    jump: ['Space'],
+    interact: ['KeyE'],
+    look: ['Mouse0'],
+    escape: ['Escape'],
+  };
+
+  const LABELS = {
+    forward: 'Move Forward',
+    back: 'Move Back',
+    left: 'Strafe Left',
+    right: 'Strafe Right',
+    run: 'Run',
+    jump: 'Jump',
+    interact: 'Interact / Use Portal',
+    look: 'Look (Mouse)',
+    escape: 'Release Pointer',
+  };
+
+  let bindings = JSON.parse(JSON.stringify(DEFAULT_BINDINGS));
+
+  function load() {
+    try {
+      const saved = JSON.parse(localStorage.getItem('eh_keybinds') || 'null');
+      if (saved) bindings = Object.assign(JSON.parse(JSON.stringify(DEFAULT_BINDINGS)), saved);
+    } catch {}
+  }
+
+  function save() {
+    localStorage.setItem('eh_keybinds', JSON.stringify(bindings));
+  }
+
+  function getBindings() { return bindings; }
+  function getDefaultBindings() { return DEFAULT_BINDINGS; }
+  function getLabels() { return LABELS; }
+
+  function isAction(action, code) {
+    return bindings[action]?.includes(code);
+  }
+
+  function isAnyActionDown(action, keys) {
+    return (bindings[action] || []).some(c => keys[c]);
+  }
+
+  function setBinding(action, index, code) {
+    if (!bindings[action]) bindings[action] = [];
+    bindings[action][index] = code;
+    save();
+  }
+
+  function resetToDefault() {
+    bindings = JSON.parse(JSON.stringify(DEFAULT_BINDINGS));
+    save();
+  }
+
+  function openSettingsModal() {
+    let html = '<div class="space-y-1">';
+    Object.entries(LABELS).forEach(([action, label]) => {
+      const keys = bindings[action] || [];
+      html += `<div class="keybind-row">
+        <label>${escapeHtml(label)}</label>
+        <div class="flex gap-1">
+          <div class="keybind-btn" data-action="${action}" data-idx="0" onclick="ActionMap.startCapture(this)">${keyName(keys[0]) || '—'}</div>
+          ${keys[1] !== undefined ? `<div class="keybind-btn" data-action="${action}" data-idx="1" onclick="ActionMap.startCapture(this)">${keyName(keys[1])}</div>` : `<div class="keybind-btn opacity-50" data-action="${action}" data-idx="1" onclick="ActionMap.startCapture(this)">+ add</div>`}
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+    UI.openModal('Action Map — Key Bindings', html, `
+      <button class="btn" onclick="ActionMap.resetDefault(); UI.closeModal(); UI.openKeybindsModal();">Reset to Default</button>
+      <button class="btn btn-primary" onclick="UI.closeModal()">Done</button>
+    `);
+    lucide.createIcons();
+  }
+
+  function keyName(code) {
+    if (!code) return '';
+    if (code.startsWith('Key')) return code.slice(3);
+    if (code.startsWith('Arrow')) return code.slice(5) + ' Arrow';
+    if (code.startsWith('Digit')) return code.slice(5);
+    const map = { ShiftLeft: 'L-Shift', ShiftRight: 'R-Shift', ControlLeft: 'L-Ctrl', ControlRight: 'R-Ctrl', AltLeft: 'L-Alt', AltRight: 'R-Alt', Space: 'Space', Enter: 'Enter', Escape: 'Esc', Tab: 'Tab', Mouse0: 'Left Click', Mouse1: 'Middle Click', Mouse2: 'Right Click' };
+    return map[code] || code;
+  }
+
+  let capturing = null;
+  function startCapture(btn) {
+    if (capturing) capturing.classList.remove('capturing');
+    capturing = btn;
+    btn.classList.add('capturing');
+    btn.textContent = 'Press key...';
+  }
+
+  function handleCapture(e) {
+    if (!capturing) return false;
+    e.preventDefault();
+    e.stopPropagation();
+    let code;
+    if (e.type === 'mousedown') code = 'Mouse' + e.button;
+    else code = e.code;
+    const action = capturing.dataset.action;
+    const idx = parseInt(capturing.dataset.idx);
+    setBinding(action, idx, code);
+    capturing.textContent = keyName(code);
+    capturing.classList.remove('capturing');
+    capturing = null;
+    toast('Key bound', 'success', 1000);
+    return true;
+  }
+
+  function resetDefault() {
+    resetToDefault();
+    toast('Key bindings reset', 'info');
+  }
+
+  // Init
+  load();
+  document.addEventListener('keydown', e => {
+    if (capturing) { handleCapture(e); }
+  }, true);
+  document.addEventListener('mousedown', e => {
+    if (capturing) { handleCapture(e); }
+  }, true);
+
+  return { getBindings, getDefaultBindings, getLabels, isAction, isAnyActionDown, setBinding, resetToDefault, openSettingsModal, startCapture, handleCapture, keyName };
+})();
+window.ActionMap = ActionMap;
+
+// ============================================================
+// EFFECTS MODULE — particle + anime.js animations
+// Smart helpers for elemental effects (fire, ice, lightning, heal, poison, smoke, sparkle, explosion)
+// ============================================================
+const Effects = (() => {
+  const activeEffects = [];
+
+  // Predefined effect templates
+  const TEMPLATES = {
+    explosion: {
+      name: 'Explosion', icon: 'flame', color: 0xff6600,
+      desc: 'Burst of fire particles outward',
+      build: (pos) => buildParticleBurst(pos, 0xff6600, 40, 0.5, 8, 0.6),
+    },
+    fire: {
+      name: 'Fire', icon: 'flame', color: 0xff3300,
+      desc: 'Rising fire particles',
+      build: (pos) => buildRising(pos, 0xff3300, 25, 0.3, 3, 1.0),
+    },
+    ice: {
+      name: 'Ice', icon: 'snowflake', color: 0x88ccff,
+      desc: 'Frozen shards burst outward',
+      build: (pos) => buildParticleBurst(pos, 0x88ccff, 30, 0.4, 5, 0.8),
+    },
+    lightning: {
+      name: 'Lightning', icon: 'zap', color: 0xffff88,
+      desc: 'Electric arcs',
+      build: (pos) => buildLightning(pos, 0xffff88, 6, 0.5),
+    },
+    heal: {
+      name: 'Heal', icon: 'heart-pulse', color: 0x44ff88,
+      desc: 'Green sparkles rising',
+      build: (pos) => buildRising(pos, 0x44ff88, 20, 0.25, 2, 1.2),
+    },
+    poison: {
+      name: 'Poison', icon: 'biohazard', color: 0x88dd44,
+      desc: 'Toxic green cloud',
+      build: (pos) => buildParticleBurst(pos, 0x88dd44, 30, 0.3, 3, 1.2),
+    },
+    smoke: {
+      name: 'Smoke', icon: 'cloud', color: 0x666666,
+      desc: 'Grey smoke rising',
+      build: (pos) => buildRising(pos, 0x666666, 25, 0.4, 2, 1.5),
+    },
+    sparkle: {
+      name: 'Sparkle', icon: 'sparkles', color: 0xffddaa,
+      desc: 'Twinkling sparkles',
+      build: (pos) => buildParticleBurst(pos, 0xffddaa, 25, 0.3, 2, 1.0),
+    },
+    portal: {
+      name: 'Portal', icon: 'circle-dot', color: 0xaa44ff,
+      desc: 'Purple swirling vortex',
+      build: (pos) => buildPortalVortex(pos, 0xaa44ff, 1.5),
+    },
+    magic: {
+      name: 'Magic', icon: 'wand-2', color: 0xdd44ff,
+      desc: 'Magic energy swirl',
+      build: (pos) => buildPortalVortex(pos, 0xdd44ff, 1.2),
+    },
+    shockwave: {
+      name: 'Shockwave', icon: 'circle', color: 0xffffff,
+      desc: 'Expanding ring',
+      build: (pos) => buildShockwave(pos, 0xffffff, 0.8),
+    },
+  };
+
+  // Build a burst of particles flying outward
+  function buildParticleBurst(pos, color, count, particleSize, speed, duration) {
+    const group = new THREE.Group();
+    group.position.copy(pos);
+    const particles = [];
+    for (let i = 0; i < count; i++) {
+      const geo = new THREE.SphereGeometry(particleSize * (0.5 + Math.random() * 0.5), 6, 6);
+      const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 1 });
+      const p = new THREE.Mesh(geo, mat);
+      const angle = Math.random() * Math.PI * 2;
+      const upward = Math.random() * 0.8 + 0.2;
+      p.userData.velocity = new THREE.Vector3(
+        Math.cos(angle) * speed * (0.5 + Math.random()),
+        upward * speed,
+        Math.sin(angle) * speed * (0.5 + Math.random())
+      );
+      p.userData.life = 1.0;
+      p.userData.decay = 1 / duration;
+      group.add(p);
+      particles.push(p);
+    }
+    Engine.state.scene.add(group);
+    const effect = { group, particles, type: 'burst', startTime: performance.now() };
+    activeEffects.push(effect);
+    return effect;
+  }
+
+  // Rising particles (fire, smoke, heal)
+  function buildRising(pos, color, count, particleSize, speed, duration) {
+    const group = new THREE.Group();
+    group.position.copy(pos);
+    const particles = [];
+    for (let i = 0; i < count; i++) {
+      const geo = new THREE.SphereGeometry(particleSize * (0.5 + Math.random() * 0.5), 6, 6);
+      const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.8 });
+      const p = new THREE.Mesh(geo, mat);
+      p.position.set((Math.random() - 0.5) * 0.5, 0, (Math.random() - 0.5) * 0.5);
+      p.userData.velocity = new THREE.Vector3(
+        (Math.random() - 0.5) * 0.5,
+        speed * (0.7 + Math.random() * 0.6),
+        (Math.random() - 0.5) * 0.5
+      );
+      p.userData.life = 1.0;
+      p.userData.decay = 1 / duration;
+      p.userData.startDelay = Math.random() * 0.5;
+      p.userData.spawned = false;
+      p.visible = false;
+      group.add(p);
+      particles.push(p);
+    }
+    Engine.state.scene.add(group);
+    const effect = { group, particles, type: 'rising', startTime: performance.now() };
+    activeEffects.push(effect);
+    return effect;
+  }
+
+  // Lightning arcs
+  function buildLightning(pos, color, count, duration) {
+    const group = new THREE.Group();
+    group.position.copy(pos);
+    const arcs = [];
+    for (let i = 0; i < count; i++) {
+      const points = [];
+      let p = new THREE.Vector3(0, 0, 0);
+      points.push(p.clone());
+      const endY = 3 + Math.random() * 2;
+      const segments = 6;
+      for (let j = 1; j <= segments; j++) {
+        p = new THREE.Vector3(
+          (Math.random() - 0.5) * 1.5,
+          (j / segments) * endY,
+          (Math.random() - 0.5) * 1.5
+        );
+        points.push(p.clone());
+      }
+      const geo = new THREE.BufferGeometry().setFromPoints(points);
+      const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 1 });
+      const line = new THREE.Line(geo, mat);
+      line.userData.life = 1.0;
+      line.userData.decay = 1 / duration;
+      line.userData.startDelay = Math.random() * 0.3;
+      line.userData.spawned = false;
+      line.visible = false;
+      group.add(line);
+      arcs.push(line);
+    }
+    Engine.state.scene.add(group);
+    const effect = { group, particles: arcs, type: 'lightning', startTime: performance.now() };
+    activeEffects.push(effect);
+    return effect;
+  }
+
+  // Portal vortex (swirling)
+  function buildPortalVortex(pos, color, duration) {
+    const group = new THREE.Group();
+    group.position.copy(pos);
+    const particles = [];
+    for (let i = 0; i < 40; i++) {
+      const r = 0.5 + Math.random() * 0.7;
+      const angle = Math.random() * Math.PI * 2;
+      const geo = new THREE.SphereGeometry(0.08, 6, 6);
+      const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.9 });
+      const p = new THREE.Mesh(geo, mat);
+      p.position.set(Math.cos(angle) * r, (Math.random() - 0.5) * 1.5, Math.sin(angle) * r);
+      p.userData.angle = angle;
+      p.userData.radius = r;
+      p.userData.angularSpeed = 2 + Math.random() * 3;
+      p.userData.ySpeed = (Math.random() - 0.5) * 0.5;
+      p.userData.life = 1.0;
+      p.userData.decay = 1 / duration;
+      group.add(p);
+      particles.push(p);
+    }
+    Engine.state.scene.add(group);
+    const effect = { group, particles, type: 'vortex', startTime: performance.now() };
+    activeEffects.push(effect);
+    // Also use anime.js to animate the whole group scale
+    if (window.anime) {
+      anime({
+        targets: group.scale,
+        x: [0.5, 1.2, 1.0],
+        y: [0.5, 1.2, 1.0],
+        z: [0.5, 1.2, 1.0],
+        duration: duration * 1000,
+        easing: 'easeOutElastic(1, 0.8)',
+      });
+      anime({
+        targets: group.rotation,
+        y: Math.PI * 4,
+        duration: duration * 1000,
+        easing: 'easeOutQuad',
+      });
+    }
+    return effect;
+  }
+
+  // Shockwave ring
+  function buildShockwave(pos, color, duration) {
+    const geo = new THREE.RingGeometry(0.1, 0.15, 32);
+    const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 1, side: THREE.DoubleSide });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.copy(pos);
+    mesh.rotation.x = -Math.PI / 2;
+    Engine.state.scene.add(mesh);
+    const effect = { group: mesh, particles: [mesh], type: 'shockwave', startTime: performance.now(), duration: duration * 1000 };
+    activeEffects.push(effect);
+    if (window.anime) {
+      anime({
+        targets: mesh.scale,
+        x: 20, y: 20, z: 20,
+        duration: duration * 1000,
+        easing: 'easeOutQuad',
+      });
+    }
+    return effect;
+  }
+
+  function spawn(effectName, position) {
+    const tpl = TEMPLATES[effectName];
+    if (!tpl) { console.warn('Unknown effect:', effectName); return null; }
+    return tpl.build(position);
+  }
+
+  // Update all effects (called every frame)
+  function updateAll(delta) {
+    const now = performance.now();
+    for (let i = activeEffects.length - 1; i >= 0; i--) {
+      const e = activeEffects[i];
+      let allDead = true;
+      e.particles.forEach(p => {
+        if (e.type === 'rising' || e.type === 'lightning') {
+          if (!p.userData.spawned) {
+            p.userData.startDelay -= delta;
+            if (p.userData.startDelay <= 0) {
+              p.userData.spawned = true;
+              p.visible = true;
+            } else { allDead = false; return; }
+          }
+        }
+        if (e.type === 'shockwave') {
+          p.material.opacity -= delta / (e.duration / 1000);
+          if (p.material.opacity <= 0) { allDead = true; }
+          return;
+        }
+        if (!p.userData.life || p.userData.life <= 0) return;
+        allDead = false;
+        p.userData.life -= p.userData.decay * delta;
+        if (p.userData.velocity) {
+          if (e.type === 'rising') {
+            p.userData.velocity.y -= 1.5 * delta;
+          } else if (e.type === 'burst') {
+            p.userData.velocity.y -= 4 * delta;
+          } else if (e.type === 'vortex') {
+            p.userData.angle += p.userData.angularSpeed * delta;
+            p.position.x = Math.cos(p.userData.angle) * p.userData.radius;
+            p.position.z = Math.sin(p.userData.angle) * p.userData.radius;
+            p.position.y += p.userData.ySpeed * delta;
+          }
+          if (e.type !== 'vortex') {
+            p.position.x += p.userData.velocity.x * delta;
+            p.position.y += p.userData.velocity.y * delta;
+            p.position.z += p.userData.velocity.z * delta;
+          }
+        }
+        if (p.material) p.material.opacity = Math.max(0, p.userData.life);
+        if (p.userData.life <= 0) { p.visible = false; }
+      });
+      if (allDead || (now - e.startTime) > 5000) {
+        // dispose
+        e.particles.forEach(p => {
+          if (p.geometry) p.geometry.dispose();
+          if (p.material) p.material.dispose();
+        });
+        if (e.group.parent) e.group.parent.remove(e.group);
+        activeEffects.splice(i, 1);
+      }
+    }
+  }
+
+  function clearAll() {
+    activeEffects.forEach(e => {
+      e.particles.forEach(p => {
+        if (p.geometry) p.geometry.dispose();
+        if (p.material) p.material.dispose();
+      });
+      if (e.group.parent) e.group.parent.remove(e.group);
+    });
+    activeEffects.length = 0;
+  }
+
+  function list() {
+    return Object.entries(TEMPLATES).map(([k, v]) => ({ id: k, name: v.name, icon: v.icon, color: '#' + v.color.toString(16).padStart(6, '0'), desc: v.desc }));
+  }
+
+  // Smart helper: trigger an effect at an object's position
+  function triggerAt(effectName, obj) {
+    if (!obj) return null;
+    return spawn(effectName, obj.position.clone());
+  }
+
+  // Smart helper: trigger effect between two objects (e.g., player and entity)
+  function triggerBetween(effectName, obj1, obj2) {
+    if (!obj1 || !obj2) return null;
+    const mid = obj1.position.clone().add(obj2.position).multiplyScalar(0.5);
+    return spawn(effectName, mid);
+  }
+
+  return { TEMPLATES, spawn, updateAll, clearAll, list, triggerAt, triggerBetween };
+})();
+window.Effects = Effects;
+
+// ============================================================
+// PORTALS MODULE — scene teleportation
+// ============================================================
+const Portals = (() => {
+  // Portals are entities with role 'portal' and config.targetSceneId + config.spawnPoint
+  // The Entities module handles them via the role config, but we provide helpers here.
+
+  function createPortal(name, targetSceneId, spawnPoint = [0, 2, 0], bodyId = null) {
+    const entity = Entities.create(name, 'Trigger', 'portal', bodyId, {
+      targetSceneId,
+      spawnPoint,
+      pickupRange: 2.0,
+      interactKey: true,
+      autoTeleport: false,
+    });
+    return entity;
+  }
+
+  async function tryInteract(playerState) {
+    if (!playerState?.character) return false;
+    const scene = Scenes.getActiveScene();
+    if (!scene) return false;
+    const player = playerState.character;
+    for (const e of scene.entities) {
+      if (e.role !== 'portal') continue;
+      const obj = Engine.state.objects.find(o => o.userData.id === e.bodyId);
+      if (!obj) continue;
+      const dist = obj.position.distanceTo(player.position);
+      if (dist < (e.config.pickupRange || 2)) {
+        // Show prompt and teleport
+        const targetScene = Projects.getActive().scenes.find(s => s.id === e.config.targetSceneId);
+        if (!targetScene) {
+          Rules.showHudMessage('Portal target not found', 1500);
+          return false;
+        }
+        Effects.spawn('portal', obj.position.clone());
+        Rules.showHudMessage('Teleporting to ' + targetScene.name + '...', 1500);
+        await new Promise(r => setTimeout(r, 500));
+        // Switch scene
+        Scenes.captureCurrentIntoProject();
+        Projects.getActive().activeSceneId = targetScene.id;
+        Projects.save(Projects.getActive());
+        await Scenes.loadSceneIntoEditor(targetScene);
+        // Place player at spawn point after play resumes
+        if (Engine.state.play.character) {
+          Engine.state.play.character.position.fromArray(e.config.spawnPoint || [0, 2, 0]);
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function openPortalModal() {
+    const proj = Projects.getActive();
+    if (!proj) { toast('Open a project first', 'error'); return; }
+    const sceneOptions = proj.scenes.map(s => `<option value="${s.id}">${escapeHtml(s.name)}</option>`).join('');
+    const objectOptions = Engine.state.objects
+      .filter(o => o.userData.type !== 'light')
+      .map(o => `<option value="${o.userData.id}">${escapeHtml(o.userData.name)}</option>`).join('');
+    UI.openModal('Create Portal', `
+      <div class="space-y-3">
+        <div>
+          <label class="text-xs text-neutral-400 block mb-1">Portal Name</label>
+          <input type="text" id="portalName" class="input" value="Portal ${Entities.list().filter(e=>e.role==='portal').length + 1}">
+        </div>
+        <div>
+          <label class="text-xs text-neutral-400 block mb-1">Target Scene</label>
+          <select id="portalTarget" class="input">${sceneOptions}</select>
+        </div>
+        <div>
+          <label class="text-xs text-neutral-400 block mb-1">Body (object in scene)</label>
+          <select id="portalBody" class="input">
+            <option value="">— None (use cube) —</option>
+            ${objectOptions}
+          </select>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div><label class="text-xs text-neutral-400 block mb-1">Spawn X</label><input type="number" id="portalSpawnX" class="input" value="0" step="0.5"></div>
+          <div><label class="text-xs text-neutral-400 block mb-1">Spawn Y</label><input type="number" id="portalSpawnY" class="input" value="2" step="0.5"></div>
+          <div><label class="text-xs text-neutral-400 block mb-1">Spawn Z</label><input type="number" id="portalSpawnZ" class="input" value="0" step="0.5"></div>
+        </div>
+      </div>
+    `, `
+      <button class="btn" onclick="UI.closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="Portals.confirmCreate()"><i data-lucide="circle-dot"></i>Create Portal</button>
+    `);
+  }
+
+  async function confirmCreate() {
+    const name = document.getElementById('portalName').value.trim() || 'Portal';
+    const targetSceneId = document.getElementById('portalTarget').value;
+    const bodyId = document.getElementById('portalBody').value || null;
+    const spawnPoint = [
+      parseFloat(document.getElementById('portalSpawnX').value) || 0,
+      parseFloat(document.getElementById('portalSpawnY').value) || 2,
+      parseFloat(document.getElementById('portalSpawnZ').value) || 0,
+    ];
+    UI.closeModal();
+    // If no body, create a special portal mesh
+    let actualBodyId = bodyId;
+    if (!actualBodyId) {
+      const portalMesh = new THREE.Mesh(
+        new THREE.TorusGeometry(0.8, 0.15, 12, 32),
+        new THREE.MeshStandardMaterial({ color: 0xaa44ff, emissive: 0xaa44ff, emissiveIntensity: 0.8, metalness: 0.5, roughness: 0.3 })
+      );
+      portalMesh.position.set(0, 1, 0);
+      portalMesh.castShadow = true;
+      // inner disc
+      const disc = new THREE.Mesh(
+        new THREE.CircleGeometry(0.75, 32),
+        new THREE.MeshBasicMaterial({ color: 0x8822dd, transparent: true, opacity: 0.5, side: THREE.DoubleSide })
+      );
+      disc.position.z = 0.01;
+      portalMesh.add(disc);
+      Engine.state.scene.add(portalMesh);
+      Engine.finalizeObject?.(portalMesh, name, 'primitive', { primitiveId: 'torus' });
+      if (!Engine.state.objects.includes(portalMesh)) {
+        // fallback if finalizeObject not exposed
+        portalMesh.userData.id = uuid();
+        portalMesh.userData.name = name;
+        portalMesh.userData.type = 'primitive';
+        portalMesh.userData.extra = { primitiveId: 'torus' };
+        Engine.state.scene.add(portalMesh);
+        Engine.state.objects.push(portalMesh);
+        UI.refreshSceneList();
+      }
+      actualBodyId = portalMesh.userData.id;
+      // Spin animation
+      portalMesh.userData._spin = 1;
+    }
+    createPortal(name, targetSceneId, spawnPoint, actualBodyId);
+    toast('Portal created', 'success');
+    UI.refreshEntities();
+  }
+
+  return { createPortal, tryInteract, openPortalModal, confirmCreate };
+})();
+window.Portals = Portals;
+
+// ============================================================
+// PREFABS MODULE — save & reuse object templates (Surprise #1)
+// ============================================================
+const Prefabs = (() => {
+  function list() {
+    const proj = Projects.getActive();
+    return proj?.prefabs || [];
+  }
+
+  function saveFromSelected() {
+    const proj = Projects.getActive();
+    if (!proj) { toast('Open a project first', 'error'); return; }
+    const sel = Engine.state.selected;
+    if (!sel) { toast('Select an object first', 'error'); return; }
+    if (sel.userData.type === 'light') { toast('Lights cannot be prefabs', 'error'); return; }
+    // Serialize the object
+    const data = Engine.serialize();
+    const objData = data.objects.find(o => o.id === sel.userData.id);
+    if (!objData) { toast('Could not serialize object', 'error'); return; }
+    if (!proj.prefabs) proj.prefabs = [];
+    Dialog.prompt('Save prefab as:', sel.userData.name, 'Save Prefab', 'Prefab name').then(name => {
+      if (!name) return;
+      const prefab = {
+        id: 'pf_' + uuid(),
+        name,
+        objectId: objData.id,
+        objectData: { ...objData, id: uuid() }, // fresh id for instances
+        createdAt: Date.now(),
+      };
+      proj.prefabs.push(prefab);
+      Projects.save(proj);
+      toast('Prefab saved: ' + name, 'success');
+      UI.refreshPrefabs();
+    });
+  }
+
+  async function instantiate(prefabId) {
+    const proj = Projects.getActive();
+    if (!proj) return;
+    const prefab = proj.prefabs.find(p => p.id === prefabId);
+    if (!prefab) { toast('Prefab not found', 'error'); return; }
+    // Clone the object data with a fresh id
+    const objData = JSON.parse(JSON.stringify(prefab.objectData));
+    objData.id = uuid();
+    objData.name = prefab.name + '_' + Math.floor(Math.random() * 1000);
+    // Add to current scene
+    const scene = Scenes.getActiveScene();
+    if (!scene) return;
+    Scenes.captureCurrentIntoProject();
+    scene.objects.push(objData);
+    Projects.save(proj);
+    // Re-load the scene to show the new object
+    await Scenes.loadSceneIntoEditor(scene);
+    toast('Instantiated: ' + objData.name, 'success');
+  }
+
+  function remove(prefabId) {
+    const proj = Projects.getActive();
+    if (!proj || !proj.prefabs) return;
+    proj.prefabs = proj.prefabs.filter(p => p.id !== prefabId);
+    Projects.save(proj);
+    UI.refreshPrefabs();
+  }
+
+  return { list, saveFromSelected, instantiate, remove };
+})();
+window.Prefabs = Prefabs;
+
+// ============================================================
+// DAY/NIGHT MODULE — automatic time-of-day cycle (Surprise #2)
+// ============================================================
+const DayNight = (() => {
+  let state = {
+    enabled: false,
+    time: 0.3, // 0..1, where 0 = midnight, 0.25 = sunrise, 0.5 = noon, 0.75 = sunset
+    speed: 0.005, // cycles per second; 0.005 = 200s per full day
+  };
+
+  function load() {
+    try {
+      const saved = JSON.parse(localStorage.getItem('eh_daynight') || 'null');
+      if (saved) state = { ...state, ...saved };
+    } catch {}
+  }
+  function save() { localStorage.setItem('eh_daynight', JSON.stringify(state)); }
+
+  function setEnabled(on) { state.enabled = on; save(); }
+  function setSpeed(s) { state.speed = s; save(); }
+  function setTime(t) { state.time = clamp(t, 0, 1); save(); applyImmediate(); }
+  function getState() { return state; }
+
+  function applyImmediate() {
+    // Compute sun position and colors based on time
+    const angle = state.time * Math.PI * 2 - Math.PI / 2; // 0 at midnight, PI/2 at sunrise, PI at noon (sun above)
+    const sunHeight = Math.sin(angle + Math.PI / 2); // -1..1
+    const sunAngleDeg = state.time * 360;
+    Engine.state.env.sunAngle = sunAngleDeg;
+    // Sun intensity: bright at noon, dim at night
+    const sunIntensity = Math.max(0.05, Math.max(0, sunHeight) * 1.6);
+    Engine.state.env.sunIntensity = sunIntensity;
+    Engine.state.sun.intensity = sunIntensity;
+    // Position sun
+    const r = THREE.MathUtils.degToRad(sunAngleDeg);
+    Engine.state.sun.position.set(Math.cos(r) * 20, Math.max(-5, sunHeight * 25), Math.sin(r) * 20);
+    // Sky color: deep blue at night, orange at sunrise/sunset, light blue at day
+    let skyColor;
+    if (sunHeight < -0.2) {
+      skyColor = new THREE.Color(0x05050f); // night
+    } else if (sunHeight < 0.2) {
+      // sunrise/sunset — lerp between night, orange, day
+      const t = (sunHeight + 0.2) / 0.4;
+      const night = new THREE.Color(0x05050f);
+      const sunset = new THREE.Color(0xff6633);
+      const day = new THREE.Color(0x88aaff);
+      if (t < 0.5) skyColor = night.lerp(sunset, t * 2);
+      else skyColor = sunset.lerp(day, (t - 0.5) * 2);
+    } else {
+      skyColor = new THREE.Color(0x88aaff).lerp(new THREE.Color(0xaaccff), Math.min(1, sunHeight));
+    }
+    Engine.state.env.skyColor = '#' + skyColor.getHexString();
+    Engine.state.scene.background = skyColor;
+    // Ambient: lower at night
+    Engine.state.env.ambient = 0.15 + Math.max(0, sunHeight) * 0.4;
+    Engine.state.ambientLight.intensity = Engine.state.env.ambient;
+  }
+
+  function update(delta) {
+    if (!state.enabled) return;
+    state.time = (state.time + state.speed * delta) % 1;
+    if (state.time < 0) state.time += 1;
+    applyImmediate();
+  }
+
+  function getTimeLabel() {
+    const hours = Math.floor(state.time * 24);
+    const mins = Math.floor((state.time * 24 - hours) * 60);
+    return `${hours.toString().padStart(2,'0')}:${mins.toString().padStart(2,'0')}`;
+  }
+
+  function getPhase() {
+    const sunHeight = Math.sin(state.time * Math.PI * 2 - Math.PI / 2 + Math.PI / 2);
+    if (sunHeight < -0.2) return 'Night';
+    if (sunHeight < 0.1) return state.time < 0.5 ? 'Sunrise' : 'Sunset';
+    if (sunHeight < 0.5) return 'Morning';
+    return 'Day';
+  }
+
+  load();
+
+  return { state, setEnabled, setSpeed, setTime, getState, applyImmediate, update, getTimeLabel, getPhase };
+})();
+window.DayNight = DayNight;
+
+// ============================================================
+// JSON CODER MODULE — paste AI-generated JSON to scaffold a game
+// ============================================================
+const JsonCoder = (() => {
+  const EXAMPLE = `{
+  "name": "My Adventure",
+  "description": "A simple adventure game",
+  "type": "Adventure",
+  "rules": {
+    "maxHealth": 150,
+    "maxStamina": 80,
+    "fallDamageThreshold": 4,
+    "respawnOnDeath": true
+  },
+  "scenes": [
+    {
+      "name": "Forest",
+      "template": "forest",
+      "environment": {
+        "skyColor": "#3a5a3a",
+        "fogEnabled": true,
+        "fogDensity": 0.025,
+        "groundType": "terrain"
+      },
+      "objects": [
+        { "type": "proc", "assetId": "tree", "name": "Big Tree", "position": [5, 0, 3], "scale": [2, 2, 2] },
+        { "type": "proc", "assetId": "house", "name": "Cabin", "position": [-5, 0, -3] }
+      ],
+      "entities": [
+        { "name": "Wandering Wolf", "type": "Enemy", "role": "wander", "bodyName": "Big Tree", "config": { "speed": 2, "radius": 10, "damageOnContact": 15 } }
+      ]
+    },
+    {
+      "name": "Dungeon",
+      "template": "dungeon"
+    }
+  ],
+  "playerBody": "Cabin",
+  "dayNight": { "enabled": true, "speed": 0.01 }
+}`;
+
+  function openModal() {
+    const proj = Projects.getActive();
+    const isProjectMode = !!proj;
+    UI.openModal('JSON Game Coder', `
+      <div class="space-y-3" style="min-width:680px;">
+        <div class="text-xs text-neutral-400">
+          Paste a JSON spec below to scaffold or update a game. Use AI (e.g., ChatGPT) to generate the JSON, then paste here.
+          ${isProjectMode ? 'Click "Apply to Current Project" to merge into the open project, or "Create New Project" to start fresh.' : 'Click "Create New Project" to build a project from this JSON.'}
+        </div>
+        <div class="flex gap-2">
+          <button class="btn" onclick="JsonCoder.loadExample()"><i data-lucide="file-text"></i>Load Example</button>
+          <button class="btn" onclick="JsonCoder.copyCurrent()"><i data-lucide="copy"></i>Copy Current State</button>
+          <button class="btn" onclick="JsonCoder.validate()"><i data-lucide="check"></i>Validate</button>
+        </div>
+        <textarea id="jsonCoderEditor" class="json-editor" placeholder="Paste your game JSON here..."></textarea>
+        <div id="jsonCoderStatus" class="text-[11px] text-neutral-500"></div>
+      </div>
+    `, `
+      <button class="btn" onclick="UI.closeModal()">Close</button>
+      ${isProjectMode ? '<button class="btn" onclick="JsonCoder.applyToCurrent()"><i data-lucide="refresh-cw"></i>Apply to Current</button>' : ''}
+      <button class="btn btn-primary" onclick="JsonCoder.createProject()"><i data-lucide="rocket"></i>Create New Project</button>
+    `);
+    lucide.createIcons();
+  }
+
+  function loadExample() {
+    document.getElementById('jsonCoderEditor').value = EXAMPLE;
+    showStatus('Example loaded. Click Validate to check.', 'info');
+  }
+
+  function copyCurrent() {
+    const proj = Projects.getActive();
+    if (!proj) { showStatus('No project open to copy', 'error'); return; }
+    Scenes.captureCurrentIntoProject();
+    const json = JSON.stringify(proj, null, 2);
+    document.getElementById('jsonCoderEditor').value = json;
+    showStatus('Current project copied to editor', 'success');
+  }
+
+  function validate() {
+    try {
+      const data = JSON.parse(document.getElementById('jsonCoderEditor').value);
+      if (!data.name) throw new Error('Missing "name" field');
+      if (!data.scenes || !Array.isArray(data.scenes)) throw new Error('Missing "scenes" array');
+      showStatus('Valid! ' + data.scenes.length + ' scene(s), ' + (data.entities?.length || 0) + ' entities.', 'success');
+      return data;
+    } catch (e) {
+      showStatus('Invalid JSON: ' + e.message, 'error');
+      return null;
+    }
+  }
+
+  function showStatus(msg, type) {
+    const el = document.getElementById('jsonCoderStatus');
+    if (!el) return;
+    el.textContent = msg;
+    el.className = 'text-[11px] ' + (type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-neutral-400');
+  }
+
+  async function buildProjectFromJson(data) {
+    const proj = Projects.create(data.name, data.description || '', data.type || 'Sandbox', data.template || 'empty');
+    // Override rules
+    if (data.rules) {
+      proj.rules = Object.assign(Projects.defaultRules(), data.rules);
+    }
+    // Override scenes
+    if (data.scenes && data.scenes.length > 0) {
+      proj.scenes = [];
+      for (const sc of data.scenes) {
+        const scene = Scenes.createSceneFromTemplate(sc.template || 'empty', sc.name || 'Scene');
+        if (sc.environment) Object.assign(scene.environment, sc.environment);
+        if (sc.objects && Array.isArray(sc.objects)) {
+          for (const objSpec of sc.objects) {
+            const obj = await buildObjectFromSpec(objSpec);
+            if (obj) scene.objects.push(obj);
+          }
+        }
+        if (sc.entities && Array.isArray(sc.entities)) {
+          for (const entSpec of sc.entities) {
+            // Resolve bodyName to bodyId later (after objects are loaded)
+            scene.entities.push({
+              id: 'ent_' + uuid(),
+              name: entSpec.name || 'Entity',
+              type: entSpec.type || 'NPC',
+              role: entSpec.role || 'stationary',
+              bodyName: entSpec.bodyName, // to be resolved
+              config: Object.assign(Entities.defaultConfig(entSpec.role || 'stationary'), entSpec.config || {}),
+              script: entSpec.script || [],
+              state: {},
+            });
+          }
+        }
+        proj.scenes.push(scene);
+      }
+      proj.activeSceneId = proj.scenes[0].id;
+    }
+    // Player body
+    if (data.playerBody) {
+      proj.playerBodyName = data.playerBody;
+    }
+    // Day/night
+    if (data.dayNight) {
+      DayNight.setEnabled(data.dayNight.enabled || false);
+      if (data.dayNight.speed) DayNight.setSpeed(data.dayNight.speed);
+    }
+    Projects.save(proj);
+    return proj;
+  }
+
+  async function buildObjectFromSpec(spec) {
+    const obj = {
+      id: uuid(),
+      name: spec.name || (spec.type === 'proc' ? (spec.assetId || 'Object') : 'Object'),
+      type: spec.type || 'primitive',
+      extra: {},
+      visible: true,
+      position: spec.position || [0, 0.5, 0],
+      rotation: spec.rotation || [0, 0, 0],
+      scale: spec.scale || [1, 1, 1],
+      material: spec.material || { color: '#e11d2a', metalness: 0.2, roughness: 0.7, emissive: '#000000', emissiveIntensity: 0, opacity: 1, transparent: false, wireframe: false },
+      behavior: null,
+    };
+    if (spec.type === 'proc') {
+      obj.extra = { assetId: spec.assetId, proc: spec.assetId };
+    } else if (spec.type === 'gltf') {
+      obj.extra = { src: spec.src, imported: true };
+    } else if (spec.type === 'light') {
+      obj.extra = { lightId: spec.lightId || 'point' };
+    } else {
+      obj.extra = { primitiveId: spec.primitiveId || spec.assetId || 'cube' };
+    }
+    return obj;
+  }
+
+  async function createProject() {
+    const data = validate();
+    if (!data) return;
+    UI.closeModal();
+    showLoading('Building project from JSON...');
+    try {
+      const proj = await buildProjectFromJson(data);
+      await Projects.openProject(proj);
+      // Resolve body names to ids for entities and player
+      await resolveBodyReferences(proj);
+      toast('Project created from JSON: ' + proj.name, 'success');
+    } catch (e) {
+      console.error(e);
+      toast('Failed to build: ' + e.message, 'error');
+    } finally {
+      hideLoading();
+    }
+  }
+
+  async function applyToCurrent() {
+    const data = validate();
+    if (!data) return;
+    const proj = Projects.getActive();
+    if (!proj) { toast('No project open', 'error'); return; }
+    UI.closeModal();
+    showLoading('Applying JSON...');
+    try {
+      if (data.rules) proj.rules = Object.assign(Projects.defaultRules(), data.rules);
+      if (data.scenes && data.scenes.length > 0) {
+        // Replace scenes
+        const oldScenes = proj.scenes;
+        proj.scenes = [];
+        for (const sc of data.scenes) {
+          const scene = Scenes.createSceneFromTemplate(sc.template || 'empty', sc.name || 'Scene');
+          if (sc.environment) Object.assign(scene.environment, sc.environment);
+          if (sc.objects) for (const o of sc.objects) { const ob = await buildObjectFromSpec(o); if (ob) scene.objects.push(ob); }
+          if (sc.entities) for (const e of sc.entities) scene.entities.push({ id: 'ent_' + uuid(), name: e.name || 'Entity', type: e.type || 'NPC', role: e.role || 'stationary', bodyName: e.bodyName, config: Object.assign(Entities.defaultConfig(e.role || 'stationary'), e.config || {}), script: e.script || [], state: {} });
+          proj.scenes.push(scene);
+        }
+        proj.activeSceneId = proj.scenes[0].id;
+      }
+      if (data.dayNight) {
+        DayNight.setEnabled(data.dayNight.enabled || false);
+        if (data.dayNight.speed) DayNight.setSpeed(data.dayNight.speed);
+      }
+      if (data.playerBody) proj.playerBodyName = data.playerBody;
+      Projects.save(proj);
+      await resolveBodyReferences(proj);
+      await Scenes.loadSceneIntoEditor(proj.scenes.find(s => s.id === proj.activeSceneId));
+      toast('Applied JSON to current project', 'success');
+    } catch (e) {
+      toast('Apply failed: ' + e.message, 'error');
+    } finally {
+      hideLoading();
+    }
+  }
+
+  async function resolveBodyReferences(proj) {
+    // For each scene, resolve entity.bodyName -> bodyId (by matching object name)
+    for (const scene of proj.scenes) {
+      for (const e of scene.entities) {
+        if (e.bodyName && !e.bodyId) {
+          const obj = scene.objects.find(o => o.name === e.bodyName);
+          if (obj) e.bodyId = obj.id;
+        }
+        delete e.bodyName;
+      }
+    }
+    // Player body
+    if (proj.playerBodyName) {
+      const activeScene = proj.scenes.find(s => s.id === proj.activeSceneId);
+      if (activeScene) {
+        const obj = activeScene.objects.find(o => o.name === proj.playerBodyName);
+        if (obj) proj.playerBodyId = obj.id;
+      }
+      delete proj.playerBodyName;
+    }
+    Projects.save(proj);
+  }
+
+  return { openModal, loadExample, copyCurrent, validate, createProject, applyToCurrent, EXAMPLE };
+})();
+window.JsonCoder = JsonCoder;
 
 // ====================== BOOT ======================
 window.addEventListener('DOMContentLoaded', () => {
