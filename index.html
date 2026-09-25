@@ -2373,6 +2373,118 @@ window.PAUI_THEME_COLOR = '#FF0000';
         listenForAuthChanges();
     }
 })();
+(function () {
+    const POLL_MS = 500;
+    const MAX_WAIT_MS = 15000;
+
+    const hideStudio = () => {
+        const btn = document.querySelector('[data-nav="studio"]');
+        if (btn) {
+            btn.style.display = 'none';
+            console.log('PAUI Studio Gate: Hidden — user is not premium.');
+        }
+    };
+
+    const showStudio = () => {
+        const btn = document.querySelector('[data-nav="studio"]');
+        if (btn) {
+            btn.style.display = '';
+            console.log('PAUI Studio Gate: Visible — user has premium.');
+        }
+    };
+
+    const checkPremiumAndGateStudio = async () => {
+        try {
+            if (typeof supabaseClient === 'undefined' || typeof PAUI_CONFIG === 'undefined') {
+                return false; // deps not ready
+            }
+
+            const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+
+            if (authError || !user) {
+                // Not logged in → no premium → hide studio
+                hideStudio();
+                return true;
+            }
+
+            const col = `paui_${PAUI_CONFIG.ssn}`;
+
+            const { data, error } = await supabaseClient
+                .from('profiles')
+                .select(col)
+                .eq('id', user.id)
+                .single();
+
+            if (error) {
+                console.warn('PAUI Studio Gate: Profile query failed —', error.message);
+                hideStudio();
+                return true;
+            }
+
+            if (data && data[col] === true) {
+                showStudio();
+            } else {
+                hideStudio();
+            }
+
+            return true; // done
+        } catch (e) {
+            console.error('PAUI Studio Gate: Unexpected error —', e);
+            hideStudio(); // fail-closed: hide on error
+            return true;
+        }
+    };
+
+    const waitForDepsAndRun = () => {
+        let elapsed = 0;
+        const timer = setInterval(async () => {
+            elapsed += POLL_MS;
+
+            const depsReady =
+                typeof supabaseClient !== 'undefined' &&
+                typeof PAUI_CONFIG !== 'undefined';
+            const btnExists = document.querySelector('[data-nav="studio"]') !== null;
+
+            if (depsReady && btnExists) {
+                clearInterval(timer);
+                await checkPremiumAndGateStudio();
+            }
+
+            if (elapsed >= MAX_WAIT_MS) {
+                clearInterval(timer);
+                hideStudio(); // timeout = fail-closed
+                console.warn('PAUI Studio Gate: Timed out waiting for dependencies.');
+            }
+        }, POLL_MS);
+    };
+
+    // Re-gate on auth changes (sign in / sign out mid-session)
+    const listenForAuthChanges = () => {
+        const tryListen = () => {
+            if (typeof supabaseClient === 'undefined') {
+                setTimeout(tryListen, 1000);
+                return;
+            }
+            supabaseClient.auth.onAuthStateChange((event) => {
+                if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
+                    setTimeout(checkPremiumAndGateStudio, 600);
+                }
+            });
+        };
+        tryListen();
+    };
+
+    // Boot
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            waitForDepsAndRun();
+            listenForAuthChanges();
+        });
+    } else {
+        waitForDepsAndRun();
+        listenForAuthChanges();
+    }
+})();
     </script>
 </body>
 
