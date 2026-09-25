@@ -51,15 +51,17 @@
   .app-grid {
     display: grid;
     grid-template-columns: 280px 1fr 320px;
-    grid-template-rows: 48px 1fr 28px;
+    grid-template-rows: 48px 34px 1fr 28px;
     grid-template-areas:
       "topbar topbar topbar"
+      "scenetab scenetab scenetab"
       "left viewport right"
       "status status status";
     height: 100vh;
     width: 100vw;
   }
   .topbar { grid-area: topbar; }
+  .scene-tab-bar { grid-area: scenetab; }
   .left-panel { grid-area: left; }
   .viewport { grid-area: viewport; }
   .right-panel { grid-area: right; }
@@ -282,9 +284,10 @@
   @media (max-width: 900px) {
     .app-grid {
       grid-template-columns: 1fr;
-      grid-template-rows: 48px 1fr 28px;
+      grid-template-rows: 48px 34px 1fr 28px;
       grid-template-areas:
         "topbar"
+        "scenetab"
         "viewport"
         "status";
     }
@@ -309,30 +312,209 @@
   }
 
   [hidden] { display: none !important; }
+
+  /* Scene Tab Bar */
+  .scene-tab-bar {
+    background: var(--bg-1);
+    border-bottom: 1px solid var(--border-1);
+    display: flex; align-items: center; gap: 2px;
+    padding: 0 6px; overflow-x: auto; overflow-y: hidden;
+    scrollbar-width: thin;
+  }
+  .scene-tab {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 12px; font-size: 12px; color: var(--text-1);
+    border-radius: 4px 4px 0 0; cursor: pointer; white-space: nowrap;
+    border: 1px solid transparent; border-bottom: none;
+    transition: all 0.12s;
+  }
+  .scene-tab:hover { background: var(--bg-3); color: var(--text-0); }
+  .scene-tab.active {
+    background: var(--bg-3); color: var(--red);
+    border-color: var(--border-1); border-bottom-color: var(--bg-3);
+    box-shadow: inset 0 -2px 0 var(--red);
+  }
+  .scene-tab .x { opacity: 0.5; padding: 0 2px; }
+  .scene-tab:hover .x { opacity: 1; }
+  .scene-tab .x:hover { color: var(--red); }
+
+  /* Dashboard project cards */
+  .project-card {
+    background: var(--bg-1); border: 1px solid var(--border-1);
+    border-radius: 8px; padding: 14px; cursor: pointer;
+    transition: all 0.15s; display: flex; flex-direction: column; gap: 8px;
+  }
+  .project-card:hover {
+    border-color: var(--red); transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4), 0 0 0 1px var(--red-glow);
+  }
+  .project-card .proj-type {
+    display: inline-block; padding: 2px 8px; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px; border-radius: 10px;
+    background: var(--red-dim); color: #fff;
+  }
+  .project-card .proj-actions { display: flex; gap: 6px; opacity: 0; transition: opacity 0.15s; }
+  .project-card:hover .proj-actions { opacity: 1; }
+
+  /* Play HUD bars */
+  .player-hud {
+    position: fixed; top: 50px; left: 14px; z-index: 60;
+    display: flex; flex-direction: column; gap: 6px;
+    pointer-events: none;
+  }
+  .player-hud .bar-wrap {
+    width: 200px; background: rgba(0,0,0,0.55); border: 1px solid var(--border-1);
+    border-radius: 4px; padding: 4px 6px; backdrop-filter: blur(6px);
+  }
+  .player-hud .bar-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 1px;
+    color: var(--text-2); text-transform: uppercase;
+    display: flex; justify-content: space-between; margin-bottom: 2px;
+  }
+  .player-hud .bar-track {
+    height: 8px; background: var(--bg-0); border-radius: 2px; overflow: hidden;
+  }
+  .player-hud .bar-fill { height: 100%; transition: width 0.2s ease; }
+  .player-hud .bar-fill.health { background: linear-gradient(90deg, #e11d2a, #ff6b6b); }
+  .player-hud .bar-fill.stamina { background: linear-gradient(90deg, #f59e0b, #fde047); }
+
+  /* Block editor */
+  .block-palette {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 6px; padding: 8px;
+  }
+  .block-cat-title {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-2); padding: 8px 12px 4px; border-top: 1px solid var(--border-1);
+  }
+  .block-cat-title:first-child { border-top: none; }
+  .block-template {
+    padding: 6px 8px; font-size: 11px; border-radius: 4px; cursor: grab;
+    border: 1px solid var(--border-1); background: var(--bg-2); color: var(--text-1);
+    display: flex; align-items: center; gap: 6px;
+    transition: all 0.1s;
+  }
+  .block-template:hover { border-color: var(--red); background: var(--bg-3); }
+  .block-template:active { cursor: grabbing; }
+  .block-template.event { border-left: 3px solid #f59e0b; }
+  .block-template.motion { border-left: 3px solid #3b82f6; }
+  .block-template.action { border-left: 3px solid #e11d2a; }
+  .block-template.sensing { border-left: 3px solid #22c55e; }
+  .block-template.data { border-left: 3px solid #a855f7; }
+
+  .block-script-area {
+    min-height: 300px; background: var(--bg-0); border: 1px dashed var(--border-2);
+    border-radius: 6px; padding: 10px;
+  }
+  .block-script-area.drag-over { border-color: var(--red); background: rgba(225,29,42,0.05); }
+  .block-instance {
+    background: var(--bg-2); border: 1px solid var(--border-1);
+    border-radius: 4px; padding: 6px 8px; margin-bottom: 4px;
+    font-size: 11px; display: flex; align-items: center; gap: 6px;
+    cursor: grab; position: relative;
+  }
+  .block-instance.event { border-left: 3px solid #f59e0b; }
+  .block-instance.motion { border-left: 3px solid #3b82f6; }
+  .block-instance.action { border-left: 3px solid #e11d2a; }
+  .block-instance.sensing { border-left: 3px solid #22c55e; }
+  .block-instance.data { border-left: 3px solid #a855f7; }
+  .block-instance .b-label { color: var(--text-0); font-weight: 600; }
+  .block-instance .b-param {
+    background: var(--bg-0); border: 1px solid var(--border-2);
+    padding: 1px 4px; border-radius: 3px; font-size: 10px;
+    color: var(--text-0); width: 50px;
+  }
+  .block-instance .b-remove {
+    margin-left: auto; opacity: 0.4; cursor: pointer;
+  }
+  .block-instance .b-remove:hover { opacity: 1; color: var(--red); }
+
+  .entity-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 10px; border-radius: 4px; cursor: pointer;
+    font-size: 12px; color: var(--text-1); transition: all 0.1s;
+  }
+  .entity-row:hover { background: var(--bg-2); }
+  .entity-row.selected { background: var(--red-dim); color: #fff; }
+  .entity-row .role-pill {
+    font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 8px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .role-follow { background: #1e3a8a; color: #93c5fd; }
+  .role-wander { background: #14532d; color: #86efac; }
+  .role-patrol { background: #581c87; color: #d8b4fe; }
+  .role-stationary { background: #44403c; color: #d6d3d1; }
+  .role-pickup { background: #713f12; color: #fde047; }
+
+  .template-card {
+    background: var(--bg-2); border: 1px solid var(--border-1);
+    border-radius: 6px; padding: 14px; cursor: pointer;
+    transition: all 0.15s; display: flex; flex-direction: column; gap: 6px;
+  }
+  .template-card:hover { border-color: var(--red); background: var(--bg-3); }
+  .template-card.selected {
+    border-color: var(--red); background: var(--bg-3);
+    box-shadow: 0 0 0 1px var(--red-glow);
+  }
+  .template-card .t-icon {
+    width: 40px; height: 40px; border-radius: 6px;
+    background: linear-gradient(135deg, var(--red-dim), #1a1a1a);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+  }
 </style>
 </head>
 <body>
 
-<div class="app-grid">
+<!-- DASHBOARD OVERLAY -->
+<div id="dashboard" class="fixed inset-0 z-50 bg-neutral-950 overflow-auto" hidden>
+  <div class="max-w-6xl mx-auto px-6 py-10">
+    <header class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-4">
+        <div class="brand-logo" style="width:48px;height:48px;font-size:24px;">E</div>
+        <div>
+          <h1 class="text-2xl font-black tracking-tight">EPSILON HECKLE <span class="premium-badge ml-1">Premium</span></h1>
+          <p class="text-neutral-500 text-xs uppercase tracking-widest">3D Game Studio · Dashboard</p>
+        </div>
+      </div>
+      <button class="btn btn-ghost" onclick="UI.openHelpModal()" title="Help"><i data-lucide="help-circle"></i>Help</button>
+    </header>
+
+    <section class="mb-10">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-neutral-400">Your Projects</h2>
+        <button class="btn btn-primary" onclick="Dashboard.openNewProjectWizard()"><i data-lucide="plus"></i>New Game</button>
+      </div>
+      <div id="projectGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </section>
+
+    <section class="border-t border-neutral-800 pt-6 text-[11px] text-neutral-600">
+      <p>All projects are stored locally in your browser. Use the Export button inside a project to back up.</p>
+    </section>
+  </div>
+</div>
+
+<div class="app-grid" id="appGrid" hidden>
   <!-- TOP BAR -->
   <header class="topbar flex items-center justify-between px-3 panel border-b">
     <div class="flex items-center gap-3">
+      <button class="btn btn-ghost btn-icon" onclick="Dashboard.show()" title="Back to Dashboard"><i data-lucide="arrow-left"></i></button>
       <div class="brand-logo">E</div>
       <div class="flex flex-col leading-tight">
         <div class="flex items-center gap-2">
           <span class="font-bold text-sm tracking-wide">EPSILON HECKLE</span>
           <span class="premium-badge">Premium</span>
         </div>
-        <span class="text-[10px] text-neutral-500 uppercase tracking-widest">3D Game Studio</span>
+        <span class="text-[10px] text-neutral-500 uppercase tracking-widest" id="topbarProjectName">3D Game Studio</span>
       </div>
     </div>
     <div class="flex items-center gap-1">
       <button class="btn btn-ghost mobile-panel-toggle" onclick="UI.toggleLeftPanel()" title="Assets"><i data-lucide="package"></i></button>
-      <button class="btn btn-ghost" onclick="Engine.newScene()" title="New Scene"><i data-lucide="file-plus"></i><span class="hidden sm:inline">New</span></button>
-      <button class="btn btn-ghost" onclick="Engine.saveScene()" title="Save Scene"><i data-lucide="save"></i><span class="hidden sm:inline">Save</span></button>
-      <button class="btn btn-ghost" onclick="UI.openLoadModal()" title="Load Scene"><i data-lucide="folder-open"></i><span class="hidden sm:inline">Load</span></button>
+      <button class="btn btn-ghost" onclick="Scenes.newScene()" title="New Scene"><i data-lucide="file-plus"></i><span class="hidden sm:inline">New</span></button>
+      <button class="btn btn-ghost" onclick="Projects.saveCurrent()" title="Save Project"><i data-lucide="save"></i><span class="hidden sm:inline">Save</span></button>
       <button class="btn btn-ghost" onclick="UI.openExportModal()" title="Export"><i data-lucide="download"></i><span class="hidden sm:inline">Export</span></button>
       <div class="w-px h-6 bg-neutral-800 mx-1"></div>
+      <button class="btn btn-ghost" onclick="UI.openRulesModal()" title="Game Rules"><i data-lucide="heart-pulse"></i><span class="hidden sm:inline">Rules</span></button>
       <button class="btn btn-ghost" onclick="UI.openSettingsModal()" title="Settings"><i data-lucide="settings"></i></button>
       <button class="btn btn-ghost" onclick="UI.openHelpModal()" title="Help"><i data-lucide="help-circle"></i></button>
       <div class="w-px h-6 bg-neutral-800 mx-1"></div>
@@ -343,9 +525,16 @@
     </div>
   </header>
 
+  <!-- SCENE TAB BAR -->
+  <div class="scene-tab-bar" id="sceneTabBar">
+    <span class="text-[10px] text-neutral-600 uppercase tracking-widest px-2">Scenes:</span>
+    <div id="sceneTabsList" class="flex items-center gap-1 flex-1 overflow-x-auto"></div>
+    <button class="btn btn-ghost btn-icon" onclick="Scenes.newScene()" title="Add Scene"><i data-lucide="plus" class="w-3.5 h-3.5"></i></button>
+  </div>
+
   <!-- LEFT PANEL -->
   <aside class="left-panel panel border-r flex flex-col overflow-hidden">
-    <div class="flex border-b border-neutral-800">
+    <div class="flex border-b border-neutral-800 overflow-x-auto">
       <div class="tab-btn active" data-tab="shapes" onclick="UI.switchTab('shapes')">
         <i data-lucide="box" class="w-4 h-4"></i>Shapes
       </div>
@@ -354,6 +543,9 @@
       </div>
       <div class="tab-btn" data-tab="scene" onclick="UI.switchTab('scene')">
         <i data-lucide="layers" class="w-4 h-4"></i>Scene
+      </div>
+      <div class="tab-btn" data-tab="entities" onclick="UI.switchTab('entities')">
+        <i data-lucide="bot" class="w-4 h-4"></i>Entities
       </div>
       <div class="tab-btn" data-tab="env" onclick="UI.switchTab('env')">
         <i data-lucide="cloud-sun" class="w-4 h-4"></i>World
@@ -387,6 +579,21 @@
       </div>
       <div id="sceneList" class="p-1">
         <div class="text-neutral-600 text-xs px-3 py-4 text-center">Scene is empty. Add shapes or assets.</div>
+      </div>
+    </div>
+
+    <div id="tab-entities" class="tab-content flex-1 overflow-auto hidden">
+      <div class="section-title flex items-center justify-between">
+        <span>Entities</span>
+        <button class="btn btn-primary btn-icon" onclick="Entities.openNewEntityModal()" title="New Entity"><i data-lucide="plus" class="w-3 h-3"></i></button>
+      </div>
+      <div id="entityList" class="p-1">
+        <div class="text-neutral-600 text-xs px-3 py-4 text-center">No entities yet. Click + to add one.</div>
+      </div>
+      <div class="section-title">Player Body</div>
+      <div class="p-3 text-xs space-y-2">
+        <div id="playerBodyDisplay" class="text-neutral-400">No player body set. Select an object and use "Set as Player Body" in the Inspector.</div>
+        <button class="btn w-full justify-center" onclick="Projects.clearPlayerBody()"><i data-lucide="x"></i>Clear Player Body</button>
       </div>
     </div>
 
@@ -447,6 +654,17 @@
       <div class="absolute top-3 left-3 px-3 py-1.5 bg-black/70 border border-red-900 rounded text-xs uppercase tracking-wider text-red-400 font-bold">
         <i data-lucide="circle" class="w-2 h-2 inline-block fill-red-500 text-red-500 mr-1"></i>Play Mode
       </div>
+      <div class="player-hud" id="playerHud">
+        <div class="bar-wrap">
+          <div class="bar-label"><span>Health</span><span id="hudHealthVal">100/100</span></div>
+          <div class="bar-track"><div class="bar-fill health" id="hudHealthBar" style="width:100%"></div></div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-label"><span>Stamina</span><span id="hudStaminaVal">100/100</span></div>
+          <div class="bar-track"><div class="bar-fill stamina" id="hudStaminaBar" style="width:100%"></div></div>
+        </div>
+      </div>
+      <div id="hudMessage" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl font-black text-red-500 opacity-0 transition-opacity duration-300 pointer-events-none" style="text-shadow: 0 0 20px rgba(225,29,42,0.6);"></div>
       <div class="absolute top-3 right-3 flex gap-2 pointer-events-auto">
         <button class="btn btn-danger" onclick="Engine.togglePlay()"><i data-lucide="square"></i>Stop</button>
       </div>
@@ -537,6 +755,15 @@ function hideLoading() { $('#loadingOverlay').classList.add('hidden'); }
 
 function sanitizeFilename(name) {
   return String(name || 'untitled').replace(/[^a-zA-Z0-9_\-\. ]/g, '_').slice(0, 64);
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function escapeAttr(s) { return escapeHtml(s); }
+function n(v) {
+  if (typeof v === 'number') return parseFloat(v.toFixed(3));
+  return v || 0;
 }
 
 // ====================== ASSET LIBRARY ======================
@@ -1026,27 +1253,10 @@ const Engine = (() => {
     state.lastFrame = performance.now();
     animate();
 
-    // Auto-load last session
-    setTimeout(() => {
-      const auto = localStorage.getItem('eh_autosave');
-      if (auto) {
-        try {
-          const data = JSON.parse(auto);
-          if (data && data.objects && data.objects.length > 0 && confirm('Restore your last session?')) {
-            deserialize(data);
-            toast('Session restored', 'success');
-          } else {
-            // Add default starter content
-            addStarterContent();
-          }
-        } catch (e) { addStarterContent(); }
-      } else {
-        addStarterContent();
-      }
-    }, 200);
-
+    // Initialize UI panels (scenes/projects handle loading via dashboard)
     UI.refreshSceneList();
     UI.refreshInspector();
+    UI.refreshEntities();
     UI.initAssetCategories();
     UI.buildShapesGrid();
     UI.buildLightsGrid();
@@ -1780,6 +1990,8 @@ const Engine = (() => {
 
   async function startPlay() {
     if (state.objects.length === 0) { toast('Add some objects first', 'error'); return; }
+    const proj = Projects.getActive();
+    if (!proj) { toast('Open a project first', 'error'); return; }
     state.mode = 'play';
     state.play.active = true;
     state.play.keys = {};
@@ -1790,6 +2002,7 @@ const Engine = (() => {
     state.play.joystick = { x:0, y:0, active:false };
     state.play.lookDelta = { x:0, y:0 };
     state.play.pointerLocked = false;
+    state.play.usingCustomBody = false;
 
     // Hide editor controls
     state.transform.detach();
@@ -1797,24 +2010,59 @@ const Engine = (() => {
     state.grid.visible = false;
     $('.viewport-toolbar').style.display = 'none';
 
-    // Create character (capsule)
-    const charGroup = new THREE.Group();
-    const bodyMat = new THREE.MeshStandardMaterial({ color: 0xe11d2a, roughness: 0.5, metalness: 0.2 });
-    const body = new THREE.Mesh(new THREE.CapsuleGeometry(state.play.characterRadius, state.play.characterHeight - state.play.characterRadius*2, 4, 12), bodyMat);
-    body.castShadow = true;
-    body.position.y = state.play.characterHeight / 2;
-    charGroup.add(body);
-    // direction indicator
-    const dir = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.3, 4), new THREE.MeshBasicMaterial({ color: 0xffffff }));
-    dir.rotation.x = Math.PI/2;
-    dir.position.set(0, state.play.characterHeight/2, -state.play.characterRadius - 0.2);
-    charGroup.add(dir);
-    charGroup.position.set(0, 1, 5);
-    state.scene.add(charGroup);
-    state.play.character = charGroup;
+    // Create character: use custom body if set, else default capsule
+    const playerBodyObj = Projects.getPlayerBodyObject();
+    if (playerBodyObj) {
+      // Clone the player body so we don't mutate the original
+      const clone = playerBodyObj.clone(true);
+      clone.userData = { ...playerBodyObj.userData, _isPlayClone: true };
+      // Reset scale to a reasonable size if too big
+      const box = new THREE.Box3().setFromObject(clone);
+      const size = box.getSize(new THREE.Vector3());
+      const maxSize = 3;
+      if (size.y > maxSize || size.x > maxSize * 2 || size.z > maxSize * 2) {
+        const factor = maxSize / Math.max(size.y, size.x, size.z);
+        clone.scale.multiplyScalar(factor);
+      }
+      // Place at respawn point
+      const r = proj.rules;
+      clone.position.set(r.respawnPoint[0], r.respawnPoint[1], r.respawnPoint[2]);
+      clone.rotation.set(0, 0, 0);
+      // Compute character height from cloned bounding box
+      const cloneBox = new THREE.Box3().setFromObject(clone);
+      const cloneSize = cloneBox.getSize(new THREE.Vector3());
+      state.play.characterHeight = Math.max(1, cloneSize.y);
+      state.play.characterRadius = Math.max(0.3, Math.min(cloneSize.x, cloneSize.z) / 2);
+      state.scene.add(clone);
+      state.play.character = clone;
+      state.play.usingCustomBody = true;
+      // Hide original
+      playerBodyObj.visible = false;
+    } else {
+      // Default capsule character
+      const charGroup = new THREE.Group();
+      const bodyMat = new THREE.MeshStandardMaterial({ color: 0xe11d2a, roughness: 0.5, metalness: 0.2 });
+      const body = new THREE.Mesh(new THREE.CapsuleGeometry(state.play.characterRadius, state.play.characterHeight - state.play.characterRadius*2, 4, 12), bodyMat);
+      body.castShadow = true;
+      body.position.y = state.play.characterHeight / 2;
+      charGroup.add(body);
+      // direction indicator
+      const dir = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.3, 4), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+      dir.rotation.x = Math.PI/2;
+      dir.position.set(0, state.play.characterHeight/2, -state.play.characterRadius - 0.2);
+      charGroup.add(dir);
+      charGroup.position.set(0, 1, 5);
+      state.scene.add(charGroup);
+      state.play.character = charGroup;
+    }
+
+    // Reset rules + entities
+    Rules.reset();
+    Entities.resetAll();
 
     // Show HUD
     $('#playHud').classList.remove('hidden');
+    $('#playerHud').style.display = '';
     $('#playBtn').classList.remove('btn-primary');
     $('#playBtn').classList.add('btn-danger');
     $('#playIcon').setAttribute('data-lucide', 'square');
@@ -1830,7 +2078,6 @@ const Engine = (() => {
       setupTouchControls();
     } else {
       $('#pcControls').classList.remove('hidden');
-      // pointer lock on canvas click
       state.canvas.addEventListener('click', requestPointerLock);
     }
 
@@ -1848,12 +2095,21 @@ const Engine = (() => {
       });
       state.play.character = null;
     }
+    // Restore original player body visibility
+    if (state.play.usingCustomBody) {
+      const orig = Projects.getPlayerBodyObject();
+      if (orig) orig.visible = true;
+      state.play.usingCustomBody = false;
+    }
+    // Restore entities
+    Entities.resetAll();
     state.orbit.enabled = true;
     state.grid.visible = state.env.showGrid;
     $('.viewport-toolbar').style.display = '';
     $('#playHud').classList.add('hidden');
     $('#mobileControls').classList.add('hidden');
     $('#pcControls').classList.add('hidden');
+    $('#playerHud').style.display = 'none';
     $('#playBtn').classList.add('btn-primary');
     $('#playBtn').classList.remove('btn-danger');
     $('#playIcon').setAttribute('data-lucide', 'play');
@@ -1864,7 +2120,6 @@ const Engine = (() => {
     state.canvas.removeEventListener('click', requestPointerLock);
     if (document.pointerLockElement) document.exitPointerLock();
     lucide.createIcons();
-    // Restore selection gizmo
     if (state.selected) state.transform.attach(state.selected);
   }
 
@@ -1889,7 +2144,16 @@ const Engine = (() => {
     if (!state.play.character) return;
     const p = state.play;
     const char = p.character;
-    const speed = (p.keys['ShiftLeft'] || p.keys['ShiftRight']) ? p.runSpeed : p.walkSpeed;
+    const rules = Rules.getRules();
+    const isRunning = (p.keys['ShiftLeft'] || p.keys['ShiftRight']);
+    // Check stamina: if running requires stamina and out of stamina, can't run
+    const canRun = isRunning && (!rules.runRequiresStamina || Rules.hasStamina(rules.staminaDrainRun * delta));
+    const speed = canRun ? p.runSpeed : p.walkSpeed;
+
+    // Drain stamina if running
+    if (canRun && (p.keys['KeyW'] || p.keys['KeyS'] || p.keys['KeyA'] || p.keys['KeyD'] || p.joystick.active)) {
+      Rules.drainStamina(rules.staminaDrainRun * delta);
+    }
 
     // Input vector
     let ix = 0, iz = 0;
@@ -1916,13 +2180,16 @@ const Engine = (() => {
 
     // Gravity & jump
     p.velocity.y -= p.gravity * delta;
-    if ((p.keys['Space'] || p.keys['Space']) && p.onGround) {
+    const canJump = p.onGround && (!rules.runRequiresStamina || Rules.hasStamina(rules.staminaDrainJump));
+    if (p.keys['Space'] && canJump) {
       p.velocity.y = p.jumpForce;
       p.onGround = false;
+      Rules.drainStamina(rules.staminaDrainJump);
     }
-    if (p._jumpBtnDown && p.onGround) {
+    if (p._jumpBtnDown && canJump) {
       p.velocity.y = p.jumpForce;
       p.onGround = false;
+      Rules.drainStamina(rules.staminaDrainJump);
       p._jumpBtnDown = false;
     }
 
@@ -1934,6 +2201,7 @@ const Engine = (() => {
     // Ground collision
     const groundY = getGroundHeightAt(char.position.x, char.position.z);
     const charBottom = groundY + p.characterHeight / 2;
+    const wasOnGround = p.onGround;
     if (char.position.y <= charBottom) {
       char.position.y = charBottom;
       p.velocity.y = 0;
@@ -1942,14 +2210,17 @@ const Engine = (() => {
       p.onGround = false;
     }
 
-    // Object collision (simple AABB pushback)
+    // Check fall damage via Rules module
+    Rules.checkFallDamage(char.position.y, p.onGround);
+
+    // Object collision (simple AABB pushback) — skip player body and play clone
+    const playerBodyObj = Projects.getPlayerBodyObject();
     state.objects.forEach(o => {
       if (o.userData._isHelper) return;
+      if (o === playerBodyObj) return; // skip player body original
       const box = new THREE.Box3().setFromObject(o);
-      // expand by character radius
       box.expandByScalar(p.characterRadius);
       if (box.containsPoint(char.position)) {
-        // push out on smallest axis
         const center = box.getCenter(new THREE.Vector3());
         const dx = char.position.x - center.x;
         const dz = char.position.z - center.z;
@@ -1965,6 +2236,12 @@ const Engine = (() => {
       }
     });
 
+    // Update Rules (regen, invuln timers, respawn handling)
+    Rules.update(delta, { ...p, isRunning: canRun });
+
+    // Update Entities
+    try { Entities.updateAll(delta, p); } catch (e) { console.warn('Entity update error', e); }
+
     // Camera follow (third-person)
     const camTarget = char.position.clone();
     const camOffset = new THREE.Vector3(
@@ -1973,7 +2250,6 @@ const Engine = (() => {
       Math.cos(p.yaw) * Math.cos(p.pitch) * p.cameraOffset.z
     );
     const camPos = camTarget.clone().add(camOffset);
-    // terrain clamp
     const camGroundY = getGroundHeightAt(camPos.x, camPos.z) + 1;
     if (camPos.y < camGroundY) camPos.y = camGroundY;
     state.camera.position.lerp(camPos, 0.15);
@@ -1988,6 +2264,92 @@ const Engine = (() => {
       return 0;
     }
     return 0;
+  }
+
+  // Deserialize only objects (env applied separately) — used by Scenes module
+  async function deserializeObjectsOnly(objects) {
+    if (!objects) return;
+    for (const obj of objects) {
+      try {
+        let object = null;
+        if (obj.type === 'primitive') {
+          const prim = PRIMITIVES.find(p => p.id === obj.extra.primitiveId);
+          if (prim) {
+            if (typeof prim.geom === 'function') {
+              const r = prim.geom();
+              object = r.isObject3D ? r : new THREE.Mesh(r, makeStandardMaterial());
+            } else {
+              object = new THREE.Mesh(prim.geom(), makeStandardMaterial());
+            }
+            object.castShadow = true; object.receiveShadow = true;
+          }
+        } else if (obj.type === 'light') {
+          const l = LIGHTS.find(x => x.id === obj.extra.lightId);
+          if (l) {
+            object = l.make();
+            object.castShadow = true;
+            const helper = new THREE.Mesh(
+              new THREE.SphereGeometry(0.15, 12, 12),
+              new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true })
+            );
+            helper.userData._isHelper = true;
+            object.add(helper);
+          }
+        } else if (obj.type === 'proc') {
+          const asset = ASSET_LIBRARY.find(a => a.id === obj.extra.assetId);
+          if (asset && asset.proc) {
+            object = Procedural[asset.proc]();
+            object.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+          }
+        } else if (obj.type === 'gltf') {
+          const src = obj.extra.src;
+          if (src && /^https?:\/\//.test(src)) {
+            try {
+              const result = await loadGLTF(src);
+              object = result.scene;
+              if (result.animations && result.animations.length) {
+                object.userData._mixer = new THREE.AnimationMixer(object);
+                object.userData._mixer.clipAction(result.animations[0]).play();
+              }
+              object.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+            } catch (e) {
+              console.warn('Failed to reload GLTF', src, e);
+              object = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), makeStandardMaterial());
+              object.castShadow = true;
+            }
+          } else {
+            object = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), makeStandardMaterial());
+            object.castShadow = true;
+          }
+        }
+        if (object) {
+          object.userData.id = obj.id;
+          object.userData.name = obj.name;
+          object.userData.type = obj.type;
+          object.userData.extra = obj.extra;
+          object.userData.behavior = obj.behavior;
+          object.position.fromArray(obj.position);
+          object.rotation.fromArray(obj.rotation);
+          object.scale.fromArray(obj.scale);
+          object.visible = obj.visible !== false;
+          if (obj.material && object.isMesh && object.material) {
+            const m = object.material;
+            if (m.color) m.color = new THREE.Color(obj.material.color);
+            if ('metalness' in m) m.metalness = obj.material.metalness;
+            if ('roughness' in m) m.roughness = obj.material.roughness;
+            if (m.emissive) m.emissive = new THREE.Color(obj.material.emissive);
+            if ('emissiveIntensity' in m) m.emissiveIntensity = obj.material.emissiveIntensity;
+            if ('opacity' in m) m.opacity = obj.material.opacity;
+            if ('transparent' in m) m.transparent = obj.material.transparent;
+            if ('wireframe' in m) m.wireframe = obj.material.wireframe;
+          }
+          state.scene.add(object);
+          state.objects.push(object);
+        }
+      } catch (e) {
+        console.error('Failed to restore object', obj, e);
+      }
+    }
   }
 
   // ====================== TOUCH CONTROLS ======================
@@ -2088,8 +2450,9 @@ const Engine = (() => {
     setTransformMode, toggleSnap,
     setSkyColor, setAmbient, setSunIntensity, setSunColor, setSunAngle,
     toggleFog, setFogColor, setFogDensity, setGroundColor, toggleGrid, setGroundType, setTerrainSize, setTerrainHeight, regenerateTerrain,
-    saveScene, loadSceneByName, deleteSave, listSaves, exportScene, importScene, serialize, deserialize,
-    togglePlay,
+    saveScene, loadSceneByName, deleteSave, listSaves, exportScene, importScene, serialize, deserialize, deserializeObjectsOnly,
+    togglePlay, startPlay, stopPlay,
+    getGroundHeightAt, applyEnvironment,
   };
 })();
 
@@ -2328,6 +2691,8 @@ const UI = (() => {
         <button class="btn btn-danger justify-center" onclick="Engine.deleteSelected()"><i data-lucide="trash-2"></i>Delete</button>
         <button class="btn justify-center" onclick="Engine.focusSelected()"><i data-lucide="crosshair"></i>Focus</button>
         <button class="btn justify-center" onclick="Engine.state.selected.scale.set(1,1,1); UI.refreshInspector()"><i data-lucide="rotate-ccw"></i>Reset Scale</button>
+        <button class="btn btn-primary justify-center col-span-2" onclick="Projects.setPlayerBodyFromSelected()"><i data-lucide="user"></i>Set as Player Body</button>
+        <button class="btn justify-center col-span-2" onclick="Entities.createFromSelected()"><i data-lucide="bot"></i>Make Selected an Entity</button>
       </div>
     `;
 
@@ -2471,18 +2836,158 @@ const UI = (() => {
   }
 
   function openExportModal() {
-    openModal('Export / Import Scene', `
+    const proj = Projects.getActive();
+    if (!proj) { toast('Open a project first', 'error'); return; }
+    openModal('Export / Import', `
       <div class="space-y-4">
         <div>
-          <div class="text-xs text-neutral-400 mb-2">Export current scene as a JSON file you can share or reload later.</div>
-          <button class="btn btn-primary w-full justify-center" onclick="Engine.exportScene(); UI.closeModal()"><i data-lucide="download"></i>Export Scene JSON</button>
+          <div class="text-xs text-neutral-400 mb-2">Export this entire project (all scenes, entities, rules) as JSON.</div>
+          <button class="btn btn-primary w-full justify-center" onclick="Projects.exportProject(); UI.closeModal()"><i data-lucide="download"></i>Export Project</button>
         </div>
         <div class="border-t border-neutral-800 pt-3">
-          <div class="text-xs text-neutral-400 mb-2">Import a previously exported scene JSON.</div>
-          <input type="file" accept=".json" class="input" onchange="UI.importSceneFile(this.files[0])">
+          <div class="text-xs text-neutral-400 mb-2">Import a previously exported project JSON.</div>
+          <input type="file" accept=".json" class="input" onchange="UI.importProjectFile(this.files[0])">
         </div>
       </div>
     `);
+  }
+
+  function importProjectFile(file) {
+    if (!file) return;
+    closeModal();
+    Projects.importProject(file);
+  }
+
+  function openRulesModal() {
+    const proj = Projects.getActive();
+    if (!proj) { toast('Open a project first', 'error'); return; }
+    const r = proj.rules;
+    const respawnPoint = r.respawnPoint || [0, 2, 0];
+    openModal('Game Rules — ' + proj.name, `
+      <div class="space-y-4">
+        <div>
+          <div class="text-xs text-neutral-400 uppercase tracking-wider mb-2">Health</div>
+          <div class="inspector-row"><label>Max Health</label><input type="number" min="1" step="1" value="${r.maxHealth}" oninput="UI.updateRule('maxHealth', parseFloat(this.value)||100)"></div>
+          <div class="inspector-row"><label>Health Regen/s</label><input type="number" min="0" step="0.5" value="${r.healthRegen}" oninput="UI.updateRule('healthRegen', parseFloat(this.value)||0)"></div>
+        </div>
+        <div class="border-t border-neutral-800 pt-3">
+          <div class="text-xs text-neutral-400 uppercase tracking-wider mb-2">Stamina</div>
+          <div class="inspector-row"><label>Max Stamina</label><input type="number" min="1" step="1" value="${r.maxStamina}" oninput="UI.updateRule('maxStamina', parseFloat(this.value)||100)"></div>
+          <div class="inspector-row"><label>Stamina Regen/s</label><input type="number" min="0" step="0.5" value="${r.staminaRegen}" oninput="UI.updateRule('staminaRegen', parseFloat(this.value)||0)"></div>
+          <div class="inspector-row"><label>Run Drain/s</label><input type="number" min="0" step="0.5" value="${r.staminaDrainRun}" oninput="UI.updateRule('staminaDrainRun', parseFloat(this.value)||0)"></div>
+          <div class="inspector-row"><label>Jump Drain</label><input type="number" min="0" step="0.5" value="${r.staminaDrainJump}" oninput="UI.updateRule('staminaDrainJump', parseFloat(this.value)||0)"></div>
+          <div class="inspector-row"><label>Run Needs Stam.</label><input type="checkbox" ${r.runRequiresStamina?'checked':''} onchange="UI.updateRule('runRequiresStamina', this.checked)"></div>
+        </div>
+        <div class="border-t border-neutral-800 pt-3">
+          <div class="text-xs text-neutral-400 uppercase tracking-wider mb-2">Fall Damage</div>
+          <div class="inspector-row"><label>Threshold (m)</label><input type="number" min="0" step="0.5" value="${r.fallDamageThreshold}" oninput="UI.updateRule('fallDamageThreshold', parseFloat(this.value)||0)"></div>
+          <div class="inspector-row"><label>Dmg per Meter</label><input type="number" min="0" step="0.5" value="${r.fallDamagePerMeter}" oninput="UI.updateRule('fallDamagePerMeter', parseFloat(this.value)||0)"></div>
+        </div>
+        <div class="border-t border-neutral-800 pt-3">
+          <div class="text-xs text-neutral-400 uppercase tracking-wider mb-2">Death & Respawn</div>
+          <div class="inspector-row"><label>Respawn On Death</label><input type="checkbox" ${r.respawnOnDeath?'checked':''} onchange="UI.updateRule('respawnOnDeath', this.checked)"></div>
+          <div class="inspector-row"><label>Respawn X</label><input type="number" step="0.5" value="${respawnPoint[0]}" oninput="UI.updateRespawnPoint(0, parseFloat(this.value)||0)"></div>
+          <div class="inspector-row"><label>Respawn Y</label><input type="number" step="0.5" value="${respawnPoint[1]}" oninput="UI.updateRespawnPoint(1, parseFloat(this.value)||0)"></div>
+          <div class="inspector-row"><label>Respawn Z</label><input type="number" step="0.5" value="${respawnPoint[2]}" oninput="UI.updateRespawnPoint(2, parseFloat(this.value)||0)"></div>
+          <div class="inspector-row"><label>Invuln Time (s)</label><input type="number" min="0" step="0.1" value="${r.invulnTime}" oninput="UI.updateRule('invulnTime', parseFloat(this.value)||0)"></div>
+          <div class="inspector-row"><label>Contact Dmg CD (s)</label><input type="number" min="0" step="0.1" value="${r.contactDamageCooldown}" oninput="UI.updateRule('contactDamageCooldown', parseFloat(this.value)||0)"></div>
+        </div>
+        <div class="border-t border-neutral-800 pt-3 flex justify-end gap-2">
+          <button class="btn" onclick="UI.closeModal()">Close</button>
+        </div>
+      </div>
+    `);
+  }
+
+  function updateRule(key, value) {
+    const proj = Projects.getActive();
+    if (!proj) return;
+    proj.rules[key] = value;
+    Projects.save(proj);
+  }
+
+  function updateRespawnPoint(idx, value) {
+    const proj = Projects.getActive();
+    if (!proj) return;
+    if (!proj.rules.respawnPoint) proj.rules.respawnPoint = [0, 2, 0];
+    proj.rules.respawnPoint[idx] = value;
+    Projects.save(proj);
+  }
+
+  function openNewSceneModal() {
+    const templates = Scenes.getTemplates();
+    let cards = '';
+    Object.entries(templates).forEach(([id, t]) => {
+      cards += `
+        <div class="template-card" data-tpl="${id}" onclick="document.querySelectorAll('#newSceneTplGrid .template-card').forEach(c=>c.classList.remove('selected')); this.classList.add('selected'); document.getElementById('newSceneTpl').value='${id}'">
+          <div class="t-icon"><i data-lucide="${t.icon}" class="w-5 h-5"></i></div>
+          <div class="font-bold text-sm">${t.name}</div>
+          <div class="text-[10px] text-neutral-500">${t.description}</div>
+        </div>
+      `;
+    });
+    openModal('New Scene', `
+      <div class="space-y-3">
+        <div>
+          <label class="text-xs text-neutral-400 block mb-1">Scene Name</label>
+          <input type="text" id="newSceneName" class="input" value="Scene ${Projects.getActive().scenes.length + 1}">
+        </div>
+        <div>
+          <label class="text-xs text-neutral-400 block mb-2">Template</label>
+          <input type="hidden" id="newSceneTpl" value="empty">
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="newSceneTplGrid">${cards}</div>
+        </div>
+      </div>
+    `, `
+      <button class="btn" onclick="UI.closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="UI.confirmNewScene()"><i data-lucide="plus"></i>Create Scene</button>
+    `);
+    lucide.createIcons();
+  }
+
+  function confirmNewScene() {
+    const name = document.getElementById('newSceneName').value.trim() || 'Scene';
+    const tpl = document.getElementById('newSceneTpl').value || 'empty';
+    closeModal();
+    Scenes.addScene(name, tpl);
+  }
+
+  function refreshEntities() {
+    const list = document.getElementById('entityList');
+    if (!list) return;
+    const proj = Projects.getActive();
+    if (!proj) { list.innerHTML = '<div class="text-neutral-600 text-xs px-3 py-4 text-center">No project open</div>'; return; }
+    const scene = Scenes.getActiveScene();
+    const entities = scene?.entities || [];
+    if (entities.length === 0) {
+      list.innerHTML = '<div class="text-neutral-600 text-xs px-3 py-4 text-center">No entities yet. Click + to add one.</div>';
+    } else {
+      list.innerHTML = '';
+      entities.forEach(e => {
+        const row = document.createElement('div');
+        row.className = 'entity-row' + (Entities.getSelected()?.id === e.id ? ' selected' : '');
+        row.innerHTML = `
+          <i data-lucide="${Entities.ROLE_INFO[e.role]?.icon || 'bot'}" class="w-3.5 h-3.5"></i>
+          <span class="flex-1 truncate">${escapeHtml(e.name)}</span>
+          <span class="role-pill role-${e.role}">${e.role}</span>
+          <button class="btn-ghost btn-icon btn" title="Edit" onclick="event.stopPropagation(); Entities.openEntityEditor('${e.id}')"><i data-lucide="pencil" class="w-3 h-3"></i></button>
+          <button class="btn-ghost btn-icon btn" title="Delete" onclick="event.stopPropagation(); if(confirm('Delete ${escapeAttr(e.name)}?')) Entities.remove('${e.id}')"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+        `;
+        row.onclick = () => Entities.select(e.id);
+        list.appendChild(row);
+      });
+    }
+    // Update player body display
+    const pbd = document.getElementById('playerBodyDisplay');
+    if (pbd) {
+      const bodyObj = Projects.getPlayerBodyObject();
+      if (bodyObj) {
+        pbd.innerHTML = `<span class="text-red-400 font-bold">Player Body:</span> ${escapeHtml(bodyObj.userData.name)}`;
+      } else {
+        pbd.textContent = 'No player body set. Select an object and use "Set as Player Body" in the Inspector.';
+      }
+    }
+    lucide.createIcons();
   }
 
   function importSceneFile(file) {
@@ -2585,23 +3090,1415 @@ const UI = (() => {
     switchTab, refreshSceneList, refreshInspector, updateName,
     setMaterialColor, setMaterialEmissive, setMaterialProp, setMaterialOpacity,
     openModal, closeModal, openImportModal, importFromUrl, importFromFile,
-    openLoadModal, loadSave, deleteSave, openExportModal, importSceneFile,
+    openLoadModal, loadSave, deleteSave, openExportModal, importProjectFile, importSceneFile,
     openSettingsModal, openHelpModal,
+    openRulesModal, updateRule, updateRespawnPoint,
+    openNewSceneModal, confirmNewScene,
+    refreshEntities,
     toggleLeftPanel, toggleRightPanel,
   };
 })();
 
 window.UI = UI;
 
+// ============================================================
+// PROJECTS MODULE — manages game projects in localStorage
+// ============================================================
+const Projects = (() => {
+  const STORAGE_KEY = 'eh_projects';
+  const ACTIVE_KEY = 'eh_active_project';
+  let active = null; // { ...project data... }
+
+  function listAll() {
+    try {
+      const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      return Object.values(all).sort((a,b) => (b.updatedAt||0) - (a.updatedAt||0));
+    } catch { return []; }
+  }
+
+  function load(id) {
+    try {
+      const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      return all[id] || null;
+    } catch { return null; }
+  }
+
+  function save(proj) {
+    if (!proj || !proj.id) return;
+    proj.updatedAt = Date.now();
+    try {
+      const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      all[proj.id] = proj;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+      localStorage.setItem(ACTIVE_KEY, proj.id);
+    } catch (e) { console.error('Save failed', e); toast('Save failed: ' + e.message, 'error'); }
+  }
+
+  function remove(id) {
+    try {
+      const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      delete all[id];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+    } catch {}
+  }
+
+  function create(name, description, type, template) {
+    const id = 'proj_' + uuid();
+    const project = {
+      id, name: name || 'Untitled', description: description || '',
+      type: type || 'Sandbox', template: template || 'empty',
+      scenes: [],
+      activeSceneId: null,
+      rules: defaultRules(),
+      playerBodyId: null,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    };
+    // Create first scene from template
+    const firstScene = Scenes.createSceneFromTemplate(template || 'empty', 'Main Scene');
+    project.scenes.push(firstScene);
+    project.activeSceneId = firstScene.id;
+    save(project);
+    return project;
+  }
+
+  function defaultRules() {
+    return {
+      maxHealth: 100,
+      maxStamina: 100,
+      healthRegen: 0,
+      staminaRegen: 15,
+      staminaDrainRun: 12,
+      staminaDrainJump: 8,
+      fallDamageThreshold: 5,
+      fallDamagePerMeter: 6,
+      respawnOnDeath: true,
+      respawnPoint: [0, 2, 0],
+      invulnTime: 1.0,
+      walkRequiresStamina: false,
+      runRequiresStamina: true,
+      contactDamageCooldown: 1.5,
+    };
+  }
+
+  function getActive() { return active; }
+  function setActive(p) {
+    active = p;
+    if (p) {
+      localStorage.setItem(ACTIVE_KEY, p.id);
+      $('#topbarProjectName').textContent = p.name + ' · ' + p.type;
+    } else {
+      localStorage.removeItem(ACTIVE_KEY);
+      $('#topbarProjectName').textContent = '3D Game Studio';
+    }
+  }
+
+  function saveCurrent() {
+    if (!active) return;
+    // Capture current scene state into active project
+    Scenes.captureCurrentIntoProject();
+    save(active);
+    toast('Project "' + active.name + '" saved', 'success');
+  }
+
+  function setPlayerBodyFromSelected() {
+    if (!active) { toast('Open a project first', 'error'); return; }
+    const sel = Engine.state.selected;
+    if (!sel) { toast('Select an object first', 'error'); return; }
+    if (sel.userData.type === 'light') { toast('Lights cannot be player bodies', 'error'); return; }
+    active.playerBodyId = sel.userData.id;
+    save(active);
+    toast('Set as player body: ' + sel.userData.name, 'success');
+    UI.refreshEntities();
+  }
+
+  function clearPlayerBody() {
+    if (!active) return;
+    active.playerBodyId = null;
+    save(active);
+    toast('Player body cleared', 'info');
+    UI.refreshEntities();
+  }
+
+  function getPlayerBodyObject() {
+    if (!active || !active.playerBodyId) return null;
+    return Engine.state.objects.find(o => o.userData.id === active.playerBodyId) || null;
+  }
+
+  function openProject(proj) {
+    setActive(proj);
+    // Hide dashboard, show app
+    $('#dashboard').hidden = true;
+    $('#appGrid').hidden = false;
+    // Load first scene
+    if (proj.scenes && proj.scenes.length > 0) {
+      const scene = proj.scenes.find(s => s.id === proj.activeSceneId) || proj.scenes[0];
+      proj.activeSceneId = scene.id;
+      Scenes.loadSceneIntoEditor(scene);
+    } else {
+      // Create empty scene
+      const newScene = Scenes.createSceneFromTemplate('empty', 'Main Scene');
+      proj.scenes.push(newScene);
+      proj.activeSceneId = newScene.id;
+      Scenes.loadSceneIntoEditor(newScene);
+    }
+    Scenes.refreshTabs();
+    UI.refreshEntities();
+    lucide.createIcons();
+    toast('Opened project: ' + proj.name, 'success');
+  }
+
+  function closeProject() {
+    if (active) {
+      Scenes.captureCurrentIntoProject();
+      save(active);
+    }
+    setActive(null);
+    Engine.stopPlay?.();
+    // Clear scene
+    [...Engine.state.objects].forEach(o => Engine.deleteObject(o));
+    $('#dashboard').hidden = false;
+    $('#appGrid').hidden = true;
+    Dashboard.refresh();
+  }
+
+  function exportProject() {
+    if (!active) return;
+    Scenes.captureCurrentIntoProject();
+    const blob = new Blob([JSON.stringify(active, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = sanitizeFilename(active.name) + '-project.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('Project exported', 'success');
+  }
+
+  async function importProject(file) {
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      if (!data.name || !data.scenes) { toast('Invalid project file', 'error'); return; }
+      data.id = 'proj_' + uuid();
+      data.updatedAt = Date.now();
+      save(data);
+      toast('Project imported: ' + data.name, 'success');
+      Dashboard.refresh();
+    } catch (e) { toast('Import failed: ' + e.message, 'error'); }
+  }
+
+  return {
+    listAll, load, save, remove, create,
+    getActive, setActive, openProject, closeProject,
+    saveCurrent, setPlayerBodyFromSelected, clearPlayerBody, getPlayerBodyObject,
+    exportProject, importProject, defaultRules,
+  };
+})();
+window.Projects = Projects;
+
+// ============================================================
+// SCENES MODULE — multi-scene management within a project
+// ============================================================
+const Scenes = (() => {
+  const TEMPLATES = {
+    empty: { name: 'Empty', icon: 'square', description: 'A blank scene.' },
+    forest: { name: 'Forest', icon: 'tree-pine', description: 'Trees, grassy ground, soft fog.' },
+    city: { name: 'City', icon: 'building-2', description: 'Buildings, street lamps, flat ground.' },
+    dungeon: { name: 'Dungeon', icon: 'castle', description: 'Walls, torches, dark fog.' },
+    scifi: { name: 'Sci-Fi', icon: 'rocket', description: 'Crystals, dark sky, neon lights.' },
+    arena: { name: 'Arena', icon: 'circle', description: 'Enclosed walls, bright lights.' },
+  };
+
+  function getTemplates() { return TEMPLATES; }
+
+  function createSceneFromTemplate(templateId, name) {
+    const id = 'scene_' + uuid();
+    const scene = {
+      id, name: name || 'Scene',
+      environment: cloneEnvironment(templateId),
+      objects: [],
+      entities: [],
+    };
+    // Add starter objects based on template
+    const objs = templateObjects(templateId);
+    scene.objects = objs;
+    return scene;
+  }
+
+  function cloneEnvironment(templateId) {
+    const envs = {
+      empty: { skyColor:'#0a0a12', ambient:0.4, sunIntensity:1.2, sunColor:'#fff5e0', sunAngle:45,
+               fogEnabled:false, fogColor:'#0a0a12', fogDensity:0.02,
+               groundColor:'#1a1a1a', groundType:'plane', showGrid:true, terrainSize:200, terrainHeight:10 },
+      forest: { skyColor:'#3a5a3a', ambient:0.5, sunIntensity:1.0, sunColor:'#fff5d0', sunAngle:60,
+               fogEnabled:true, fogColor:'#3a5a3a', fogDensity:0.025,
+               groundColor:'#2d4a2d', groundType:'terrain', showGrid:false, terrainSize:200, terrainHeight:8 },
+      city: { skyColor:'#1a2a3a', ambient:0.5, sunIntensity:1.4, sunColor:'#fff5e0', sunAngle:30,
+             fogEnabled:false, fogColor:'#1a2a3a', fogDensity:0.01,
+             groundColor:'#2a2a2a', groundType:'plane', showGrid:false, terrainSize:200, terrainHeight:10 },
+      dungeon: { skyColor:'#05050a', ambient:0.15, sunIntensity:0.3, sunColor:'#ff8855', sunAngle:80,
+                fogEnabled:true, fogColor:'#05050a', fogDensity:0.06,
+                groundColor:'#1a1a1a', groundType:'plane', showGrid:false, terrainSize:200, terrainHeight:10 },
+      scifi: { skyColor:'#0a0512', ambient:0.3, sunIntensity:0.6, sunColor:'#aa88ff', sunAngle:45,
+              fogEnabled:true, fogColor:'#0a0512', fogDensity:0.02,
+              groundColor:'#15151a', groundType:'plane', showGrid:true, terrainSize:200, terrainHeight:10 },
+      arena: { skyColor:'#1a0a0a', ambient:0.6, sunIntensity:1.6, sunColor:'#ffffff', sunAngle:60,
+              fogEnabled:false, fogColor:'#1a0a0a', fogDensity:0.01,
+              groundColor:'#3a1a1a', groundType:'plane', showGrid:false, terrainSize:200, terrainHeight:10 },
+    };
+    return JSON.parse(JSON.stringify(envs[templateId] || envs.empty));
+  }
+
+  function templateObjects(templateId) {
+    const objs = [];
+    if (templateId === 'forest') {
+      // Trees scattered
+      for (let i = 0; i < 15; i++) {
+        const x = (Math.random() - 0.5) * 60, z = (Math.random() - 0.5) * 60;
+        objs.push(makeSerializedProc('tree', 'Tree', [x, 0, z], [Math.random()*Math.PI*2, 0, 0], [1+Math.random()*0.5,1+Math.random()*0.5,1+Math.random()*0.5]));
+      }
+    } else if (templateId === 'city') {
+      for (let i = 0; i < 10; i++) {
+        const x = (Math.random() - 0.5) * 40, z = (Math.random() - 0.5) * 40;
+        objs.push(makeSerializedProc('building', 'Building', [x, 0, z], [0, Math.random()*Math.PI*2, 0], [0.8+Math.random()*0.6, 0.6+Math.random()*0.8, 0.8+Math.random()*0.6]));
+      }
+      for (let i = 0; i < 6; i++) {
+        const x = (Math.random() - 0.5) * 30, z = (Math.random() - 0.5) * 30;
+        objs.push(makeSerializedProc('lamp', 'Lamp', [x, 0, z], [0,0,0], [1,1,1]));
+      }
+    } else if (templateId === 'dungeon') {
+      // Walls around perimeter
+      for (let i = -10; i <= 10; i += 2) {
+        objs.push(makeSerializedProc('wall', 'Wall', [i, 0, -10], [0,0,0], [1,1,1]));
+        objs.push(makeSerializedProc('wall', 'Wall', [i, 0, 10], [0,0,0], [1,1,1]));
+        objs.push(makeSerializedProc('wall', 'Wall', [-10, 0, i], [0,Math.PI/2,0], [1,1,1]));
+        objs.push(makeSerializedProc('wall', 'Wall', [10, 0, i], [0,Math.PI/2,0], [1,1,1]));
+      }
+      for (let i = 0; i < 6; i++) {
+        const x = (Math.random() - 0.5) * 16, z = (Math.random() - 0.5) * 16;
+        objs.push(makeSerializedProc('lamp', 'Torch', [x, 0, z], [0,0,0], [0.7,0.7,0.7]));
+      }
+    } else if (templateId === 'scifi') {
+      for (let i = 0; i < 12; i++) {
+        const x = (Math.random() - 0.5) * 30, z = (Math.random() - 0.5) * 30;
+        objs.push(makeSerializedProc('crystal', 'Crystal', [x, 0, z], [0, Math.random()*Math.PI*2, 0], [0.7+Math.random()*0.8, 0.7+Math.random()*0.8, 0.7+Math.random()*0.8]));
+      }
+    } else if (templateId === 'arena') {
+      // Walls around perimeter
+      for (let i = -8; i <= 8; i += 2) {
+        objs.push(makeSerializedProc('wall', 'Wall', [i, 0, -8], [0,0,0], [1,1,1]));
+        objs.push(makeSerializedProc('wall', 'Wall', [i, 0, 8], [0,0,0], [1,1,1]));
+        objs.push(makeSerializedProc('wall', 'Wall', [-8, 0, i], [0,Math.PI/2,0], [1,1,1]));
+        objs.push(makeSerializedProc('wall', 'Wall', [8, 0, i], [0,Math.PI/2,0], [1,1,1]));
+      }
+    }
+    return objs;
+  }
+
+  function makeSerializedProc(assetId, name, pos, rot, scale) {
+    return {
+      id: uuid(), name: name + '_' + Math.floor(Math.random()*1000),
+      type: 'proc', extra: { assetId, proc: assetId },
+      visible: true,
+      position: pos, rotation: rot, scale,
+      material: { color: '#e11d2a', metalness: 0.2, roughness: 0.7, emissive: '#000000', emissiveIntensity: 0, opacity: 1, transparent: false, wireframe: false },
+      behavior: null,
+    };
+  }
+
+  function newScene() {
+    if (!Projects.getActive()) { toast('Open a project first', 'error'); return; }
+    UI.openNewSceneModal();
+  }
+
+  function addScene(name, templateId) {
+    const proj = Projects.getActive();
+    if (!proj) return;
+    // Capture current scene first
+    captureCurrentIntoProject();
+    // Create new scene
+    const scene = createSceneFromTemplate(templateId || 'empty', name || 'Scene ' + (proj.scenes.length + 1));
+    proj.scenes.push(scene);
+    proj.activeSceneId = scene.id;
+    Projects.save(proj);
+    loadSceneIntoEditor(scene);
+    refreshTabs();
+    toast('Added scene: ' + scene.name, 'success');
+  }
+
+  function switchScene(sceneId) {
+    const proj = Projects.getActive();
+    if (!proj) return;
+    const target = proj.scenes.find(s => s.id === sceneId);
+    if (!target) return;
+    if (proj.activeSceneId === sceneId) return;
+    captureCurrentIntoProject();
+    proj.activeSceneId = sceneId;
+    Projects.save(proj);
+    loadSceneIntoEditor(target);
+    refreshTabs();
+  }
+
+  function renameScene(sceneId, name) {
+    const proj = Projects.getActive();
+    if (!proj) return;
+    const s = proj.scenes.find(s => s.id === sceneId);
+    if (s) { s.name = name; Projects.save(proj); refreshTabs(); }
+  }
+
+  function deleteScene(sceneId) {
+    const proj = Projects.getActive();
+    if (!proj) return;
+    if (proj.scenes.length <= 1) { toast('Cannot delete the only scene', 'error'); return; }
+    if (!confirm('Delete this scene?')) return;
+    proj.scenes = proj.scenes.filter(s => s.id !== sceneId);
+    if (proj.activeSceneId === sceneId) {
+      proj.activeSceneId = proj.scenes[0].id;
+      loadSceneIntoEditor(proj.scenes[0]);
+    }
+    Projects.save(proj);
+    refreshTabs();
+    toast('Scene deleted', 'success');
+  }
+
+  function captureCurrentIntoProject() {
+    const proj = Projects.getActive();
+    if (!proj) return;
+    const scene = proj.scenes.find(s => s.id === proj.activeSceneId);
+    if (!scene) return;
+    // Serialize current editor state into scene
+    const data = Engine.serialize();
+    scene.environment = data.environment;
+    scene.objects = data.objects;
+    // Preserve entities from existing
+    // (entities are stored in scene.entities, managed separately by Entities module)
+  }
+
+  async function loadSceneIntoEditor(scene) {
+    if (Engine.state.play.active) Engine.stopPlay();
+    // Clear current objects
+    [...Engine.state.objects].forEach(o => Engine.deleteObject(o));
+    // Apply environment
+    Object.assign(Engine.state.env, scene.environment);
+    Engine.applyEnvironment();
+    // Restore objects (reuse Engine.deserialize which already handles objects + env)
+    // But we already applied env, so just deserialize objects
+    await Engine.deserializeObjectsOnly(scene.objects);
+    UI.refreshSceneList();
+    UI.refreshInspector();
+    UI.refreshEntities();
+    Scenes.refreshTabs();
+    lucide.createIcons();
+  }
+
+  function refreshTabs() {
+    const proj = Projects.getActive();
+    const list = $('#sceneTabsList');
+    if (!proj) { list.innerHTML = ''; return; }
+    list.innerHTML = '';
+    proj.scenes.forEach(s => {
+      const tab = document.createElement('div');
+      tab.className = 'scene-tab' + (s.id === proj.activeSceneId ? ' active' : '');
+      tab.innerHTML = `
+        <i data-lucide="file" class="w-3 h-3"></i>
+        <span>${escapeHtml(s.name)}</span>
+        <span class="x" title="Close"><i data-lucide="x" class="w-3 h-3"></i></span>
+      `;
+      tab.onclick = (e) => {
+        if (e.target.closest('.x')) {
+          e.stopPropagation();
+          deleteScene(s.id);
+        } else {
+          switchScene(s.id);
+        }
+      };
+      tab.ondblclick = () => {
+        const newName = prompt('Rename scene:', s.name);
+        if (newName) renameScene(s.id, newName);
+      };
+      list.appendChild(tab);
+    });
+    lucide.createIcons();
+  }
+
+  function getActiveScene() {
+    const proj = Projects.getActive();
+    if (!proj) return null;
+    return proj.scenes.find(s => s.id === proj.activeSceneId) || null;
+  }
+
+  return { getTemplates, createSceneFromTemplate, newScene, addScene, switchScene, renameScene, deleteScene, captureCurrentIntoProject, loadSceneIntoEditor, refreshTabs, getActiveScene };
+})();
+window.Scenes = Scenes;
+
+// ============================================================
+// RULES MODULE — game rules + player health/stamina
+// ============================================================
+const Rules = (() => {
+  let state = {
+    health: 100, stamina: 100,
+    lastFallY: 0, lastOnGround: true, fallStartY: 0,
+    invulnTimer: 0, contactDamageTimer: 0,
+    dead: false, respawnTimer: 0,
+  };
+
+  function reset() {
+    const proj = Projects.getActive();
+    const r = proj?.rules || Projects.defaultRules();
+    state.health = r.maxHealth;
+    state.stamina = r.maxStamina;
+    state.lastFallY = 0; state.lastOnGround = true; state.fallStartY = 0;
+    state.invulnTimer = 0; state.contactDamageTimer = 0;
+    state.dead = false; state.respawnTimer = 0;
+    updateHud();
+  }
+
+  function getRules() {
+    const proj = Projects.getActive();
+    return proj?.rules || Projects.defaultRules();
+  }
+
+  function updateHud() {
+    const r = getRules();
+    const hp = clamp(state.health, 0, r.maxHealth);
+    const sp = clamp(state.stamina, 0, r.maxStamina);
+    const hpPct = (hp / r.maxHealth) * 100;
+    const spPct = (sp / r.maxStamina) * 100;
+    const hhb = document.getElementById('hudHealthBar');
+    const hsb = document.getElementById('hudStaminaBar');
+    if (hhb) hhb.style.width = hpPct + '%';
+    if (hsb) hsb.style.width = spPct + '%';
+    const hv = document.getElementById('hudHealthVal');
+    const sv = document.getElementById('hudStaminaVal');
+    if (hv) hv.textContent = Math.round(hp) + '/' + r.maxHealth;
+    if (sv) sv.textContent = Math.round(sp) + '/' + r.maxStamina;
+  }
+
+  function showHudMessage(text, duration = 1500) {
+    const el = document.getElementById('hudMessage');
+    if (!el) return;
+    el.textContent = text;
+    el.style.opacity = '1';
+    setTimeout(() => { el.style.opacity = '0'; }, duration);
+  }
+
+  function dealDamage(amount, source = 'damage') {
+    if (state.dead) return;
+    if (state.invulnTimer > 0) return;
+    const r = getRules();
+    state.health = Math.max(0, state.health - amount);
+    showHudMessage('-' + Math.round(amount), 800);
+    updateHud();
+    if (state.health <= 0) {
+      state.dead = true;
+      showHudMessage('DEFEATED', 2000);
+      if (r.respawnOnDeath) {
+        state.respawnTimer = 2.0;
+      }
+    }
+  }
+
+  function heal(amount) {
+    if (state.dead) return;
+    const r = getRules();
+    state.health = Math.min(r.maxHealth, state.health + amount);
+    updateHud();
+  }
+
+  function drainStamina(amount) {
+    const r = getRules();
+    state.stamina = Math.max(0, state.stamina - amount);
+    updateHud();
+  }
+
+  function restoreStamina(amount) {
+    const r = getRules();
+    state.stamina = Math.min(r.maxStamina, state.stamina + amount);
+    updateHud();
+  }
+
+  function hasStamina(amount) { return state.stamina >= amount; }
+
+  // Called every frame in play mode
+  function update(delta, playerState) {
+    const r = getRules();
+    if (state.dead) {
+      state.respawnTimer -= delta;
+      if (state.respawnTimer <= 0) {
+        respawn(playerState);
+      }
+      return;
+    }
+    if (state.invulnTimer > 0) state.invulnTimer -= delta;
+    if (state.contactDamageTimer > 0) state.contactDamageTimer -= delta;
+
+    // Regen
+    if (r.healthRegen > 0) state.health = Math.min(r.maxHealth, state.health + r.healthRegen * delta);
+    // Stamina regen (only if not running)
+    if (!playerState.isRunning) {
+      state.stamina = Math.min(r.maxStamina, state.stamina + r.staminaRegen * delta);
+    }
+    updateHud();
+  }
+
+  function respawn(playerState) {
+    const r = getRules();
+    state.health = r.maxHealth;
+    state.stamina = r.maxStamina;
+    state.dead = false;
+    state.invulnTimer = 2.0;
+    if (playerState && playerState.character) {
+      playerState.character.position.fromArray(r.respawnPoint);
+      playerState.velocity.set(0,0,0);
+    }
+    showHudMessage('RESPAWNED', 1200);
+    updateHud();
+  }
+
+  function checkFallDamage(currentY, onGround) {
+    const r = getRules();
+    if (state.dead) return;
+    if (onGround && !state.lastOnGround) {
+      // Just landed
+      const fallDist = state.fallStartY - currentY;
+      if (fallDist > r.fallDamageThreshold) {
+        const dmg = (fallDist - r.fallDamageThreshold) * r.fallDamagePerMeter;
+        dealDamage(dmg, 'fall');
+      }
+      state.fallStartY = currentY;
+    } else if (!onGround && state.lastOnGround) {
+      // Just left ground
+      state.fallStartY = currentY;
+    } else if (!onGround && currentY > state.fallStartY) {
+      // Going up — update start
+      state.fallStartY = currentY;
+    }
+    state.lastOnGround = onGround;
+    state.lastFallY = currentY;
+  }
+
+  function getState() { return state; }
+
+  return { reset, getRules, update, updateHud, dealDamage, heal, drainStamina, restoreStamina, hasStamina, checkFallDamage, getState, showHudMessage };
+})();
+window.Rules = Rules;
+
+// ============================================================
+// ENTITIES MODULE — NPCs, enemies, items, triggers
+// ============================================================
+const Entities = (() => {
+  let selectedEntityId = null;
+
+  const ROLE_INFO = {
+    follow: { label: 'Follow Player', icon: 'user-check', desc: 'Moves toward the player.' },
+    wander: { label: 'Wander', icon: 'shuffle', desc: 'Randomly roams within a radius.' },
+    patrol: { label: 'Patrol', icon: 'route', desc: 'Walks between waypoints.' },
+    stationary: { label: 'Stationary', icon: 'pin', desc: 'Does not move.' },
+    pickup: { label: 'Pickup', icon: 'package-plus', desc: 'Disappears on contact, restores stats.' },
+  };
+
+  const TYPE_INFO = {
+    NPC: { label: 'NPC', color: '#3b82f6' },
+    Enemy: { label: 'Enemy', color: '#e11d2a' },
+    Item: { label: 'Item', color: '#22c55e' },
+    Trigger: { label: 'Trigger', color: '#a855f7' },
+  };
+
+  function list() {
+    const scene = Scenes.getActiveScene();
+    return scene?.entities || [];
+  }
+
+  function get(id) {
+    return list().find(e => e.id === id) || null;
+  }
+
+  function getSelected() {
+    return selectedEntityId ? get(selectedEntityId) : null;
+  }
+
+  function select(id) {
+    selectedEntityId = id;
+    const e = id ? get(id) : null;
+    if (e) {
+      const obj = Engine.state.objects.find(o => o.userData.id === e.bodyId);
+      if (obj) Engine.selectObject(obj);
+    }
+    UI.refreshEntities();
+  }
+
+  function create(name, type, role, bodyId, config = {}) {
+    const scene = Scenes.getActiveScene();
+    if (!scene) { toast('No active scene', 'error'); return null; }
+    const entity = {
+      id: 'ent_' + uuid(),
+      name: name || 'Entity',
+      type: type || 'NPC',
+      role: role || 'stationary',
+      bodyId: bodyId || null,
+      config: Object.assign(defaultConfig(role), config),
+      script: [],
+      state: {},
+    };
+    scene.entities.push(entity);
+    Projects.save(Projects.getActive());
+    UI.refreshEntities();
+    toast('Entity created: ' + entity.name, 'success');
+    return entity;
+  }
+
+  function defaultConfig(role) {
+    switch (role) {
+      case 'follow': return { speed: 2.5, stopDistance: 1.5, damageOnContact: 0, pickupRange: 2 };
+      case 'wander': return { speed: 1.5, radius: 8, changeInterval: 3, damageOnContact: 0 };
+      case 'patrol': return { speed: 2, waypoints: [[3,0,0],[3,0,3],[-3,0,3],[-3,0,0]], currentWaypoint: 0, damageOnContact: 0 };
+      case 'stationary': return { damageOnContact: 0 };
+      case 'pickup': return { healAmount: 20, staminaAmount: 30, pickupRange: 1.5, respawn: false };
+      default: return {};
+    }
+  }
+
+  function remove(id) {
+    const scene = Scenes.getActiveScene();
+    if (!scene) return;
+    scene.entities = scene.entities.filter(e => e.id !== id);
+    Projects.save(Projects.getActive());
+    if (selectedEntityId === id) selectedEntityId = null;
+    UI.refreshEntities();
+  }
+
+  function update(id, updates) {
+    const e = get(id);
+    if (!e) return;
+    Object.assign(e, updates);
+    Projects.save(Projects.getActive());
+    UI.refreshEntities();
+  }
+
+  function updateConfig(id, key, value) {
+    const e = get(id);
+    if (!e) return;
+    e.config[key] = value;
+    Projects.save(Projects.getActive());
+  }
+
+  function updateScript(id, script) {
+    const e = get(id);
+    if (!e) return;
+    e.script = script;
+    Projects.save(Projects.getActive());
+  }
+
+  function createFromSelected() {
+    const sel = Engine.state.selected;
+    if (!sel) { toast('Select an object first', 'error'); return; }
+    if (sel.userData.type === 'light') { toast('Lights cannot be entities', 'error'); return; }
+    openNewEntityModal(sel.userData.id);
+  }
+
+  function openNewEntityModal(presetBodyId = null) {
+    const scene = Scenes.getActiveScene();
+    if (!scene) { toast('Open a project first', 'error'); return; }
+    const objectOptions = Engine.state.objects
+      .filter(o => o.userData.type !== 'light')
+      .map(o => `<option value="${o.userData.id}" ${presetBodyId === o.userData.id ? 'selected' : ''}>${escapeHtml(o.userData.name)}</option>`).join('');
+    UI.openModal('New Entity', `
+      <div class="space-y-3">
+        <div>
+          <label class="text-xs text-neutral-400 block mb-1">Entity Name</label>
+          <input type="text" id="entName" class="input" value="Entity ${list().length + 1}" placeholder="Name">
+        </div>
+        <div>
+          <label class="text-xs text-neutral-400 block mb-1">Type</label>
+          <select id="entType" class="input">
+            ${Object.entries(TYPE_INFO).map(([k,v]) => `<option value="${k}">${v.label}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label class="text-xs text-neutral-400 block mb-1">Role / Behavior</label>
+          <select id="entRole" class="input">
+            ${Object.entries(ROLE_INFO).map(([k,v]) => `<option value="${k}">${v.label}</option>`).join('')}
+          </select>
+          <div id="entRoleDesc" class="text-[10px] text-neutral-500 mt-1">${ROLE_INFO.stationary.desc}</div>
+        </div>
+        <div>
+          <label class="text-xs text-neutral-400 block mb-1">Body (scene object)</label>
+          <select id="entBody" class="input">
+            <option value="">— None —</option>
+            ${objectOptions}
+          </select>
+        </div>
+      </div>
+    `, `
+      <button class="btn" onclick="UI.closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="Entities.confirmNewEntity()"><i data-lucide="check"></i>Create Entity</button>
+    `);
+    // Wire up role description update
+    setTimeout(() => {
+      const roleSel = document.getElementById('entRole');
+      if (roleSel) {
+        roleSel.onchange = () => {
+          const desc = document.getElementById('entRoleDesc');
+          if (desc) desc.textContent = ROLE_INFO[roleSel.value]?.desc || '';
+        };
+      }
+    }, 50);
+  }
+
+  function confirmNewEntity() {
+    const name = document.getElementById('entName').value.trim() || 'Entity';
+    const type = document.getElementById('entType').value;
+    const role = document.getElementById('entRole').value;
+    const bodyId = document.getElementById('entBody').value || null;
+    UI.closeModal();
+    const e = create(name, type, role, bodyId);
+    if (e) select(e.id);
+  }
+
+  function openEntityEditor(entityId) {
+    const e = get(entityId);
+    if (!e) return;
+    selectedEntityId = entityId;
+    let html = `
+      <div class="space-y-3">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-xs text-neutral-400 block mb-1">Name</label>
+            <input type="text" id="eeName" class="input" value="${escapeAttr(e.name)}" oninput="Entities.update('${e.id}', {name: this.value})">
+          </div>
+          <div>
+            <label class="text-xs text-neutral-400 block mb-1">Type</label>
+            <select id="eeType" class="input" onchange="Entities.update('${e.id}', {type: this.value})">
+              ${Object.entries(TYPE_INFO).map(([k]) => `<option value="${k}" ${e.type===k?'selected':''}>${k}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="text-xs text-neutral-400 block mb-1">Role</label>
+          <select id="eeRole" class="input" onchange="Entities.update('${e.id}', {role: this.value, config: Entities.defaultConfig(this.value)})">
+            ${Object.entries(ROLE_INFO).map(([k,v]) => `<option value="${k}" ${e.role===k?'selected':''}>${v.label}</option>`).join('')}
+          </select>
+        </div>
+    `;
+    // Role-specific config
+    html += '<div class="border-t border-neutral-800 pt-3"><div class="text-xs text-neutral-400 mb-2">Role Configuration</div>';
+    if (e.role === 'follow') {
+      html += `
+        <div class="inspector-row"><label>Speed</label><input type="range" min="0.5" max="10" step="0.1" value="${e.config.speed||2.5}" oninput="Entities.updateConfig('${e.id}','speed',parseFloat(this.value))"></div>
+        <div class="inspector-row"><label>Stop Dist.</label><input type="range" min="0.5" max="10" step="0.1" value="${e.config.stopDistance||1.5}" oninput="Entities.updateConfig('${e.id}','stopDistance',parseFloat(this.value))"></div>
+        <div class="inspector-row"><label>Contact Dmg</label><input type="number" min="0" step="1" value="${e.config.damageOnContact||0}" oninput="Entities.updateConfig('${e.id}','damageOnContact',parseFloat(this.value)||0)"></div>
+      `;
+    } else if (e.role === 'wander') {
+      html += `
+        <div class="inspector-row"><label>Speed</label><input type="range" min="0.5" max="10" step="0.1" value="${e.config.speed||1.5}" oninput="Entities.updateConfig('${e.id}','speed',parseFloat(this.value))"></div>
+        <div class="inspector-row"><label>Radius</label><input type="range" min="2" max="30" step="1" value="${e.config.radius||8}" oninput="Entities.updateConfig('${e.id}','radius',parseFloat(this.value))"></div>
+        <div class="inspector-row"><label>Change Int.</label><input type="range" min="0.5" max="10" step="0.5" value="${e.config.changeInterval||3}" oninput="Entities.updateConfig('${e.id}','changeInterval',parseFloat(this.value))"></div>
+        <div class="inspector-row"><label>Contact Dmg</label><input type="number" min="0" step="1" value="${e.config.damageOnContact||0}" oninput="Entities.updateConfig('${e.id}','damageOnContact',parseFloat(this.value)||0)"></div>
+      `;
+    } else if (e.role === 'patrol') {
+      html += `
+        <div class="inspector-row"><label>Speed</label><input type="range" min="0.5" max="10" step="0.1" value="${e.config.speed||2}" oninput="Entities.updateConfig('${e.id}','speed',parseFloat(this.value))"></div>
+        <div class="inspector-row"><label>Contact Dmg</label><input type="number" min="0" step="1" value="${e.config.damageOnContact||0}" oninput="Entities.updateConfig('${e.id}','damageOnContact',parseFloat(this.value)||0)"></div>
+        <div class="text-[10px] text-neutral-500 px-3 pt-2">Waypoints: ${e.config.waypoints?.length || 0} (auto-generated)</div>
+      `;
+    } else if (e.role === 'pickup') {
+      html += `
+        <div class="inspector-row"><label>Heal</label><input type="number" min="0" step="5" value="${e.config.healAmount||20}" oninput="Entities.updateConfig('${e.id}','healAmount',parseFloat(this.value)||0)"></div>
+        <div class="inspector-row"><label>Stamina</label><input type="number" min="0" step="5" value="${e.config.staminaAmount||30}" oninput="Entities.updateConfig('${e.id}','staminaAmount',parseFloat(this.value)||0)"></div>
+        <div class="inspector-row"><label>Pickup R.</label><input type="range" min="0.5" max="5" step="0.1" value="${e.config.pickupRange||1.5}" oninput="Entities.updateConfig('${e.id}','pickupRange',parseFloat(this.value))"></div>
+      `;
+    }
+    html += '</div>';
+
+    // Script editor section
+    html += `
+      <div class="border-t border-neutral-800 pt-3">
+        <div class="flex items-center justify-between mb-2">
+          <div class="text-xs text-neutral-400">Script (Scratch-style)</div>
+          <button class="btn btn-primary" onclick="Blocks.openEditor('${e.id}')"><i data-lucide="code-2"></i>Open Code Editor</button>
+        </div>
+        <div class="text-[10px] text-neutral-500">${e.script?.length || 0} blocks</div>
+      </div>
+      <div class="border-t border-neutral-800 pt-3 flex justify-between">
+        <button class="btn btn-danger" onclick="if(confirm('Delete entity?')){Entities.remove('${e.id}'); UI.closeModal();}"><i data-lucide="trash-2"></i>Delete Entity</button>
+        <button class="btn" onclick="UI.closeModal()">Close</button>
+      </div>
+      </div>
+    `;
+    UI.openModal('Entity: ' + e.name, html);
+  }
+
+  // Update all entities during play mode
+  function updateAll(delta, playerState) {
+    const scene = Scenes.getActiveScene();
+    if (!scene) return;
+    scene.entities.forEach(e => {
+      const obj = Engine.state.objects.find(o => o.userData.id === e.bodyId);
+      if (!obj) return;
+      // Apply role behavior
+      applyRoleBehavior(e, obj, delta, playerState);
+      // Apply custom script
+      if (e.script && e.script.length > 0) {
+        try { Blocks.runScript(e, obj, delta, playerState); } catch (err) { console.warn('Script error in', e.name, err); }
+      }
+    });
+  }
+
+  function applyRoleBehavior(e, obj, delta, playerState) {
+    if (!playerState?.character) return;
+    const player = playerState.character;
+    const dist = obj.position.distanceTo(player.position);
+    const cfg = e.config || {};
+    if (!e.state) e.state = {};
+
+    if (e.role === 'follow') {
+      if (dist > (cfg.stopDistance || 1.5)) {
+        const dir = player.position.clone().sub(obj.position).setY(0).normalize();
+        const speed = cfg.speed || 2.5;
+        obj.position.x += dir.x * speed * delta;
+        obj.position.z += dir.z * speed * delta;
+        obj.lookAt(player.position.x, obj.position.y, player.position.z);
+      }
+      if ((cfg.damageOnContact || 0) > 0 && dist < (cfg.stopDistance || 1.5) + 0.5) {
+        if (Rules.state.contactDamageTimer <= 0) {
+          Rules.dealDamage(cfg.damageOnContact, 'enemy');
+          Rules.state.contactDamageTimer = Rules.getRules().contactDamageCooldown || 1.5;
+        }
+      }
+    } else if (e.role === 'wander') {
+      e.state.timer = (e.state.timer || 0) - delta;
+      if (e.state.timer <= 0) {
+        e.state.timer = cfg.changeInterval || 3;
+        const r = cfg.radius || 8;
+        e.state.target = new THREE.Vector3(
+          obj.position.x + (Math.random() - 0.5) * r * 2,
+          obj.position.y,
+          obj.position.z + (Math.random() - 0.5) * r * 2
+        );
+      }
+      if (e.state.target) {
+        const dir = e.state.target.clone().sub(obj.position).setY(0);
+        if (dir.length() > 0.3) {
+          dir.normalize();
+          const speed = cfg.speed || 1.5;
+          obj.position.x += dir.x * speed * delta;
+          obj.position.z += dir.z * speed * delta;
+          obj.lookAt(e.state.target.x, obj.position.y, e.state.target.z);
+        }
+      }
+      if ((cfg.damageOnContact || 0) > 0 && dist < 1.0) {
+        if (Rules.state.contactDamageTimer <= 0) {
+          Rules.dealDamage(cfg.damageOnContact, 'enemy');
+          Rules.state.contactDamageTimer = Rules.getRules().contactDamageCooldown || 1.5;
+        }
+      }
+    } else if (e.role === 'patrol') {
+      const wps = cfg.waypoints || [];
+      if (wps.length === 0) return;
+      const wp = wps[cfg.currentWaypoint || 0];
+      if (!wp) return;
+      const target = new THREE.Vector3(wp[0], obj.position.y, wp[2]);
+      const dir = target.clone().sub(obj.position);
+      if (dir.length() < 0.5) {
+        cfg.currentWaypoint = ((cfg.currentWaypoint || 0) + 1) % wps.length;
+      } else {
+        dir.normalize();
+        const speed = cfg.speed || 2;
+        obj.position.x += dir.x * speed * delta;
+        obj.position.z += dir.z * speed * delta;
+        obj.lookAt(target.x, obj.position.y, target.z);
+      }
+      if ((cfg.damageOnContact || 0) > 0 && dist < 1.0) {
+        if (Rules.state.contactDamageTimer <= 0) {
+          Rules.dealDamage(cfg.damageOnContact, 'enemy');
+          Rules.state.contactDamageTimer = Rules.getRules().contactDamageCooldown || 1.5;
+        }
+      }
+    } else if (e.role === 'pickup') {
+      if (dist < (cfg.pickupRange || 1.5)) {
+        Rules.heal(cfg.healAmount || 0);
+        Rules.restoreStamina(cfg.staminaAmount || 0);
+        Rules.showHudMessage('+' + (cfg.healAmount || 0) + ' HP, +' + (cfg.staminaAmount || 0) + ' STA', 1200);
+        if (!cfg.respawn) {
+          obj.visible = false;
+          e.state.pickedUp = true;
+        } else {
+          // Respawn after delay
+          e.state.respawnTimer = 5;
+          obj.visible = false;
+        }
+      }
+      if (e.state.respawnTimer !== undefined) {
+        e.state.respawnTimer -= delta;
+        if (e.state.respawnTimer <= 0) {
+          obj.visible = true;
+          e.state.respawnTimer = undefined;
+        }
+      }
+    }
+    // stationary: do nothing
+  }
+
+  function resetAll() {
+    const scene = Scenes.getActiveScene();
+    if (!scene) return;
+    scene.entities.forEach(e => {
+      e.state = {};
+      const obj = Engine.state.objects.find(o => o.userData.id === e.bodyId);
+      if (obj) obj.visible = true;
+    });
+  }
+
+  return { ROLE_INFO, TYPE_INFO, list, get, getSelected, select, create, remove, update, updateConfig, updateScript, defaultConfig, createFromSelected, openNewEntityModal, confirmNewEntity, openEntityEditor, updateAll, resetAll };
+})();
+window.Entities = Entities;
+
+// ============================================================
+// BLOCKS MODULE — Scratch-like visual code editor + runner
+// ============================================================
+const Blocks = (() => {
+  // Block definitions
+  const DEFINITIONS = {
+    // Events
+    on_start:        { cat: 'event', label: 'On Start', params: [] },
+    on_update:       { cat: 'event', label: 'On Update', params: [] },
+    on_player_near:  { cat: 'event', label: 'When Player Near', params: [{name:'distance', type:'number', default:3, label:'dist'}] },
+    on_click:        { cat: 'event', label: 'When Clicked', params: [] },
+    // Motion
+    move_forward:    { cat: 'motion', label: 'Move Forward', params: [{name:'speed', type:'number', default:2, label:'speed'}] },
+    move_toward_player: { cat: 'motion', label: 'Move Toward Player', params: [{name:'speed', type:'number', default:3, label:'speed'}] },
+    move_away_player:{ cat: 'motion', label: 'Move Away From Player', params: [{name:'speed', type:'number', default:3, label:'speed'}] },
+    rotate:          { cat: 'motion', label: 'Rotate', params: [{name:'speed', type:'number', default:90, label:'deg/s'}] },
+    jump:            { cat: 'motion', label: 'Jump', params: [{name:'force', type:'number', default:5, label:'force'}] },
+    stop:            { cat: 'motion', label: 'Stop Moving', params: [] },
+    // Sensing
+    distance_to_player: { cat: 'sensing', label: 'Distance to Player', params: [], returns: 'number' },
+    is_player_near:  { cat: 'sensing', label: 'Is Player Near', params: [{name:'distance', type:'number', default:3, label:'dist'}], returns: 'boolean' },
+    get_health:      { cat: 'sensing', label: 'Get Player Health', params: [], returns: 'number' },
+    get_stamina:     { cat: 'sensing', label: 'Get Player Stamina', params: [], returns: 'number' },
+    // Actions
+    deal_damage:     { cat: 'action', label: 'Deal Damage to Player', params: [{name:'amount', type:'number', default:10, label:'dmg'}] },
+    heal_player:     { cat: 'action', label: 'Heal Player', params: [{name:'amount', type:'number', default:20, label:'heal'}] },
+    drain_stamina:   { cat: 'action', label: 'Drain Stamina', params: [{name:'amount', type:'number', default:10, label:'drain'}] },
+    restore_stamina: { cat: 'action', label: 'Restore Stamina', params: [{name:'amount', type:'number', default:20, label:'restore'}] },
+    destroy_self:    { cat: 'action', label: 'Destroy Self', params: [] },
+    set_visible:     { cat: 'action', label: 'Set Visible', params: [{name:'visible', type:'bool', default:true, label:'vis'}] },
+    show_message:    { cat: 'action', label: 'Show Message', params: [{name:'text', type:'text', default:'Hello', label:'msg'}] },
+    // Data
+    set_var:         { cat: 'data', label: 'Set Variable', params: [{name:'name', type:'text', default:'x', label:'name'},{name:'value', type:'number', default:0, label:'val'}] },
+    change_var:      { cat: 'data', label: 'Change Variable', params: [{name:'name', type:'text', default:'x', label:'name'},{name:'amount', type:'number', default:1, label:'by'}] },
+  };
+
+  let editingEntityId = null;
+
+  function openEditor(entityId) {
+    editingEntityId = entityId;
+    const e = Entities.get(entityId);
+    if (!e) return;
+    const script = e.script || [];
+    let paletteHtml = '';
+    const cats = { event: 'Events', motion: 'Motion', sensing: 'Sensing', action: 'Actions', data: 'Data' };
+    Object.entries(cats).forEach(([catId, catLabel]) => {
+      paletteHtml += `<div class="block-cat-title">${catLabel}</div><div class="block-palette">`;
+      Object.entries(DEFINITIONS).filter(([_, d]) => d.cat === catId).forEach(([id, d]) => {
+        paletteHtml += `<div class="block-template ${d.cat}" draggable="true" data-block-type="${id}"><i data-lucide="${blockIcon(d.cat)}" class="w-3 h-3"></i>${d.label}</div>`;
+      });
+      paletteHtml += '</div>';
+    });
+    UI.openModal('Code Editor — ' + e.name, `
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3" style="min-width:600px;">
+        <div>
+          <div class="text-xs text-neutral-400 mb-2 uppercase tracking-wider">Block Palette (drag to script)</div>
+          <div class="bg-neutral-950 rounded border border-neutral-800 max-h-[400px] overflow-auto" id="blockPalette">
+            ${paletteHtml}
+          </div>
+        </div>
+        <div>
+          <div class="text-xs text-neutral-400 mb-2 uppercase tracking-wider">Script</div>
+          <div class="block-script-area" id="blockScriptArea"></div>
+        </div>
+      </div>
+    `, `
+      <button class="btn" onclick="UI.closeModal()">Close</button>
+      <button class="btn btn-danger" onclick="Blocks.clearScript()">Clear</button>
+      <button class="btn btn-primary" onclick="Blocks.saveScript()"><i data-lucide="save"></i>Save Script</button>
+    `);
+    setTimeout(() => {
+      renderScript(script);
+      setupDragAndDrop();
+    }, 50);
+  }
+
+  function blockIcon(cat) {
+    return { event: 'zap', motion: 'move', sensing: 'eye', action: 'zap-off', data: 'database' }[cat] || 'square';
+  }
+
+  function renderScript(script) {
+    const area = document.getElementById('blockScriptArea');
+    if (!area) return;
+    area.innerHTML = '';
+    if (!script || script.length === 0) {
+      area.innerHTML = '<div class="text-neutral-600 text-xs text-center py-8">Drag blocks here to build your script</div>';
+      return;
+    }
+    script.forEach((b, idx) => {
+      const def = DEFINITIONS[b.type];
+      if (!def) return;
+      const el = document.createElement('div');
+      el.className = 'block-instance ' + def.cat;
+      el.draggable = true;
+      el.dataset.idx = idx;
+      let inner = `<i data-lucide="${blockIcon(def.cat)}" class="w-3 h-3"></i><span class="b-label">${def.label}</span>`;
+      def.params.forEach(p => {
+        const val = b.params?.[p.name] ?? p.default;
+        if (p.type === 'bool') {
+          inner += `<input type="checkbox" class="b-param" style="width:auto;" ${val ? 'checked' : ''} onchange="Blocks.updateParam(${idx}, '${p.name}', this.checked)">`;
+        } else {
+          inner += `<input type="${p.type === 'number' ? 'number' : 'text'}" class="b-param" value="${escapeAttr(String(val))}" oninput="Blocks.updateParam(${idx}, '${p.name}', ${p.type === 'number' ? 'parseFloat(this.value)||0' : 'this.value'})">`;
+        }
+      });
+      inner += `<span class="b-remove" onclick="Blocks.removeBlock(${idx})"><i data-lucide="x" class="w-3 h-3"></i></span>`;
+      el.innerHTML = inner;
+      area.appendChild(el);
+    });
+    lucide.createIcons();
+    // Make script blocks re-orderable
+    area.querySelectorAll('.block-instance').forEach(el => {
+      el.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', 'move:' + el.dataset.idx);
+      });
+    });
+  }
+
+  let currentScript = [];
+  function getCurrentScript() { return currentScript; }
+
+  function setupDragAndDrop() {
+    const palette = document.getElementById('blockPalette');
+    const area = document.getElementById('blockScriptArea');
+    if (!palette || !area) return;
+    // Templates
+    palette.querySelectorAll('.block-template').forEach(t => {
+      t.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', 'new:' + t.dataset.blockType);
+      });
+    });
+    area.addEventListener('dragover', e => {
+      e.preventDefault();
+      area.classList.add('drag-over');
+    });
+    area.addEventListener('dragleave', () => area.classList.remove('drag-over'));
+    area.addEventListener('drop', e => {
+      e.preventDefault();
+      area.classList.remove('drag-over');
+      const data = e.dataTransfer.getData('text/plain');
+      if (!data) return;
+      const e2 = Entities.get(editingEntityId);
+      if (!e2) return;
+      currentScript = [...(e2.script || [])];
+      if (data.startsWith('new:')) {
+        const type = data.slice(4);
+        const def = DEFINITIONS[type];
+        if (!def) return;
+        const params = {};
+        def.params.forEach(p => params[p.name] = p.default);
+        currentScript.push({ id: 'blk_' + uuid(), type, params });
+      } else if (data.startsWith('move:')) {
+        const idx = parseInt(data.slice(5));
+        if (isNaN(idx)) return;
+        // Remove and re-add at end (simple reorder)
+        const [b] = currentScript.splice(idx, 1);
+        currentScript.push(b);
+      }
+      e2.script = currentScript;
+      renderScript(currentScript);
+    });
+  }
+
+  function updateParam(idx, name, value) {
+    const e = Entities.get(editingEntityId);
+    if (!e || !e.script || !e.script[idx]) return;
+    e.script[idx].params = e.script[idx].params || {};
+    e.script[idx].params[name] = value;
+  }
+
+  function removeBlock(idx) {
+    const e = Entities.get(editingEntityId);
+    if (!e || !e.script) return;
+    e.script.splice(idx, 1);
+    renderScript(e.script);
+  }
+
+  function clearScript() {
+    const e = Entities.get(editingEntityId);
+    if (!e) return;
+    if (!confirm('Clear all blocks?')) return;
+    e.script = [];
+    renderScript([]);
+  }
+
+  function saveScript() {
+    const e = Entities.get(editingEntityId);
+    if (!e) return;
+    Projects.save(Projects.getActive());
+    toast('Script saved: ' + (e.script?.length || 0) + ' blocks', 'success');
+    UI.closeModal();
+  }
+
+  // ===== Runner =====
+  function runScript(entity, obj, delta, playerState) {
+    if (!entity.script || entity.script.length === 0) return;
+    if (!entity._vars) entity._vars = {};
+    if (!entity._state) entity._state = { started: false, velocity: new THREE.Vector3() };
+    const player = playerState.character;
+    const distToPlayer = player ? obj.position.distanceTo(player.position) : 999;
+    entity.script.forEach(block => {
+      const def = DEFINITIONS[block.type];
+      if (!def) return;
+      const p = block.params || {};
+      switch (block.type) {
+        case 'on_start':
+          if (!entity._state.started) { /* no-op marker, runs once */ }
+          break;
+        case 'on_update': break; // always
+        case 'on_player_near':
+          if (distToPlayer > (p.distance || 3)) return;
+          break;
+        case 'move_forward':
+          const fwd = new THREE.Vector3(0,0,-1).applyQuaternion(obj.quaternion).setY(0).normalize();
+          obj.position.x += fwd.x * (p.speed || 2) * delta;
+          obj.position.z += fwd.z * (p.speed || 2) * delta;
+          break;
+        case 'move_toward_player':
+          if (!player) break;
+          const dirT = player.position.clone().sub(obj.position).setY(0).normalize();
+          obj.position.x += dirT.x * (p.speed || 3) * delta;
+          obj.position.z += dirT.z * (p.speed || 3) * delta;
+          obj.lookAt(player.position.x, obj.position.y, player.position.z);
+          break;
+        case 'move_away_player':
+          if (!player) break;
+          const dirA = obj.position.clone().sub(player.position).setY(0).normalize();
+          obj.position.x += dirA.x * (p.speed || 3) * delta;
+          obj.position.z += dirA.z * (p.speed || 3) * delta;
+          break;
+        case 'rotate':
+          obj.rotation.y += THREE.MathUtils.degToRad(p.speed || 90) * delta;
+          break;
+        case 'jump':
+          if (entity._state.onGround !== false) {
+            entity._state.velocity.y = p.force || 5;
+            entity._state.onGround = false;
+          }
+          break;
+        case 'stop':
+          entity._state.velocity?.set(0, entity._state.velocity?.y || 0, 0);
+          break;
+        case 'deal_damage':
+          Rules.dealDamage(p.amount || 10, 'script');
+          break;
+        case 'heal_player':
+          Rules.heal(p.amount || 20);
+          break;
+        case 'drain_stamina':
+          Rules.drainStamina(p.amount || 10);
+          break;
+        case 'restore_stamina':
+          Rules.restoreStamina(p.amount || 20);
+          break;
+        case 'destroy_self':
+          obj.visible = false;
+          break;
+        case 'set_visible':
+          obj.visible = !!p.visible;
+          break;
+        case 'show_message':
+          Rules.showHudMessage(String(p.text || 'Hello'), 1500);
+          break;
+        case 'set_var':
+          entity._vars[p.name || 'x'] = p.value || 0;
+          break;
+        case 'change_var':
+          entity._vars[p.name || 'x'] = (entity._vars[p.name || 'x'] || 0) + (p.amount || 1);
+          break;
+      }
+    });
+    entity._state.started = true;
+    // Simple gravity for jumping
+    if (entity._state.velocity && !entity._state.onGround) {
+      entity._state.velocity.y -= 18 * delta;
+      obj.position.y += entity._state.velocity.y * delta;
+      const gy = Engine.getGroundHeightAt(obj.position.x, obj.position.z) + 0.5;
+      if (obj.position.y <= gy) { obj.position.y = gy; entity._state.velocity.y = 0; entity._state.onGround = true; }
+    }
+  }
+
+  return { DEFINITIONS, openEditor, renderScript, updateParam, removeBlock, clearScript, saveScript, runScript, getCurrentScript };
+})();
+window.Blocks = Blocks;
+
+// ============================================================
+// DASHBOARD MODULE — project browser UI
+// ============================================================
+const Dashboard = (() => {
+  function show() {
+    if (Projects.getActive()) {
+      // Save current and close
+      Projects.closeProject();
+      return;
+    }
+    refresh();
+    $('#dashboard').hidden = false;
+    $('#appGrid').hidden = true;
+  }
+
+  function refresh() {
+    const grid = $('#projectGrid');
+    const projects = Projects.listAll();
+    if (projects.length === 0) {
+      grid.innerHTML = `
+        <div class="col-span-full text-center py-12 border border-dashed border-neutral-800 rounded-lg">
+          <i data-lucide="gamepad-2" class="w-12 h-12 mx-auto mb-3 text-neutral-700"></i>
+          <div class="text-neutral-400 text-sm mb-1">No projects yet</div>
+          <div class="text-neutral-600 text-xs mb-4">Click "New Game" to create your first 3D game.</div>
+          <button class="btn btn-primary mx-auto" onclick="Dashboard.openNewProjectWizard()"><i data-lucide="plus"></i>Create New Game</button>
+        </div>
+      `;
+      lucide.createIcons();
+      return;
+    }
+    grid.innerHTML = '';
+    projects.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'project-card';
+      const date = new Date(p.updatedAt || p.createdAt);
+      const sceneCount = p.scenes?.length || 0;
+      const objCount = p.scenes?.reduce((s,sc) => s + (sc.objects?.length || 0), 0) || 0;
+      card.innerHTML = `
+        <div class="flex items-start justify-between">
+          <span class="proj-type">${escapeHtml(p.type)}</span>
+          <div class="proj-actions">
+            <button class="btn btn-ghost btn-icon" title="Export" onclick="event.stopPropagation(); Dashboard.exportProject('${p.id}')"><i data-lucide="download" class="w-3.5 h-3.5"></i></button>
+            <button class="btn btn-ghost btn-icon" title="Delete" onclick="event.stopPropagation(); Dashboard.deleteProject('${p.id}')"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+          </div>
+        </div>
+        <h3 class="font-bold text-base text-white">${escapeHtml(p.name)}</h3>
+        <p class="text-xs text-neutral-500 line-clamp-2 min-h-[2em]">${escapeHtml(p.description || 'No description')}</p>
+        <div class="flex items-center justify-between text-[10px] text-neutral-600 border-t border-neutral-800 pt-2">
+          <span>${sceneCount} scenes · ${objCount} objects</span>
+          <span>${date.toLocaleDateString()}</span>
+        </div>
+      `;
+      card.onclick = () => openProject(p.id);
+      grid.appendChild(card);
+    });
+    lucide.createIcons();
+  }
+
+  function openProject(id) {
+    const proj = Projects.load(id);
+    if (!proj) { toast('Project not found', 'error'); return; }
+    Projects.openProject(proj);
+  }
+
+  function deleteProject(id) {
+    const proj = Projects.load(id);
+    if (!proj) return;
+    if (!confirm('Delete project "' + proj.name + '"? This cannot be undone.')) return;
+    Projects.remove(id);
+    refresh();
+    toast('Project deleted', 'success');
+  }
+
+  function exportProject(id) {
+    const proj = Projects.load(id);
+    if (!proj) return;
+    Projects.setActive(proj);
+    Projects.exportProject();
+    Projects.setActive(null);
+  }
+
+  function openNewProjectWizard() {
+    const templates = Scenes.getTemplates();
+    let templateCards = '';
+    Object.entries(templates).forEach(([id, t]) => {
+      templateCards += `
+        <div class="template-card" data-template="${id}" onclick="Dashboard.selectTemplate('${id}')">
+          <div class="t-icon"><i data-lucide="${t.icon}" class="w-5 h-5"></i></div>
+          <div class="font-bold text-sm">${t.name}</div>
+          <div class="text-[10px] text-neutral-500">${t.description}</div>
+        </div>
+      `;
+    });
+    UI.openModal('New Game', `
+      <div class="space-y-4">
+        <div>
+          <label class="text-xs text-neutral-400 block mb-1">Game Name</label>
+          <input type="text" id="npName" class="input" value="My Game" placeholder="Game name">
+        </div>
+        <div>
+          <label class="text-xs text-neutral-400 block mb-1">Description</label>
+          <textarea id="npDesc" class="input" rows="2" placeholder="What's this game about?"></textarea>
+        </div>
+        <div>
+          <label class="text-xs text-neutral-400 block mb-1">Type</label>
+          <select id="npType" class="input">
+            <option>Sandbox</option><option>Adventure</option><option>FPS</option>
+            <option>RPG</option><option>Racing</option><option>Platformer</option><option>Puzzle</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs text-neutral-400 block mb-2">Template / Starter Pack</label>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="templateGrid">${templateCards}</div>
+        </div>
+      </div>
+    `, `
+      <button class="btn" onclick="UI.closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="Dashboard.createProject()"><i data-lucide="rocket"></i>Create Game</button>
+    `);
+    setTimeout(() => {
+      Dashboard.selectTemplate('empty');
+      lucide.createIcons();
+    }, 50);
+  }
+
+  let selectedTemplate = 'empty';
+  function selectTemplate(id) {
+    selectedTemplate = id;
+    document.querySelectorAll('#templateGrid .template-card').forEach(c => {
+      c.classList.toggle('selected', c.dataset.template === id);
+    });
+  }
+
+  function createProject() {
+    const name = document.getElementById('npName').value.trim() || 'My Game';
+    const desc = document.getElementById('npDesc').value.trim();
+    const type = document.getElementById('npType').value;
+    if (!name) { toast('Enter a name', 'error'); return; }
+    UI.closeModal();
+    const proj = Projects.create(name, desc, type, selectedTemplate);
+    Projects.openProject(proj);
+    toast('Created "' + name + '"', 'success');
+  }
+
+  return { show, refresh, openProject, deleteProject, exportProject, openNewProjectWizard, selectTemplate, createProject };
+})();
+window.Dashboard = Dashboard;
+
 // ====================== BOOT ======================
 window.addEventListener('DOMContentLoaded', () => {
   lucide.createIcons();
   Engine.init();
+  // Show dashboard (app grid hidden by default)
+  $('#appGrid').hidden = true;
+  $('#dashboard').hidden = false;
+  Dashboard.refresh();
 });
 
 // Prevent accidental page leave during work
 window.addEventListener('beforeunload', e => {
-  if (Engine.state && Engine.state.objects.length > 0) {
+  if (Projects.getActive() && Engine.state && Engine.state.objects.length > 0) {
     e.preventDefault();
     e.returnValue = 'You have unsaved work.';
     return e.returnValue;
