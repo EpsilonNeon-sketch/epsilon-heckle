@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Epsilon Heckle Studio — Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root {
+    --bg-0: #050505;
+    --bg-1: #0d0d0d;
+    --bg-2: #141414;
+    --bg-3: #1c1c1c;
+    --bg-4: #262626;
+    --border-1: #2a2a2a;
+    --border-2: #3a3a3a;
+    --text-0: #fafafa;
+    --text-1: #c4c4c4;
+    --text-2: #888888;
+    --text-3: #555555;
+    --red: #e11d2a;
+    --red-dim: #8a1219;
+    --red-bright: #ff3b4a;
+    --red-glow: rgba(225, 29, 42, 0.25);
+    --green: #22c55e;
+    --green-dim: #166534;
+    --blue: #3b82f6;
+    --blue-dim: #1e3a5f;
+    --amber: #f59e0b;
+    --amber-dim: #78350f;
+    --purple: #a855f7;
+    --purple-dim: #581c87;
+  }
+
+  * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-2) var(--bg-1);
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg-0);
+    color: var(--text-0);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg-1); }
+  ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--red-dim); }
+
+  /* ---- SIDEBAR NAV ---- */
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    width: 280px; background: var(--bg-1);
+    border-right: 1px solid var(--border-1);
+    overflow-y: auto; z-index: 40;
+    display: flex; flex-direction: column;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-brand {
+    padding: 24px 20px;
+    border-bottom: 1px solid var(--border-1);
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .brand-logo {
+    background: linear-gradient(135deg, var(--red) 0%, #4a0a0f 100%);
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; color: #fff; font-size: 18px;
+    box-shadow: 0 0 16px var(--red-glow), inset 0 0 0 1px rgba(255,255,255,0.1);
+    flex-shrink: 0;
+  }
+
+  .nav-section-title {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--text-3);
+    padding: 20px 20px 8px;
+  }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 20px; font-size: 13px; font-weight: 500;
+    color: var(--text-2); cursor: pointer; border-radius: 0;
+    transition: all 0.15s; text-decoration: none;
+    border-left: 2px solid transparent;
+  }
+  .nav-item:hover { color: var(--text-0); background: var(--bg-2); border-left-color: var(--border-2); }
+  .nav-item.active { color: var(--red); background: rgba(225,29,42,0.06); border-left-color: var(--red); }
+  .nav-item .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.6; }
+  .nav-item.active .nav-icon { opacity: 1; }
+
+  /* ---- MAIN CONTENT ---- */
+  .main-content {
+    margin-left: 280px;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  .content-area {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 48px 40px 80px;
+  }
+
+  /* ---- HERO ---- */
+  .hero-section {
+    position: relative;
+    padding: 80px 40px 60px;
+    margin-left: 280px;
+    background: linear-gradient(180deg, rgba(225,29,42,0.08) 0%, transparent 60%);
+    border-bottom: 1px solid var(--border-1);
+    overflow: hidden;
+  }
+  .hero-section::before {
+    content: '';
+    position: absolute; top: -50%; right: -20%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(225,29,42,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 14px; border-radius: 20px;
+    background: var(--red-dim); color: var(--red-bright);
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 20px;
+    border: 1px solid rgba(225,29,42,0.3);
+  }
+
+  /* ---- HEADINGS ---- */
+  h1, h2, h3, h4 { margin: 0; font-weight: 700; line-height: 1.3; }
+  h1 { font-size: 42px; letter-spacing: -1px; }
+  h2 { font-size: 28px; letter-spacing: -0.5px; margin-bottom: 8px; }
+  h3 { font-size: 20px; }
+  h4 { font-size: 16px; font-weight: 600; }
+
+  .section-anchor { scroll-margin-top: 24px; }
+
+  .section-divider {
+    border: none; border-top: 1px solid var(--border-1);
+    margin: 48px 0;
+  }
+
+  /* ---- CALLOUT BOXES ---- */
+  .callout {
+    border-radius: 10px; padding: 18px 22px;
+    margin: 20px 0; display: flex; gap: 14px;
+    align-items: flex-start; font-size: 14px;
+    line-height: 1.7;
+  }
+  .callout-icon { width: 22px; height: 22px; flex-shrink: 0; margin-top: 2px; }
+  .callout-content { flex: 1; }
+  .callout-content strong { font-weight: 700; }
+  .callout-content p { margin: 6px 0 0; }
+  .callout-content p:first-child { margin-top: 0; }
+  .callout-content ul { margin: 8px 0; padding-left: 20px; }
+  .callout-content li { margin: 4px 0; }
+
+  .callout-tip {
+    background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.2);
+    color: var(--text-1);
+  }
+  .callout-tip .callout-icon { color: var(--green); }
+
+  .callout-warning {
+    background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.2);
+    color: var(--text-1);
+  }
+  .callout-warning .callout-icon { color: var(--amber); }
+
+  .callout-info {
+    background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.2);
+    color: var(--text-1);
+  }
+  .callout-info .callout-icon { color: var(--blue); }
+
+  .callout-danger {
+    background: rgba(225,29,42,0.06); border: 1px solid rgba(225,29,42,0.2);
+    color: var(--text-1);
+  }
+  .callout-danger .callout-icon { color: var(--red); }
+
+  .callout-note {
+    background: rgba(168,85,247,0.06); border: 1px solid rgba(168,85,247,0.2);
+    color: var(--text-1);
+  }
+  .callout-note .callout-icon { color: var(--purple); }
+
+  /* ---- STEP LIST ---- */
+  .step-list { margin: 20px 0; padding: 0; list-style: none; }
+
+  .step-item {
+    display: flex; gap: 18px; padding: 18px 0;
+    border-bottom: 1px solid var(--border-1);
+    align-items: flex-start;
+  }
+  .step-item:last-child { border-bottom: none; }
+
+  .step-number {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--red) 0%, #4a0a0f 100%);
+    color: #fff; font-size: 14px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 0 12px var(--red-glow);
+  }
+
+  .step-body { flex: 1; }
+  .step-body h4 { margin-bottom: 4px; color: var(--text-0); }
+  .step-body p { color: var(--text-1); font-size: 14px; margin: 4px 0 0; }
+  .step-body ul { margin: 8px 0 0; padding-left: 20px; color: var(--text-1); font-size: 14px; }
+  .step-body li { margin: 3px 0; }
+
+  /* ---- KEYBOARD SHORTCUT ---- */
+  kbd {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 26px; height: 24px; padding: 0 7px;
+    background: var(--bg-3); border: 1px solid var(--border-2);
+    border-radius: 5px; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600; color: var(--text-0);
+    box-shadow: 0 2px 0 var(--bg-4);
+  }
+
+  .shortcut-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0; border-bottom: 1px solid var(--border-1);
+    font-size: 13px; color: var(--text-1);
+  }
+  .shortcut-row:last-child { border-bottom: none; }
+  .shortcut-keys { display: flex; gap: 6px; align-items: center; }
+
+  /* ---- CODE BLOCK ---- */
+  .code-block {
+    background: var(--bg-1); border: 1px solid var(--border-1);
+    border-radius: 8px; padding: 16px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; line-height: 1.8;
+    color: var(--text-1); overflow-x: auto;
+    margin: 16px 0;
+  }
+  .code-block .kw { color: var(--red-bright); }
+  .code-block .str { color: var(--green); }
+  .code-block .cm { color: var(--text-3); font-style: italic; }
+  .code-block .fn { color: var(--blue); }
+  .code-block .num { color: var(--amber); }
+
+  /* ---- TABLE ---- */
+  .guide-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 13px; margin: 16px 0;
+  }
+  .guide-table th {
+    text-align: left; padding: 10px 14px;
+    background: var(--bg-2); color: var(--text-2);
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.5px; border-bottom: 1px solid var(--border-1);
+  }
+  .guide-table td {
+    padding: 10px 14px; border-bottom: 1px solid var(--border-1);
+    color: var(--text-1);
+  }
+  .guide-table tr:hover td { background: var(--bg-2); }
+
+  /* ---- FEATURE CARD ---- */
+  .feature-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px; margin: 20px 0;
+  }
+  .feature-card {
+    background: var(--bg-2); border: 1px solid var(--border-1);
+    border-radius: 10px; padding: 20px;
+    transition: all 0.2s;
+  }
+  .feature-card:hover {
+    border-color: var(--red-dim);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 0 1px var(--red-glow);
+    transform: translateY(-2px);
+  }
+  .feature-card-icon {
+    width: 40px; height: 40px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--red-dim) 0%, var(--bg-3) 100%);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--red-bright); margin-bottom: 14px;
+  }
+  .feature-card h4 { margin-bottom: 6px; }
+  .feature-card p { font-size: 13px; color: var(--text-2); margin: 0; }
+
+  /* ---- COLLAPSIBLE ---- */
+  .collapsible { margin: 12px 0; }
+  .collapsible-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 18px; cursor: pointer;
+    background: var(--bg-2); border: 1px solid var(--border-1);
+    border-radius: 8px; font-size: 14px; font-weight: 600;
+    color: var(--text-1); transition: all 0.15s;
+    user-select: none;
+  }
+  .collapsible-header:hover { background: var(--bg-3); color: var(--text-0); }
+  .collapsible-header .chevron { transition: transform 0.2s; color: var(--text-3); }
+  .collapsible.open .collapsible-header { border-radius: 8px 8px 0 0; background: var(--bg-3); color: var(--text-0); border-color: var(--border-2); }
+  .collapsible.open .collapsible-header .chevron { transform: rotate(90deg); }
+  .collapsible-body {
+    display: none; padding: 18px;
+    background: var(--bg-1); border: 1px solid var(--border-1);
+    border-top: none; border-radius: 0 0 8px 8px;
+    font-size: 14px; color: var(--text-1);
+  }
+  .collapsible.open .collapsible-body { display: block; }
+  .collapsible-body ul { padding-left: 20px; margin: 8px 0; }
+  .collapsible-body li { margin: 4px 0; }
+  .collapsible-body p { margin: 6px 0; }
+
+  /* ---- PROGRESS FLOW ---- */
+  .flow-track {
+    display: flex; align-items: center; gap: 0;
+    margin: 24px 0; overflow-x: auto; padding-bottom: 8px;
+  }
+  .flow-node {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 8px; min-width: 110px; text-align: center;
+  }
+  .flow-dot {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--bg-3); border: 2px solid var(--border-2);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-2); transition: all 0.2s;
+  }
+  .flow-node:first-child .flow-dot {
+    background: linear-gradient(135deg, var(--red) 0%, #4a0a0f 100%);
+    border-color: var(--red); color: #fff;
+    box-shadow: 0 0 16px var(--red-glow);
+  }
+  .flow-label { font-size: 11px; color: var(--text-2); font-weight: 600; }
+  .flow-arrow { color: var(--text-3); font-size: 18px; margin: 0 4px; padding-bottom: 22px; flex-shrink: 0; }
+
+  /* ---- GLOSSARY ---- */
+  .glossary-term {
+    padding: 12px 0; border-bottom: 1px solid var(--border-1);
+  }
+  .glossary-term dt { font-weight: 700; color: var(--text-0); font-size: 14px; }
+  .glossary-term dd { color: var(--text-2); font-size: 13px; margin: 4px 0 0; }
+
+  /* ---- TERMS & CONDITIONS ---- */
+  .legal-text { font-size: 13px; color: var(--text-2); line-height: 1.8; }
+  .legal-text h3 { color: var(--text-0); margin: 24px 0 8px; font-size: 16px; }
+  .legal-text p { margin: 8px 0; }
+  .legal-text ol { padding-left: 24px; margin: 8px 0; }
+  .legal-text li { margin: 6px 0; }
+
+  /* ---- SEARCH ---- */
+  .search-box {
+    position: relative; margin: 0 20px 16px;
+  }
+  .search-input {
+    width: 100%; padding: 8px 12px 8px 34px;
+    background: var(--bg-0); border: 1px solid var(--border-1);
+    border-radius: 6px; color: var(--text-0);
+    font-size: 13px; outline: none; transition: border-color 0.15s;
+  }
+  .search-input:focus { border-color: var(--red); box-shadow: 0 0 0 2px var(--red-glow); }
+  .search-input::placeholder { color: var(--text-3); }
+  .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-3); width: 16px; height: 16px; }
+
+  /* ---- TOC BADGE ---- */
+  .toc-counter {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 18px; height: 18px; padding: 0 5px;
+    background: var(--bg-4); border-radius: 9px;
+    font-size: 10px; font-weight: 700; color: var(--text-2);
+    margin-left: 6px;
+  }
+
+  /* ---- BACK TO TOP ---- */
+  .back-to-top {
+    position: fixed; bottom: 28px; right: 28px;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--red); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; border: none; z-index: 50;
+    box-shadow: 0 4px 16px rgba(225,29,42,0.4);
+    opacity: 0; transform: translateY(12px);
+    transition: all 0.3s; pointer-events: none;
+  }
+  .back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .back-to-top:hover { background: var(--red-bright); transform: translateY(-2px); }
+
+  /* ---- MOBILE TOGGLE ---- */
+  .mobile-menu-btn {
+    display: none; position: fixed; top: 12px; left: 12px; z-index: 50;
+    width: 40px; height: 40px; border-radius: 8px;
+    background: var(--bg-3); border: 1px solid var(--border-1);
+    color: var(--text-0); cursor: pointer;
+    align-items: center; justify-content: center;
+  }
+  .sidebar-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5); z-index: 35;
+  }
+
+  @media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-overlay.open { display: block; }
+    .main-content { margin-left: 0; }
+    .hero-section { margin-left: 0; }
+    .mobile-menu-btn { display: flex; }
+    .content-area { padding: 32px 20px 60px; }
+    .hero-section { padding: 60px 20px 40px; }
+    h1 { font-size: 28px; }
+    h2 { font-size: 22px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition-duration: 0.01ms !important; }
+  }
+
+  /* ---- FADE IN ---- */
+  .fade-section {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .fade-section.visible {
+    opacity: 1; transform: translateY(0);
+  }
+
+  /* ---- INLINE TAG ---- */
+  .tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .tag-red { background: var(--red-dim); color: var(--red-bright); }
+  .tag-green { background: var(--green-dim); color: var(--green); }
+  .tag-blue { background: var(--blue-dim); color: var(--blue); }
+  .tag-amber { background: var(--amber-dim); color: var(--amber); }
+</style>
+</head>
+<body>
+
+<!-- MOBILE MENU BUTTON -->
+<button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Toggle navigation">
+  <i data-lucide="menu" class="w-5 h-5"></i>
+</button>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar" role="navigation" aria-label="Guide navigation">
+  <div class="sidebar-brand">
+    <div class="brand-logo">E</div>
+    <div>
+      <div class="font-bold text-sm tracking-wide" style="color:var(--text-0)">EPSILON HECKLE</div>
+      <div class="text-[10px] uppercase tracking-widest" style="color:var(--text-3)">Studio Guide</div>
+    </div>
+  </div>
+
+  <div class="search-box">
+    <i data-lucide="search" class="search-icon"></i>
+    <input type="text" class="search-input" placeholder="Search guide..." id="guideSearch" oninput="filterGuide(this.value)" aria-label="Search guide" />
+  </div>
+
+  <div class="nav-section-title">Getting Started</div>
+  <a href="#welcome" class="nav-item active" data-nav="welcome">
+    <i data-lucide="sparkles" class="nav-icon"></i>Welcome
+  </a>
+  <a href="#quickstart" class="nav-item" data-nav="quickstart">
+    <i data-lucide="zap" class="nav-icon"></i>Quick Start
+  </a>
+  <a href="#interface" class="nav-item" data-nav="interface">
+    <i data-lucide="layout-dashboard" class="nav-icon"></i>Interface Tour
+  </a>
+
+  <div class="nav-section-title">Building Your Game</div>
+  <a href="#creating-scene" class="nav-item" data-nav="creating-scene">
+    <i data-lucide="folder-plus" class="nav-icon"></i>Creating a Scene
+  </a>
+  <a href="#adding-objects" class="nav-item" data-nav="adding-objects">
+    <i data-lucide="box" class="nav-icon"></i>Adding Objects
+  </a>
+  <a href="#transforming" class="nav-item" data-nav="transforming">
+    <i data-lucide="move" class="nav-icon"></i>Transform & Edit
+  </a>
+  <a href="#environment" class="nav-item" data-nav="environment">
+    <i data-lucide="cloud-sun" class="nav-icon"></i>Environment
+  </a>
+  <a href="#lighting" class="nav-item" data-nav="lighting">
+    <i data-lucide="sun" class="nav-icon"></i>Lighting
+  </a>
+  <a href="#assets" class="nav-item" data-nav="assets">
+    <i data-lucide="library" class="nav-icon"></i>Asset Library
+  </a>
+
+  <div class="nav-section-title">Play & Test</div>
+  <a href="#play-mode" class="nav-item" data-nav="play-mode">
+    <i data-lucide="play" class="nav-icon"></i>Play Mode
+  </a>
+  <a href="#controls" class="nav-item" data-nav="controls">
+    <i data-lucide="gamepad-2" class="nav-icon"></i>Controls
+  </a>
+
+  <div class="nav-section-title">Saving & Export</div>
+  <a href="#save-load" class="nav-item" data-nav="save-load">
+    <i data-lucide="save" class="nav-icon"></i>Save & Load
+  </a>
+  <a href="#export" class="nav-item" data-nav="export">
+    <i data-lucide="download" class="nav-icon"></i>Export
+  </a>
+
+  <div class="nav-section-title">Reference</div>
+  <a href="#shortcuts" class="nav-item" data-nav="shortcuts">
+    <i data-lucide="keyboard" class="nav-icon"></i>Keyboard Shortcuts
+  </a>
+  <a href="#troubleshooting" class="nav-item" data-nav="troubleshooting">
+    <i data-lucide="wrench" class="nav-icon"></i>Troubleshooting
+  </a>
+  <a href="#glossary" class="nav-item" data-nav="glossary">
+    <i data-lucide="book-open" class="nav-icon"></i>Glossary
+  </a>
+
+  <div class="nav-section-title">Legal</div>
+  <a href="#terms" class="nav-item" data-nav="terms">
+    <i data-lucide="scroll-text" class="nav-icon"></i>Terms & Conditions
+  </a>
+
+  <div style="flex:1"></div>
+  <div style="padding:16px 20px; border-top:1px solid var(--border-1); font-size:11px; color:var(--text-3);">
+    Epsilon Heckle Studio v1.0<br />
+    Guide last updated: 2025
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-section" id="heroSection">
+  <div style="max-width:880px; margin:0 auto; position:relative; z-index:1;">
+    <div class="hero-badge">
+      <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+      Premium Studio
+    </div>
+    <h1 style="margin-bottom:12px;">Epsilon Heckle Studio<br /><span style="color:var(--red)">Complete Guide</span></h1>
+    <p style="font-size:17px; color:var(--text-2); max-width:600px; margin:0;">
+      Everything you need to create, build, and play 3D games — from your first scene to a fully playable experience.
+    </p>
+    <div style="display:flex; gap:10px; margin-top:24px; flex-wrap:wrap;">
+      <a href="#quickstart" style="display:inline-flex; align-items:center; gap:8px; padding:10px 20px; border-radius:8px; background:var(--red); color:#fff; font-size:14px; font-weight:600; text-decoration:none; box-shadow:0 4px 16px rgba(225,29,42,0.3); transition:all 0.15s;">
+        <i data-lucide="zap" class="w-4 h-4"></i>Get Started Now
+      </a>
+      <a href="#interface" style="display:inline-flex; align-items:center; gap:8px; padding:10px 20px; border-radius:8px; background:var(--bg-3); color:var(--text-0); font-size:14px; font-weight:500; border:1px solid var(--border-1); text-decoration:none; transition:all 0.15s;">
+        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>Explore the Interface
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+<div class="content-area">
+
+  <!-- ==================== WELCOME ==================== -->
+  <section id="welcome" class="section-anchor fade-section">
+    <h2 style="margin-bottom:16px;">Welcome to Epsilon Heckle Studio</h2>
+    <p style="color:var(--text-1); font-size:15px;">
+      Epsilon Heckle Studio is a premium, browser-based 3D game creation tool. Build entire game worlds using primitives, pre-built assets, custom lighting, and terrain — then jump into Play Mode to test your creation in real time. No downloads. No installs. Just open and create.
+    </p>
+
+    <div class="feature-grid" style="margin-top:28px;">
+      <div class="feature-card">
+        <div class="feature-card-icon"><i data-lucide="box" class="w-5 h-5"></i></div>
+        <h4>14 Primitives</h4>
+        <p>Cubes, spheres, cylinders, cones, tori, capsules, platonic solids, stairs, terrain hills and more.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon"><i data-lucide="library" class="w-5 h-5"></i></div>
+        <h4>50+ Assets</h4>
+        <p>Characters, vehicles, weapons, buildings, nature props, and tools — ready to place instantly.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon"><i data-lucide="sun" class="w-5 h-5"></i></div>
+        <h4>5 Light Types</h4>
+        <p>Point, Spot, Directional, Hemisphere, and Rect Area lights for full scene illumination control.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon"><i data-lucide="gamepad-2" class="w-5 h-5"></i></div>
+        <h4>Play Mode</h4>
+        <p>First-person play testing with WASD movement, mouse look, jumping, running, and mobile joystick.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon"><i data-lucide="download" class="w-5 h-5"></i></div>
+        <h4>Export Anywhere</h4>
+        <p>Save scenes as JSON, export individual objects as GLTF, or take high-res screenshots.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon"><i data-lucide="mountain" class="w-5 h-5"></i></div>
+        <h4>Procedural Terrain</h4>
+        <p>Generate random terrain landscapes with adjustable size and height for open-world environments.</p>
+      </div>
+    </div>
+
+    <div class="callout callout-tip">
+      <i data-lucide="lightbulb" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>First time here?</strong> Jump straight to the <a href="#quickstart" style="color:var(--green); text-decoration:underline;">Quick Start</a> section — you'll have a playable scene in under 2 minutes.
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ==================== QUICK START ==================== -->
+  <section id="quickstart" class="section-anchor fade-section">
+    <h2 style="margin-bottom:6px;">Quick Start</h2>
+    <p style="color:var(--text-2); font-size:14px; margin-bottom:20px;">Build your first playable game scene in 5 steps.</p>
+
+    <div class="flow-track">
+      <div class="flow-node"><div class="flow-dot"><i data-lucide="plus" class="w-5 h-5"></i></div><div class="flow-label">New Scene</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><div class="flow-dot"><i data-lucide="box" class="w-5 h-5"></i></div><div class="flow-label">Add Objects</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><div class="flow-dot"><i data-lucide="move" class="w-5 h-5"></i></div><div class="flow-label">Position</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><div class="flow-dot"><i data-lucide="cloud-sun" class="w-5 h-5"></i></div><div class="flow-label">Environment</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><div class="flow-dot"><i data-lucide="play" class="w-5 h-5"></i></div><div class="flow-label">Play!</div></div>
+    </div>
+
+    <ol class="step-list">
+      <li class="step-item">
+        <div class="step-number">1</div>
+        <div class="step-body">
+          <h4>Open the Studio</h4>
+          <p>Launch Epsilon Heckle Studio in your browser. A new empty scene loads automatically with a grid floor and default lighting.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-number">2</div>
+        <div class="step-body">
+          <h4>Add a Ground Plane</h4>
+          <p>Go to the <strong>Shapes</strong> tab in the left panel → click <strong>Plane</strong>. Select it and scale it up using the Scale tool (<kbd>R</kbd> key) to create a large floor.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-number">3</div>
+        <div class="step-body">
+          <h4>Place Some Objects</h4>
+          <p>Add cubes, spheres, or assets from the <strong>Assets</strong> tab. Use <kbd>W</kbd> (Move), <kbd>E</kbd> (Rotate), <kbd>R</kbd> (Scale) to arrange them. Click objects in the viewport to select, or use the <strong>Scene</strong> hierarchy list.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-number">4</div>
+        <div class="step-body">
+          <h4>Set the Atmosphere</h4>
+          <p>Switch to the <strong>World</strong> tab. Adjust sky color, ambient light, and sun angle. Enable fog for depth. Optionally switch the ground to <strong>Terrain</strong> for a procedural landscape.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-number">5</div>
+        <div class="step-body">
+          <h4>Hit Play</h4>
+          <p>Click the red <strong>Play</strong> button in the top bar. You'll drop into first-person mode. Use <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> to walk, mouse to look around, <kbd>Space</kbd> to jump, and <kbd>Shift</kbd> to run. Press the <strong>Stop</strong> button or <kbd>Esc</kbd> to return to editing.</p>
+        </div>
+      </li>
+    </ol>
+
+    <div class="callout callout-warning">
+      <i data-lucide="alert-triangle" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>Save before playing!</strong> Play Mode is a test simulation. Always save your scene (<kbd>Ctrl</kbd>+<kbd>S</kbd>) before entering Play Mode so you don't lose work if the browser refreshes.
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ==================== INTERFACE TOUR ==================== -->
+  <section id="interface" class="section-anchor fade-section">
+    <h2 style="margin-bottom:6px;">Interface Tour</h2>
+    <p style="color:var(--text-2); font-size:14px; margin-bottom:24px;">The studio is divided into 5 main areas.</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-card-icon"><i data-lucide="panel-top" class="w-5 h-5"></i></div>
+        <h4>Top Bar</h4>
+        <p>Brand logo, New/Save/Load/Export buttons, Settings, Help, and the Play button. The central hub for file operations.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon"><i data-lucide="panel-left" class="w-5 h-5"></i></div>
+        <h4>Left Panel</h4>
+        <p>4 tabs: <strong>Shapes</strong> (primitives & lights), <strong>Assets</strong> (library & import), <strong>Scene</strong> (hierarchy), <strong>World</strong> (environment settings).</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon"><i data-lucide="monitor" class="w-5 h-5"></i></div>
+        <h4>Viewport</h4>
+        <p>The 3D canvas where your scene renders. Orbit with right-click drag, zoom with scroll, select by clicking. Toolbar at top for transform modes.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon"><i data-lucide="panel-right" class="w-5 h-5"></i></div>
+        <h4>Right Panel</h4>
+        <p>The <strong>Inspector</strong> — shows properties of the selected object: Name, Position, Rotation, Scale, Color, Material, and Light settings.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon"><i data-lucide="panel-bottom" class="w-5 h-5"></i></div>
+        <h4>Status Bar</h4>
+        <p>Current mode (Edit/Play), object count, FPS counter, selection info, and version number.</p>
+      </div>
+    </div>
+
+    <div class="callout callout-info">
+      <i data-lucide="info" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>Mobile users:</strong> On screens under 900px wide, the left and right panels are hidden by default. Use the <strong>Package</strong> and <strong>Sliders</strong> buttons in the top bar to toggle them as overlays.
+      </div>
+    </div>
+
+    <h3 style="margin-top:32px; margin-bottom:16px;">Viewport Toolbar</h3>
+    <p style="color:var(--text-1); font-size:14px; margin-bottom:12px;">The floating toolbar at the top center of the viewport provides quick access to:</p>
+    <table class="guide-table">
+      <thead><tr><th>Button</th><th>Function</th><th>Shortcut</th></tr></thead>
+      <tbody>
+        <tr><td><i data-lucide="move" class="w-4 h-4 inline-block" style="vertical-align:middle;"></i> Move</td><td>Translate (drag) selected object</td><td><kbd>W</kbd></td></tr>
+        <tr><td><i data-lucide="rotate-cw" class="w-4 h-4 inline-block" style="vertical-align:middle;"></i> Rotate</td><td>Rotate selected object</td><td><kbd>E</kbd></td></tr>
+        <tr><td><i data-lucide="maximize-2" class="w-4 h-4 inline-block" style="vertical-align:middle;"></i> Scale</td><td>Scale selected object</td><td><kbd>R</kbd></td></tr>
+        <tr><td><i data-lucide="magnet" class="w-4 h-4 inline-block" style="vertical-align:middle;"></i> Snap</td><td>Toggle grid snapping</td><td>—</td></tr>
+        <tr><td><i data-lucide="copy" class="w-4 h-4 inline-block" style="vertical-align:middle;"></i> Duplicate</td><td>Clone selected object</td><td><kbd>Ctrl</kbd>+<kbd>D</kbd></td></tr>
+        <tr><td><i data-lucide="trash-2" class="w-4 h-4 inline-block" style="vertical-align:middle;"></i> Delete</td><td>Remove selected object</td><td><kbd>Del</kbd></td></tr>
+        <tr><td><i data-lucide="crosshair" class="w-4 h-4 inline-block" style="vertical-align:middle;"></i> Focus</td><td>Frame camera on selected</td><td><kbd>F</kbd></td></tr>
+        <tr><td><i data-lucide="home" class="w-4 h-4 inline-block" style="vertical-align:middle;"></i> Reset Camera</td><td>Return to default view</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ==================== CREATING A SCENE ==================== -->
+  <section id="creating-scene" class="section-anchor fade-section">
+    <h2 style="margin-bottom:6px;">Creating a Scene</h2>
+    <p style="color:var(--text-1); font-size:14px;">A scene is the container for everything in your game world — objects, lights, environment settings, and terrain.</p>
+
+    <ol class="step-list">
+      <li class="step-item">
+        <div class="step-number">1</div>
+        <div class="step-body">
+          <h4>New Scene</h4>
+          <p>Click <strong>New</strong> in the top bar or use <kbd>Ctrl</kbd>+<kbd>N</kbd>. This clears the current scene and resets to a fresh empty world with default grid and lighting.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-number">2</div>
+        <div class="step-body">
+          <h4>Build the World</h4>
+          <p>Add ground, structures, decorations, and lights. Arrange them using the transform tools. Every object you add appears in the <strong>Scene</strong> hierarchy tab.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-number">3</div>
+        <div class="step-body">
+          <h4>Configure the Environment</h4>
+          <p>Use the <strong>World</strong> tab to set sky color, ambient/sun lighting, fog, and ground type. This defines the overall mood of your scene.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-number">4</div>
+        <div class="step-body">
+          <h4>Save Your Work</h4>
+          <p>Click <strong>Save</strong> or press <kbd>Ctrl</kbd>+<kbd>S</kbd>. The scene is stored in your browser's local storage. Give it a descriptive name when prompted.</p>
+        </div>
+      </li>
+    </ol>
+
+    <div class="callout callout-warning">
+      <i data-lucide="alert-triangle" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>Unsaved changes are lost on refresh.</strong> The studio does not auto-save. Make a habit of saving frequently, especially before Play Mode or closing the tab.
+      </div>
+    </div>
+
+    <div class="callout callout-tip">
+      <i data-lucide="lightbulb" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>Scene organization tip:</strong> Name your objects clearly in the Inspector. Use the Scene hierarchy to reorder and manage complexity. Click the trash icon next to the "Scene Hierarchy" title to clear all objects at once.
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ==================== ADDING OBJECTS ==================== -->
+  <section id="adding-objects" class="section-anchor fade-section">
+    <h2 style="margin-bottom:6px;">Adding Objects</h2>
+    <p style="color:var(--text-2); font-size:14px; margin-bottom:20px;">Three ways to populate your scene.</p>
+
+    <h3 style="margin-bottom:12px;"><span class="tag tag-red">Shapes</span> Primitives</h3>
+    <p style="color:var(--text-1); font-size:14px; margin-bottom:12px;">Basic 3D shapes are the building blocks of any scene. Find them in the <strong>Shapes</strong> tab under "Primitives".</p>
+
+    <table class="guide-table">
+      <thead><tr><th>Shape</th><th>Description</th><th>Use Case</th></tr></thead>
+      <tbody>
+        <tr><td>Cube</td><td>1×1×1 box</td><td>Walls, platforms, crates, buildings</td></tr>
+        <tr><td>Sphere</td><td>Smooth sphere (radius 0.7)</td><td>Balls, planets, collision zones</td></tr>
+        <tr><td>Cylinder</td><td>Round column</td><td>Pillars, pipes, tree trunks</td></tr>
+        <tr><td>Cone</td><td>Pointed cone</td><td>Towers, roofs, traffic cones</td></tr>
+        <tr><td>Torus</td><td>Donut ring</td><td>Rings, wheels, decorative hoops</td></tr>
+        <tr><td>Plane</td><td>Flat 2×2 surface</td><td>Floors, walls, water surfaces</td></tr>
+        <tr><td>Capsule</td><td>Pill-shaped</td><td>Character colliders, pillars</td></tr>
+        <tr><td>Tetrahedron</td><td>4-face pyramid</td><td>Decorative, low-poly style</td></tr>
+        <tr><td>Octahedron</td><td>8-face diamond</td><td>Crystals, gems, power-ups</td></tr>
+        <tr><td>Icosahedron</td><td>20-face sphere</td><td>Planet props, dice</td></tr>
+        <tr><td>Dodecahedron</td><td>12-face solid</td><td>Decorative, sci-fi objects</td></tr>
+        <tr><td>Ring</td><td>Flat annulus</td><td>Target rings, halos</td></tr>
+        <tr><td>Stairs</td><td>6-step staircase</td><td>Multi-level architecture</td></tr>
+        <tr><td>Hill</td><td>Half-sphere terrain</td><td>Hills, bumps, mounds</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:28px; margin-bottom:12px;"><span class="tag tag-blue">Assets</span> Pre-built Models</h3>
+    <p style="color:var(--text-1); font-size:14px; margin-bottom:12px;">The Assets tab contains 50+ ready-to-use models organized into categories:</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-card-icon"><i data-lucide="bird" class="w-5 h-5"></i></div>
+        <h4>Animals & Humans</h4>
+        <p>Parrot, Horse, Flamingo, Fox, Soldier, Robot, Duck, and more — many with animations.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon"><i data-lucide="building" class="w-5 h-5"></i></div>
+        <h4>Infrastructure</h4>
+        <p>House, Office Tower, Watchtower, Wall, Bridge, Fence, Street Lamp, and more.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon"><i data-lucide="car" class="w-5 h-5"></i></div>
+        <h4>Vehicles</h4>
+        <p>Sports Car, Truck, Buggy, and more variants — great for racing or driving games.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon"><i data-lucide="sword" class="w-5 h-5"></i></div>
+        <h4>Weapons</h4>
+        <p>Sword, Pistol, Axe, Hammer, Bow, Shield, Pickaxe, and more for combat games.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon"><i data-lucide="wrench" class="w-5 h-5"></i></div>
+        <h4>Tools</h4>
+        <p>Wrench, Hammer, Shovel, Torch, Crystal — utility props for adventure or crafting.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-icon"><i data-lucide="tree-pine" class="w-5 h-5"></i></div>
+        <h4>Nature</h4>
+        <p>Pine Trees, Crystals, Rocks — organic scatter props for environment dressing.</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top:28px; margin-bottom:12px;"><span class="tag tag-green">Import</span> Custom Models</h3>
+    <p style="color:var(--text-1); font-size:14px;">Click <strong>"Import GLTF / GLB"</strong> in the Assets tab to load your own 3D models from file. Supported formats:</p>
+    <ul style="color:var(--text-1); font-size:14px; padding-left:24px; margin:8px 0;">
+      <li><strong>.gltf</strong> — GLTF text format (JSON + external buffers/textures)</li>
+      <li><strong>.glb</strong> — GLTF binary format (single file, recommended)</li>
+    </ul>
+
+    <div class="callout callout-info">
+      <i data-lucide="info" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>Asset categories:</strong> Use the pill buttons at the top of the Assets tab to filter by category. The search bar lets you find assets by name. Imported models appear under a "Custom" category.
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ==================== TRANSFORM & EDIT ==================== -->
+  <section id="transforming" class="section-anchor fade-section">
+    <h2 style="margin-bottom:6px;">Transform & Edit</h2>
+    <p style="color:var(--text-1); font-size:14px;">Once objects are in your scene, select and modify them.</p>
+
+    <h3 style="margin-top:20px; margin-bottom:12px;">Selecting Objects</h3>
+    <ul style="color:var(--text-1); font-size:14px; padding-left:24px;">
+      <li><strong>Click</strong> an object in the viewport to select it</li>
+      <li><strong>Click</strong> an item in the Scene hierarchy list to select it</li>
+      <li>Selected objects show a <span style="color:var(--red);">red outline</span> in the hierarchy and transform gizmo in the viewport</li>
+      <li>Click empty space to deselect</li>
+    </ul>
+
+    <h3 style="margin-top:24px; margin-bottom:12px;">Transform Modes</h3>
+    <table class="guide-table">
+      <thead><tr><th>Mode</th><th>Shortcut</th><th>What It Does</th></tr></thead>
+      <tbody>
+        <tr><td><i data-lucide="move" class="w-4 h-4 inline-block" style="vertical-align:middle;"></i> Translate</td><td><kbd>W</kbd></td><td>Drag along X (red), Y (green), or Z (blue) axis. Drag center to move freely.</td></tr>
+        <tr><td><i data-lucide="rotate-cw" class="w-4 h-4 inline-block" style="vertical-align:middle;"></i> Rotate</td><td><kbd>E</kbd></td><td>Drag a rotation ring to spin the object around that axis.</td></tr>
+        <tr><td><i data-lucide="maximize-2" class="w-4 h-4 inline-block" style="vertical-align:middle;"></i> Scale</td><td><kbd>R</kbd></td><td>Drag a scale handle. Uniform scale from center, or single-axis from handles.</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:24px; margin-bottom:12px;">Inspector Properties</h3>
+    <p style="color:var(--text-1); font-size:14px;">When an object is selected, the right panel Inspector shows:</p>
+    <table class="guide-table">
+      <thead><tr><th>Property</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>Name</td><td>Editable display name for the object</td></tr>
+        <tr><td>Position (X, Y, Z)</td><td>World-space coordinates. Color-coded: <span style="color:var(--red);">X</span>, <span style="color:#22c55e;">Y</span>, <span style="color:#3b82f6;">Z</span></td></tr>
+        <tr><td>Rotation (X, Y, Z)</td><td>Euler angles in degrees</td></tr>
+        <tr><td>Scale (X, Y, Z)</td><td>Object scale per axis</td></tr>
+        <tr><td>Color</td><td>Diffuse material color (meshes only)</td></tr>
+        <tr><td>Metalness</td><td>0 = dielectric, 1 = fully metallic</td></tr>
+        <tr><td>Roughness</td><td>0 = mirror, 1 = fully matte</td></tr>
+        <tr><td>Emissive</td><td>Self-illumination color & intensity</td></tr>
+        <tr><td>Cast Shadow</td><td>Whether this object casts shadows</td></tr>
+        <tr><td>Receive Shadow</td><td>Whether shadows land on this object</td></tr>
+        <tr><td>Visible</td><td>Toggle object visibility</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:24px; margin-bottom:12px;">Light Inspector</h3>
+    <p style="color:var(--text-1); font-size:14px;">When a light is selected, additional properties appear:</p>
+    <table class="guide-table">
+      <thead><tr><th>Property</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>Color</td><td>Light emission color</td></tr>
+        <tr><td>Intensity</td><td>Brightness multiplier</td></tr>
+        <tr><td>Distance</td><td>Maximum range (Point & Spot lights)</td></tr>
+        <tr><td>Angle</td><td>Cone angle in degrees (Spot light only)</td></tr>
+        <tr><td>Penumbra</td><td>Edge softness 0–1 (Spot light only)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-tip">
+      <i data-lucide="lightbulb" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>Numeric precision:</strong> For exact positioning, type values directly into the Inspector's X/Y/Z fields instead of dragging the gizmo. The fields use monospace font for easy number editing.
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px; margin-bottom:12px;">Useful Actions</h3>
+    <ul style="color:var(--text-1); font-size:14px; padding-left:24px;">
+      <li><strong>Duplicate</strong> (<kbd>Ctrl</kbd>+<kbd>D</kbd>) — Clone the selected object at the same position</li>
+      <li><strong>Delete</strong> (<kbd>Del</kbd>) — Remove the selected object permanently</li>
+      <li><strong>Focus</strong> (<kbd>F</kbd>) — Move the camera to frame the selected object</li>
+      <li><strong>Snap</strong> — Toggle grid snapping for precise placement (0.25 unit increments)</li>
+    </ul>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ==================== ENVIRONMENT ==================== -->
+  <section id="environment" class="section-anchor fade-section">
+    <h2 style="margin-bottom:6px;">Environment Settings</h2>
+    <p style="color:var(--text-1); font-size:14px;">The <strong>World</strong> tab controls the overall atmosphere and ground of your scene.</p>
+
+    <h3 style="margin-top:20px; margin-bottom:12px;">Sky & Lighting</h3>
+    <table class="guide-table">
+      <thead><tr><th>Setting</th><th>Range</th><th>Default</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td>Sky Color</td><td>Any color</td><td>#0a0a12</td><td>Background color of the scene. Use dark for night, light blue for day.</td></tr>
+        <tr><td>Ambient</td><td>0 – 2</td><td>0.4</td><td>Overall ambient light intensity. Higher = brighter shadows.</td></tr>
+        <tr><td>Sun Intensity</td><td>0 – 3</td><td>1.2</td><td>Directional sun strength. 0 = no sun (nighttime).</td></tr>
+        <tr><td>Sun Color</td><td>Any color</td><td>#fff5e0</td><td>Sun color temperature. Warm yellow for sunrise, white for noon, blue for moonlight.</td></tr>
+        <tr><td>Sun Angle</td><td>0° – 360°</td><td>45°</td><td>Direction the sun shines from. Changes shadow direction.</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:24px; margin-bottom:12px;">Fog</h3>
+    <p style="color:var(--text-1); font-size:14px;">Fog adds atmospheric depth, making distant objects fade into a color. Great for horror, mist, or underwater scenes.</p>
+    <table class="guide-table">
+      <thead><tr><th>Setting</th><th>Range</th><th>Default</th></tr></thead>
+      <tbody>
+        <tr><td>Enable Fog</td><td>On/Off</td><td>Off</td></tr>
+        <tr><td>Fog Color</td><td>Any color</td><td>#0a0a12</td></tr>
+        <tr><td>Fog Density</td><td>0 – 0.1</td><td>0.02</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-tip">
+      <i data-lucide="lightbulb" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>Fog pro tip:</strong> Match the fog color to your sky color for a natural fade. Use low density (0.01–0.03) for subtle depth, or high (0.06+) for heavy mist.
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px; margin-bottom:12px;">Ground</h3>
+    <table class="guide-table">
+      <thead><tr><th>Setting</th><th>Options</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>Ground Color</td><td>Any color</td><td>Color of the ground plane/terrain mesh</td></tr>
+        <tr><td>Show Grid</td><td>On/Off</td><td>Toggle the reference grid lines on the ground</td></tr>
+        <tr><td>Ground Type</td><td>Flat Plane / Terrain / None</td><td>See below</td></tr>
+      </tbody>
+    </table>
+
+    <div class="collapsible" onclick="this.classList.toggle('open')">
+      <div class="collapsible-header">
+        <i data-lucide="chevron-right" class="chevron w-4 h-4"></i>
+        Ground Types Explained
+      </div>
+      <div class="collapsible-body">
+        <p><strong>Flat Plane:</strong> A simple infinite ground plane. Best for indoor scenes, platformers, or when you want manual control of the floor.</p>
+        <p><strong>Terrain (Procedural):</strong> A randomly generated heightmap landscape. Adjustable size (50–500 units) and height scale (0–50). Click "Regenerate" to create a new random terrain. Ideal for outdoor and open-world games.</p>
+        <p><strong>None:</strong> No ground at all. Objects float in space. Useful for space scenes or when you have a custom floor object.</p>
+      </div>
+    </div>
+
+    <div class="callout callout-warning">
+      <i data-lucide="alert-triangle" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>Terrain regeneration is destructive.</strong> Clicking "Regenerate" creates a completely new random terrain. Any manually placed objects on the old terrain may end up floating or clipping.
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ==================== LIGHTING ==================== -->
+  <section id="lighting" class="section-anchor fade-section">
+    <h2 style="margin-bottom:6px;">Lighting</h2>
+    <p style="color:var(--text-1); font-size:14px;">Good lighting transforms a flat scene into a believable world. The studio provides 5 light types.</p>
+
+    <p style="color:var(--text-1); font-size:14px; margin-top:16px;">Add lights from the <strong>Shapes</strong> tab under the "Lights" section:</p>
+
+    <table class="guide-table" style="margin-top:12px;">
+      <thead><tr><th>Light</th><th>Behavior</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td><i data-lucide="lightbulb" class="w-4 h-4 inline-block" style="vertical-align:middle;"></i> Point</td><td>Radiates equally in all directions from a point</td><td>Lamps, fire, overhead lights, torches</td></tr>
+        <tr><td><i data-lucide="flashlight" class="w-4 h-4 inline-block" style="vertical-align:middle;"></i> Spot</td><td>Cone of light in one direction</td><td>Flashlights, stage lights, car headlights</td></tr>
+        <tr><td><i data-lucide="sun" class="w-4 h-4 inline-block" style="vertical-align:middle;"></i> Directional</td><td>Parallel rays from infinity (like the sun)</td><td>Sunlight, moonlight</td></tr>
+        <tr><td><i data-lucide="cloud-sun" class="w-4 h-4 inline-block" style="vertical-align:middle;"></i> Hemisphere</td><td>Sky color from above, ground color from below</td><td>Ambient outdoor fill light</td></tr>
+        <tr><td><i data-lucide="square" class="w-4 h-4 inline-block" style="vertical-align:middle;"></i> Rect Area</td><td>Light from a rectangular area (soft shadows)</td><td>Windows, TV screens, soft panels</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-tip">
+      <i data-lucide="lightbulb" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>Lighting tips:</strong>
+        <ul>
+          <li>Start with the environment Sun + Ambient, then add local lights for detail.</li>
+          <li>Use <strong>warm colors</strong> (orange, yellow) for indoor/cozy and <strong>cool colors</strong> (blue, white) for outdoor/tech.</li>
+          <li>Too many real-time shadow-casting lights hurts performance. Limit shadow-casters to 2–3 key lights.</li>
+          <li>The Street Lamp asset includes a built-in Point Light — use it for automatic light placement.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ==================== ASSET LIBRARY ==================== -->
+  <section id="assets" class="section-anchor fade-section">
+    <h2 style="margin-bottom:6px;">Asset Library Deep Dive</h2>
+    <p style="color:var(--text-1); font-size:14px;">The asset library combines GLTF models loaded from CDN with procedurally generated objects.</p>
+
+    <h3 style="margin-top:20px; margin-bottom:12px;">GLTF Models</h3>
+    <p style="color:var(--text-1); font-size:14px;">These are real 3D models loaded from the Three.js and Khronos Group sample model repositories. They include:</p>
+    <ul style="color:var(--text-1); font-size:14px; padding-left:24px; margin:8px 0;">
+      <li>Animated characters (Soldier, XBot, Robot Expressive)</li>
+      <li>Animals with animations (Parrot, Horse, Flamingo, Fox)</li>
+      <li>Detailed static models (Antique Camera, Lantern, Sponza, Buggy, Duck)</li>
+    </ul>
+
+    <div class="callout callout-info">
+      <i data-lucide="info" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>Loading time:</strong> GLTF assets are fetched from a CDN on first use. You may see a brief loading spinner. Once loaded, they're cached for the session. An internet connection is required for GLTF assets.
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px; margin-bottom:12px;">Procedural Assets</h3>
+    <p style="color:var(--text-1); font-size:14px;">These are built entirely from code — no network request needed. They load instantly and include vehicles (Car, Truck), weapons (Sword, Gun, Axe, Bow, Shield), structures (House, Building, Tower, Wall, Bridge, Fence), and nature (Tree, Crystal, Lamp). They're simpler than GLTF models but perfect for gameplay prototypes.</p>
+
+    <h3 style="margin-top:24px; margin-bottom:12px;">Importing Your Own Models</h3>
+    <ol class="step-list">
+      <li class="step-item">
+        <div class="step-number">1</div>
+        <div class="step-body">
+          <h4>Prepare Your Model</h4>
+          <p>Export from Blender, Maya, or any 3D tool as <strong>.glb</strong> (recommended) or <strong>.gltf</strong>. Keep file size under 10 MB for best performance.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-number">2</div>
+        <div class="step-body">
+          <h4>Click Import</h4>
+          <p>In the Assets tab, click <strong>"Import GLTF / GLB"</strong>. A file picker opens. Select your model file.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-number">3</div>
+        <div class="step-body">
+          <h4>Model Appears in Scene</h4>
+          <p>The imported model is placed at the world origin. It also appears in the Assets grid under a "Custom" category for reuse.</p>
+        </div>
+      </li>
+    </ol>
+
+    <div class="callout callout-danger">
+      <i data-lucide="alert-octagon" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>Import limitations:</strong> Only GLTF and GLB formats are supported. FBX, OBJ, and other formats must be converted first (use Blender's export feature). Very high-poly models may cause performance issues.
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ==================== PLAY MODE ==================== -->
+  <section id="play-mode" class="section-anchor fade-section">
+    <h2 style="margin-bottom:6px;">Play Mode</h2>
+    <p style="color:var(--text-1); font-size:14px;">Play Mode lets you experience your scene as a first-person player. It's the fastest way to test scale, layout, and "feel" of your game world.</p>
+
+    <h3 style="margin-top:20px; margin-bottom:12px;">Entering Play Mode</h3>
+    <ul style="color:var(--text-1); font-size:14px; padding-left:24px;">
+      <li>Click the red <strong>Play</strong> button in the top bar</li>
+      <li>A "Play Mode" indicator appears in the top-left corner</li>
+      <li>The viewport changes to first-person camera</li>
+      <li>On desktop: the mouse is captured for looking — click the viewport if needed</li>
+      <li>On mobile: a virtual joystick and look pad appear</li>
+    </ul>
+
+    <h3 style="margin-top:24px; margin-bottom:12px;">Exiting Play Mode</h3>
+    <ul style="color:var(--text-1); font-size:14px; padding-left:24px;">
+      <li>Click the <strong>Stop</strong> button (top-right during Play)</li>
+      <li>Press <kbd>Esc</kbd> to release mouse, then click Stop</li>
+    </ul>
+
+    <h3 style="margin-top:24px; margin-bottom:12px;">Physics & Collision</h3>
+    <p style="color:var(--text-1); font-size:14px;">Play Mode includes basic character physics:</p>
+    <ul style="color:var(--text-1); font-size:14px; padding-left:24px; margin:8px 0;">
+      <li><strong>Gravity</strong> pulls the character down when not on a surface</li>
+      <li><strong>Jump</strong> launches the character upward (<kbd>Space</kbd>)</li>
+      <li><strong>Ground collision</strong> prevents falling through the floor/terrain</li>
+      <li><strong>Running</strong> increases movement speed (<kbd>Shift</kbd>)</li>
+    </ul>
+
+    <div class="callout callout-warning">
+      <i data-lucide="alert-triangle" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>Play Mode limitations:</strong>
+        <ul>
+          <li>There is no object-to-object collision — the player can walk through placed objects.</li>
+          <li>There is no game logic, scoring, or AI — Play Mode is a walk-through simulator only.</li>
+          <li>Object animations (if present in GLTF models) play automatically but cannot be controlled.</li>
+          <li>Changes made during Play Mode do not persist when you stop.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout callout-note">
+      <i data-lucide="book-open" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>Play Mode is a preview, not a final game.</strong> To create a fully playable game with logic, collision, scoring, and UI, you'll need to export your scene and build the game logic in a separate engine or codebase. The studio excels at <em>world building</em> and <em>visual prototyping</em>.
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ==================== CONTROLS ==================== -->
+  <section id="controls" class="section-anchor fade-section">
+    <h2 style="margin-bottom:6px;">Controls Reference</h2>
+
+    <h3 style="margin-top:20px; margin-bottom:12px;">Edit Mode — Camera</h3>
+    <table class="guide-table">
+      <thead><tr><th>Action</th><th>Desktop</th><th>Mobile</th></tr></thead>
+      <tbody>
+        <tr><td>Orbit camera</td><td>Right-click + drag</td><td>Two-finger drag</td></tr>
+        <tr><td>Pan camera</td><td>Middle-click + drag</td><td>—</td></tr>
+        <tr><td>Zoom</td><td>Scroll wheel</td><td>Pinch</td></tr>
+        <tr><td>Select object</td><td>Left-click</td><td>Tap</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:24px; margin-bottom:12px;">Play Mode — First Person</h3>
+    <table class="guide-table">
+      <thead><tr><th>Action</th><th>Desktop</th><th>Mobile</th></tr></thead>
+      <tbody>
+        <tr><td>Move forward</td><td><kbd>W</kbd></td><td>Joystick up</td></tr>
+        <tr><td>Move left</td><td><kbd>A</kbd></td><td>Joystick left</td></tr>
+        <tr><td>Move backward</td><td><kbd>S</kbd></td><td>Joystick down</td></tr>
+        <tr><td>Move right</td><td><kbd>D</kbd></td><td>Joystick right</td></tr>
+        <tr><td>Look around</td><td>Mouse move</td><td>Touch-drag on right pad</td></tr>
+        <tr><td>Jump</td><td><kbd>Space</kbd></td><td>JUMP button</td></tr>
+        <tr><td>Run / Sprint</td><td><kbd>Shift</kbd></td><td>RUN button</td></tr>
+        <tr><td>Release mouse</td><td><kbd>Esc</kbd></td><td>—</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:24px; margin-bottom:12px;">Mobile Touch Controls</h3>
+    <p style="color:var(--text-1); font-size:14px;">On mobile devices, Play Mode shows:</p>
+    <ul style="color:var(--text-1); font-size:14px; padding-left:24px; margin:8px 0;">
+      <li><strong>Virtual joystick</strong> (bottom-left) — drag the red knob to move</li>
+      <li><strong>Look pad</strong> (right 60% of screen, upper area) — drag to look around</li>
+      <li><strong>JUMP button</strong> (bottom-right, upper position)</li>
+      <li><strong>RUN button</strong> (bottom-right, lower position)</li>
+    </ul>
+
+    <div class="callout callout-info">
+      <i data-lucide="info" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>Performance on mobile:</strong> Complex scenes with many objects and lights may run at lower frame rates on mobile devices. Reduce object count and shadow-casting lights for better mobile performance.
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ==================== SAVE & LOAD ==================== -->
+  <section id="save-load" class="section-anchor fade-section">
+    <h2 style="margin-bottom:6px;">Save & Load</h2>
+
+    <h3 style="margin-top:12px; margin-bottom:12px;">Saving</h3>
+    <ul style="color:var(--text-1); font-size:14px; padding-left:24px;">
+      <li>Click <strong>Save</strong> or press <kbd>Ctrl</kbd>+<kbd>S</kbd></li>
+      <li>A prompt asks for a scene name (default: "Untitled")</li>
+      <li>The scene is serialized to JSON and stored in the browser's <strong>localStorage</strong></li>
+      <li>Saving overwrites any previously saved scene with the same name</li>
+    </ul>
+
+    <h3 style="margin-top:20px; margin-bottom:12px;">Loading</h3>
+    <ul style="color:var(--text-1); font-size:14px; padding-left:24px;">
+      <li>Click <strong>Load</strong> to open the load modal</li>
+      <li>A list of all saved scenes appears with timestamps</li>
+      <li>Click a scene to load it — this replaces the current scene</li>
+      <li>Each saved scene has a delete button (trash icon)</li>
+    </ul>
+
+    <div class="callout callout-danger">
+      <i data-lucide="alert-octagon" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>localStorage limits:</strong> Browser localStorage typically holds 5–10 MB. Very large scenes with many objects may exceed this limit. If saving fails, try reducing object count or clearing old saved scenes.
+      </div>
+    </div>
+
+    <div class="callout callout-warning">
+      <i data-lucide="alert-triangle" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>Clearing browser data deletes saves.</strong> Saved scenes are local to this browser and device. Clearing cookies/cache/site data will erase all saved scenes. Use Export to back up important work as downloadable files.
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ==================== EXPORT ==================== -->
+  <section id="export" class="section-anchor fade-section">
+    <h2 style="margin-bottom:6px;">Export</h2>
+    <p style="color:var(--text-1); font-size:14px;">The Export modal provides multiple ways to get your work out of the studio.</p>
+
+    <table class="guide-table" style="margin-top:16px;">
+      <thead><tr><th>Format</th><th>What It Exports</th><th>Use Case</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag tag-blue">JSON</span></td><td>Full scene data — all objects, transforms, materials, lights, environment settings</td><td>Backup, sharing, reloading later</td></tr>
+        <tr><td><span class="tag tag-green">GLTF</span></td><td>Selected object as a GLTF 3D model file</td><td>Loading into Blender, Unity, Unreal, or other 3D tools</td></tr>
+        <tr><td><span class="tag tag-amber">PNG</span></td><td>High-resolution screenshot of the viewport</td><td>Thumbnail, documentation, sharing preview</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:24px; margin-bottom:12px;">Export Workflow</h3>
+    <ol class="step-list">
+      <li class="step-item">
+        <div class="step-number">1</div>
+        <div class="step-body">
+          <h4>Click Export in the Top Bar</h4>
+          <p>The export modal opens with format options.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-number">2</div>
+        <div class="step-body">
+          <h4>Choose Format</h4>
+          <p>Select JSON (full scene), GLTF (selected object), or PNG (screenshot).</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-number">3</div>
+        <div class="step-body">
+          <h4>Download</h4>
+          <p>The file is generated and downloaded to your device.</p>
+        </div>
+      </li>
+    </ol>
+
+    <div class="callout callout-tip">
+      <i data-lucide="lightbulb" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>Recommended backup workflow:</strong> Save frequently to localStorage during editing. When you finish a session, export as JSON to a file on your computer. This protects against browser data clearing.
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ==================== KEYBOARD SHORTCUTS ==================== -->
+  <section id="shortcuts" class="section-anchor fade-section">
+    <h2 style="margin-bottom:16px;">Keyboard Shortcuts</h2>
+
+    <h3 style="margin-bottom:12px;">General</h3>
+    <div class="shortcut-row"><span>New Scene</span><div class="shortcut-keys"><kbd>Ctrl</kbd><kbd>N</kbd></div></div>
+    <div class="shortcut-row"><span>Save Scene</span><div class="shortcut-keys"><kbd>Ctrl</kbd><kbd>S</kbd></div></div>
+    <div class="shortcut-row"><span>Delete Selected</span><div class="shortcut-keys"><kbd>Delete</kbd></div></div>
+    <div class="shortcut-row"><span>Duplicate Selected</span><div class="shortcut-keys"><kbd>Ctrl</kbd><kbd>D</kbd></div></div>
+    <div class="shortcut-row"><span>Focus Selected</span><div class="shortcut-keys"><kbd>F</kbd></div></div>
+
+    <h3 style="margin-top:20px; margin-bottom:12px;">Transform Modes</h3>
+    <div class="shortcut-row"><span>Translate (Move)</span><div class="shortcut-keys"><kbd>W</kbd></div></div>
+    <div class="shortcut-row"><span>Rotate</span><div class="shortcut-keys"><kbd>E</kbd></div></div>
+    <div class="shortcut-row"><span>Scale</span><div class="shortcut-keys"><kbd>R</kbd></div></div>
+
+    <h3 style="margin-top:20px; margin-bottom:12px;">Play Mode</h3>
+    <div class="shortcut-row"><span>Walk Forward</span><div class="shortcut-keys"><kbd>W</kbd></div></div>
+    <div class="shortcut-row"><span>Walk Left</span><div class="shortcut-keys"><kbd>A</kbd></div></div>
+    <div class="shortcut-row"><span>Walk Backward</span><div class="shortcut-keys"><kbd>S</kbd></div></div>
+    <div class="shortcut-row"><span>Walk Right</span><div class="shortcut-keys"><kbd>D</kbd></div></div>
+    <div class="shortcut-row"><span>Jump</span><div class="shortcut-keys"><kbd>Space</kbd></div></div>
+    <div class="shortcut-row"><span>Run / Sprint</span><div class="shortcut-keys"><kbd>Shift</kbd></div></div>
+    <div class="shortcut-row"><span>Release Mouse</span><div class="shortcut-keys"><kbd>Esc</kbd></div></div>
+
+    <div class="callout callout-info">
+      <i data-lucide="info" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>Shortcut conflict note:</strong> <kbd>W</kbd>, <kbd>E</kbd>, and <kbd>R</kbd> serve double duty — they switch transform modes in Edit Mode and control movement in Play Mode. The context changes automatically based on which mode you're in.
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ==================== TROUBLESHOOTING ==================== -->
+  <section id="troubleshooting" class="section-anchor fade-section">
+    <h2 style="margin-bottom:16px;">Troubleshooting</h2>
+
+    <div class="collapsible open" onclick="this.classList.toggle('open')">
+      <div class="collapsible-header">
+        <i data-lucide="chevron-right" class="chevron w-4 h-4"></i>
+        Scene appears black / objects are invisible
+      </div>
+      <div class="collapsible-body">
+        <p>This usually means lighting is too low or the camera is inside an object.</p>
+        <ul>
+          <li>Increase <strong>Ambient</strong> value in the World tab (try 0.6+)</li>
+          <li>Increase <strong>Sun Intensity</strong> (try 1.5+)</li>
+          <li>Add a Point Light near your objects</li>
+          <li>Press <kbd>F</kbd> to focus on a selected object and move the camera to it</li>
+          <li>Click <strong>Reset Camera</strong> (home icon) in the viewport toolbar</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="collapsible" onclick="this.classList.toggle('open')">
+      <div class="collapsible-header">
+        <i data-lucide="chevron-right" class="chevron w-4 h-4"></i>
+        GLTF asset fails to load
+      </div>
+      <div class="collapsible-body">
+        <p>GLTF assets require an internet connection to download from CDN. If loading fails:</p>
+        <ul>
+          <li>Check your internet connection</li>
+          <li>Try refreshing the page — CDN may have had a temporary issue</li>
+          <li>Use procedural assets instead — they work offline</li>
+          <li>Very large GLTF files may time out; try a simpler model</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="collapsible" onclick="this.classList.toggle('open')">
+      <div class="collapsible-header">
+        <i data-lucide="chevron-right" class="chevron w-4 h-4"></i>
+        Performance is slow / low FPS
+      </div>
+      <div class="collapsible-body">
+        <p>Try these steps to improve performance:</p>
+        <ul>
+          <li>Reduce the number of objects in the scene</li>
+          <li>Limit shadow-casting lights to 2–3</li>
+          <li>Disable fog if not needed</li>
+          <li>Use procedural assets instead of heavy GLTF models</li>
+          <li>On mobile, keep scenes under 50 objects</li>
+          <li>Close other browser tabs to free GPU memory</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="collapsible" onclick="this.classList.toggle('open')">
+      <div class="collapsible-header">
+        <i data-lucide="chevron-right" class="chevron w-4 h-4"></i>
+        Can't select objects by clicking
+      </div>
+      <div class="collapsible-body">
+        <p>Object selection uses raycasting from the camera through the click point.</p>
+        <ul>
+          <li>Make sure you're clicking on the object's visible surface, not empty space</li>
+          <li>Very small or far-away objects can be hard to click — use the Scene hierarchy list instead</li>
+          <li>Objects behind other objects may be occluded — orbit the camera to get a clear angle</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="collapsible" onclick="this.classList.toggle('open')">
+      <div class="collapsible-header">
+        <i data-lucide="chevron-right" class="chevron w-4 h-4"></i>
+        Save fails or "storage full" error
+      </div>
+      <div class="collapsible-body">
+        <p>localStorage has a ~5–10 MB limit per origin.</p>
+        <ul>
+          <li>Delete old saved scenes in the Load modal</li>
+          <li>Export important scenes as JSON files first, then delete them from localStorage</li>
+          <li>Reduce scene complexity (fewer objects)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="collapsible" onclick="this.classList.toggle('open')">
+      <div class="collapsible-header">
+        <i data-lucide="chevron-right" class="chevron w-4 h-4"></i>
+        Play Mode: character falls through floor
+      </div>
+      <div class="collapsible-body">
+        <p>The character collider checks for ground below it. If you fall through:</p>
+        <ul>
+          <li>Make sure a ground plane or terrain is enabled in the World tab</li>
+          <li>The spawn point may be below the ground — stop Play Mode and try again</li>
+          <li>Very steep terrain angles may not register as "ground"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="collapsible" onclick="this.classList.toggle('open')">
+      <div class="collapsible-header">
+        <i data-lucide="chevron-right" class="chevron w-4 h-4"></i>
+        Imported GLTF model looks wrong
+      </div>
+      <div class="collapsible-body">
+        <p>Common issues with imported models:</p>
+        <ul>
+          <li><strong>Missing textures:</strong> GLTF text format (.gltf) may reference external files that can't be loaded. Use .glb (binary) instead — it embeds everything.</li>
+          <li><strong>Wrong scale:</strong> Some models export in centimeters. Use the Scale tool to resize.</li>
+          <li><strong>Wrong orientation:</strong> Some models face -Z instead of +Z. Rotate to fix.</li>
+          <li><strong>Unsupported features:</strong> The studio uses Three.js GLTFLoader — any feature it supports will work.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ==================== GLOSSARY ==================== -->
+  <section id="glossary" class="section-anchor fade-section">
+    <h2 style="margin-bottom:16px;">Glossary</h2>
+
+    <dl>
+      <div class="glossary-term">
+        <dt>Asset</dt>
+        <dd>A pre-built 3D model (GLTF or procedural) that can be placed into a scene.</dd>
+      </div>
+      <div class="glossary-term">
+        <dt>GLTF / GLB</dt>
+        <dd>GL Transmission Format — the standard 3D file format for web and real-time. GLB is the binary (single-file) variant.</dd>
+      </div>
+      <div class="glossary-term">
+        <dt>Gizmo</dt>
+        <dd>The visual handle (arrows, rings, boxes) that appears on a selected object for translating, rotating, or scaling.</dd>
+      </div>
+      <div class="glossary-term">
+        <dt>Inspector</dt>
+        <dd>The right panel showing editable properties of the currently selected object.</dd>
+      </div>
+      <div class="glossary-term">
+        <dt>Metalness</dt>
+        <dd>A PBR material property: 0 = dielectric/plastic, 1 = fully metallic/reflective.</dd>
+      </div>
+      <div class="glossary-term">
+        <dt>PBR</dt>
+        <dd>Physically Based Rendering — a shading model that simulates real-world light interaction for realistic materials.</dd>
+      </div>
+      <div class="glossary-term">
+        <dt>Primitive</dt>
+        <dd>A basic 3D shape (cube, sphere, cylinder, etc.) generated from geometry parameters.</dd>
+      </div>
+      <div class="glossary-term">
+        <dt>Procedural</dt>
+        <dd>Generated by code rather than loaded from a file. Procedural assets load instantly and work offline.</dd>
+      </div>
+      <div class="glossary-term">
+        <dt>Roughness</dt>
+        <dd>A PBR material property: 0 = perfectly smooth/mirror, 1 = fully rough/matte.</dd>
+      </div>
+      <div class="glossary-term">
+        <dt>Scene</dt>
+        <dd>The complete game world — all objects, lights, environment settings, and hierarchy.</dd>
+      </div>
+      <div class="glossary-term">
+        <dt>Scene Hierarchy</dt>
+        <dd>The ordered list of all objects in the scene, shown in the Scene tab of the left panel.</dd>
+      </div>
+      <div class="glossary-term">
+        <dt>Transform</dt>
+        <dd>The combination of Position, Rotation, and Scale that defines an object's placement in 3D space.</dd>
+      </div>
+      <div class="glossary-term">
+        <dt>Viewport</dt>
+        <dd>The central 3D canvas where the scene is rendered and interacted with.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ==================== TERMS & CONDITIONS ==================== -->
+  <section id="terms" class="section-anchor fade-section">
+    <h2 style="margin-bottom:6px;">Terms & Conditions</h2>
+    <p style="color:var(--text-2); font-size:13px; margin-bottom:20px;">Last updated: 2025. By using Epsilon Heckle Studio, you agree to the following terms.</p>
+
+    <div class="legal-text">
+      <h3>1. Acceptance of Terms</h3>
+      <p>By accessing and using Epsilon Heckle Studio ("the Studio"), you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions. If you do not agree, do not use the Studio.</p>
+
+      <h3>2. Description of Service</h3>
+      <p>Epsilon Heckle Studio is a browser-based 3D game creation tool that allows users to build, preview, and export 3D scenes. The Studio runs entirely in the user's web browser and does not require server-side processing for core functionality.</p>
+
+      <h3>3. User Content & Ownership</h3>
+      <p>You retain full ownership of all scenes, models, and creative content you produce using the Studio. Epsilon Heckle claims no intellectual property rights over your creations. You are free to use, sell, distribute, or modify your exported content without restriction.</p>
+
+      <h3>4. Asset Library Licensing</h3>
+      <p>The Studio includes a library of pre-built assets from the following sources:</p>
+      <ol>
+        <li><strong>Three.js Sample Models</strong> — Licensed under the MIT License by the Three.js project contributors.</li>
+        <li><strong>Khronos Group glTF Sample Models</strong> — Licensed under Creative Commons Attribution 4.0 International (CC BY 4.0) by the Khronos Group.</li>
+        <li><strong>Procedural Assets</strong> — Generated by the Studio code and provided under the same license as the Studio.</li>
+      </ol>
+      <p>When using or distributing scenes that include GLTF sample assets, you must comply with the respective source licenses. Procedural assets may be used freely in your projects.</p>
+
+      <h3>5. Imported Content</h3>
+      <p>You are solely responsible for ensuring that any 3D models you import into the Studio do not infringe on the intellectual property rights of third parties. Epsilon Heckle is not liable for any copyright or trademark infringement resulting from user-imported content.</p>
+
+      <h3>6. Data Storage</h3>
+      <p>Saved scenes are stored in your browser's localStorage. Epsilon Heckle does not transmit, collect, or store your scene data on any server. Because localStorage is device- and browser-specific, saved data cannot be transferred between devices or browsers automatically. Use the Export feature to create portable backups.</p>
+
+      <h3>7. No Warranty</h3>
+      <p>The Studio is provided "as is" without warranty of any kind, express or implied. Epsilon Heckle does not guarantee that the Studio will be error-free, uninterrupted, or meet your specific requirements. We are not responsible for any loss of data, creative work, or time resulting from use of the Studio.</p>
+
+      <h3>8. Limitation of Liability</h3>
+      <p>In no event shall Epsilon Heckle, its developers, or affiliates be liable for any direct, indirect, incidental, special, or consequential damages arising from the use or inability to use the Studio, even if advised of the possibility of such damages.</p>
+
+      <h3>9. Acceptable Use</h3>
+      <p>You agree not to use the Studio to create, import, or distribute content that is illegal, harmful, threatening, abusive, defamatory, or otherwise objectionable. You agree not to attempt to reverse-engineer, decompile, or disrupt the Studio's operation.</p>
+
+      <h3>10. Modifications</h3>
+      <p>Epsilon Heckle reserves the right to modify these Terms at any time. Continued use of the Studio after modifications constitutes acceptance of the updated Terms. We encourage periodic review of this page.</p>
+
+      <h3>11. Governing Law</h3>
+      <p>These Terms shall be governed by and construed in accordance with applicable law, without regard to conflict of law principles.</p>
+
+      <h3>12. Contact</h3>
+      <p>For questions about these Terms, the Studio, or asset licensing, please contact the Epsilon Heckle development team through the Studio's Help menu or official website.</p>
+    </div>
+
+    <div class="callout callout-info" style="margin-top:24px;">
+      <i data-lucide="scale" class="callout-icon"></i>
+      <div class="callout-content">
+        <strong>Summary:</strong> Your creations are yours. Sample assets have their own open-source licenses (MIT / CC BY 4.0). The Studio stores nothing on our servers. No warranty is provided. Use responsibly.
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- ==================== FINAL CTA ==================== -->
+  <section class="fade-section" style="text-align:center; padding:40px 0 20px;">
+    <h2 style="margin-bottom:8px;">Ready to Build?</h2>
+    <p style="color:var(--text-2); font-size:15px; margin-bottom:24px;">Open Epsilon Heckle Studio and start creating your game world now.</p>
+    <div style="display:inline-flex; align-items:center; gap:8px; padding:12px 24px; border-radius:8px; background:var(--red); color:#fff; font-size:15px; font-weight:600; cursor:default; box-shadow:0 4px 20px rgba(225,29,42,0.35);">
+      <i data-lucide="play" class="w-5 h-5"></i>
+      Launch Studio
+    </div>
+    <p style="color:var(--text-3); font-size:12px; margin-top:20px;">Epsilon Heckle Studio v1.0 — Premium 3D Game Creation</p>
+  </section>
+
+</div>
+</div>
+
+<!-- BACK TO TOP -->
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+  <i data-lucide="arrow-up" class="w-5 h-5"></i>
+</button>
+
+<script>
+  // Initialize Lucide icons
+  lucide.createIcons();
+
+  // ===== Sidebar navigation highlighting =====
+  const navItems = document.querySelectorAll('.nav-item');
+  const sections = document.querySelectorAll('.section-anchor');
+
+  function updateActiveNav() {
+    let currentId = '';
+    sections.forEach(sec => {
+      const rect = sec.getBoundingClientRect();
+      if (rect.top <= 120) currentId = sec.id;
+    });
+    navItems.forEach(item => {
+      item.classList.toggle('active', item.getAttribute('data-nav') === currentId);
+    });
+  }
+
+  // ===== Back to top button =====
+  const backToTop = document.getElementById('backToTop');
+  function updateBackToTop() {
+    backToTop.classList.toggle('visible', window.scrollY > 400);
+  }
+
+  // ===== Scroll listener =====
+  window.addEventListener('scroll', () => {
+    updateActiveNav();
+    updateBackToTop();
+  }, { passive: true });
+
+  // ===== Fade-in on scroll =====
+  const fadeObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-section').forEach(el => fadeObserver.observe(el));
+
+  // ===== Smooth scroll for nav links =====
+  navItems.forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = item.getAttribute('href').slice(1);
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Close mobile sidebar
+        if (window.innerWidth <= 900) {
+          document.getElementById('sidebar').classList.remove('open');
+          document.getElementById('sidebarOverlay').classList.remove('open');
+        }
+      }
+    });
+  });
+
+  // ===== Mobile sidebar toggle =====
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('open');
+  }
+
+  // ===== Search filtering =====
+  function filterGuide(query) {
+    const q = query.toLowerCase().trim();
+    const allSections = document.querySelectorAll('.section-anchor, .fade-section');
+    const allNavItems = document.querySelectorAll('.nav-item');
+
+    if (!q) {
+      allSections.forEach(s => s.style.display = '');
+      allNavItems.forEach(n => n.style.display = '');
+      document.querySelectorAll('.section-divider').forEach(d => d.style.display = '');
+      return;
+    }
+
+    // Show/hide nav items based on text match
+    allNavItems.forEach(n => {
+      const text = n.textContent.toLowerCase();
+      const sectionId = n.getAttribute('data-nav');
+      const section = document.getElementById(sectionId);
+      const sectionText = section ? section.textContent.toLowerCase() : '';
+      n.style.display = (text.includes(q) || sectionText.includes(q)) ? '' : 'none';
+    });
+  }
+
+  // ===== Initial call =====
+  updateActiveNav();
+  updateBackToTop();
+</script>
+</body>
+</html>
