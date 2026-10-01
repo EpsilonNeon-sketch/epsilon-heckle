@@ -499,15 +499,51 @@
             </section>
 
             <!-- ===== PLAY GAMES ===== -->
-            <section id="playSection" class="page-section hidden">
-                <div class="mb-6">
-                    <h1 class="text-2xl md:text-3xl font-black tracking-tight">Play <span
-                            class="text-eh-red">Games</span></h1>
-                    <p class="text-eh-muted text-sm mt-1">Jump right in — no download needed</p>
-                </div>
-                <div id="playGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
-            </section>
-
+          <section id="playSection" class="page-section hidden">
+    <div class="mb-6">
+        <h1 class="text-2xl md:text-3xl font-black tracking-tight">Play <span class="text-eh-red">Games</span></h1>
+        <p class="text-eh-muted text-sm mt-1">Jump right in — no download needed</p>
+    </div>
+    <div class="flex flex-col sm:flex-row gap-3 mb-4">
+        <div class="relative flex-1">
+            <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-eh-dim"></i>
+            <input type="text" id="playSearch" oninput="filterPlayGames()" placeholder="Search games..."
+                class="w-full bg-eh-surface border border-eh-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-eh-text placeholder-eh-dim focus:outline-none focus:border-eh-red transition-colors">
+        </div>
+    </div>
+    <div id="playCategoryFilters" class="flex gap-2 flex-wrap mb-5"></div>
+    <div id="playGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+    <div id="playEmpty" class="hidden text-center py-20">
+        <i data-lucide="search-x" class="w-12 h-12 text-eh-dim mx-auto mb-3"></i>
+        <p class="text-eh-muted">No games found</p>
+    </div>
+    <div id="playLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div class="bg-eh-card border border-eh-border rounded-2xl overflow-hidden">
+            <div class="skeleton h-40"></div>
+            <div class="p-4">
+                <div class="skeleton h-4 w-3/4 mb-2"></div>
+                <div class="skeleton h-3 w-1/2 mb-3"></div>
+                <div class="skeleton h-8 w-24 rounded-lg"></div>
+            </div>
+        </div>
+        <div class="bg-eh-card border border-eh-border rounded-2xl overflow-hidden hidden sm:block">
+            <div class="skeleton h-40"></div>
+            <div class="p-4">
+                <div class="skeleton h-4 w-2/3 mb-2"></div>
+                <div class="skeleton h-3 w-2/5 mb-3"></div>
+                <div class="skeleton h-8 w-24 rounded-lg"></div>
+            </div>
+        </div>
+        <div class="bg-eh-card border border-eh-border rounded-2xl overflow-hidden hidden lg:block">
+            <div class="skeleton h-40"></div>
+            <div class="p-4">
+                <div class="skeleton h-4 w-4/5 mb-2"></div>
+                <div class="skeleton h-3 w-1/3 mb-3"></div>
+                <div class="skeleton h-8 w-24 rounded-lg"></div>
+            </div>
+        </div>
+    </div>
+</section>
             <!-- ===== VIDEOS ===== -->
             <section id="videosSection" class="page-section hidden">
                 <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
@@ -1496,17 +1532,6 @@ pauiLoadAccess();
             { id: 340, title: "Lost Ark", thumbnail: "https://www.freetogame.com/g/340/thumbnail.jpg", short_description: "An MMO-ARPG featuring fast-paced action combat and a vast world to explore.", game_url: "https://www.freetogame.com/open/lost-ark", genre: "RPG", platform: "PC (Windows)", publisher: "Amazon Games", developer: "Smilegate RPG", release_date: "2022-02-11", freetogame_profile_url: "https://www.freetogame.com/lost-ark" }
         ];
 
-        const FALLBACK_PLAY = [
-            { name: "2048", desc: "Join the numbers and get to the 2048 tile! A classic puzzle game.", author: "Gabriele Cirulli", link: "https://play2048.co/" },
-            { name: "Dino Runner", desc: "The iconic Chrome dinosaur game — jump over cacti and dodge birds.", author: "Google", link: "https://chromedino.com/" },
-            { name: "Tic Tac Toe", desc: "Classic strategy game. Get three in a row to win!", author: "Classic", link: "https://www.tictactoe.com/" },
-            { name: "Sudoku", desc: "Fill the 9x9 grid with digits so each column, row and section contains all numbers.", author: "Classic", link: "https://sudoku.com/" },
-            { name: "Snake", desc: "Guide the snake to eat food and grow longer without hitting yourself.", author: "Classic", link: "https://playsnake.org/" },
-            { name: "Minesweeper", desc: "Uncover all cells without hitting a mine. Use logic to deduce safe spots.", author: "Classic", link: "https://minesweeper.online/" },
-            { name: "Cut the Rope", desc: "Cut the ropes to feed candy to Om Nom in this physics puzzle game.", author: "ZeptoLab", link: "https://cuttherope.ie/" },
-            { name: "Crossy Road", desc: "Help the chicken cross the road, river, and train tracks safely.", author: "Hipster Whale", link: "https://crossyroad.io/" }
-        ];
-
         const FALLBACK_VIDEOS = [
             { name: "Overwatch 2 - BEST NEW HERO RANKED GAMEPLAY", youtuber: "Flankspeed", link: "https://www.youtube.com/watch?v=XZk2hJ7Wq44", desc: "Insane ranked gameplay with the newest Overwatch 2 hero. High-level positioning and ability usage breakdown.", game: "Overwatch" },
             { name: "Fortnite Chapter 5 SEASON FINALE Event Live Reaction", youtuber: "SypherPK", link: "https://www.youtube.com/watch?v=Z3FBKk0aXbM", desc: "Watching the Fortnite Chapter 5 season finale live event with reactions and thoughts on what's next.", game: "Fortnite" },
@@ -1529,7 +1554,6 @@ pauiLoadAccess();
         // ===== STATE =====
         let authMode = 'login';
         let libraryGames = [];
-        let playGames = [];
         let videoData = [];
         let allProfiles = [];
         let currentGenre = 'All';
@@ -1617,23 +1641,152 @@ pauiLoadAccess();
         function setGenre(g) { currentGenre = g; buildGenreFilters(); renderLibrary(); }
         function filterLibrary() { renderLibrary(); }
 
-        // ===== PLAY =====
-        async function loadPlayGames() { try { const r = await fetch('games.json'); if (r.ok) { playGames = await r.json(); return; } } catch { } playGames = [...FALLBACK_PLAY]; }
+        // ============================================================
+        // PLAY GAMES — loads from games.json
+        // ============================================================
+        let playGamesData = [];
+        let playActiveCategory = 'All';
+        let playGamesLoaded = false;
 
-        function renderPlayGames() {
-            const icons = ['🎯', '🦖', '❌', '🔢', '🐍', '💣', '🍬', '🐔'];
-            document.getElementById('playGrid').innerHTML = playGames.map((g, i) => `<div class="play-card bg-eh-card border border-eh-border rounded-2xl overflow-hidden fade-up cursor-pointer" style="animation-delay:${i * 0.05}s" onclick="launchGame('${g.link.replace(/'/g, "\\'")}','${g.name.replace(/'/g, "\\'")}')"><div class="h-28 bg-gradient-to-br from-eh-red/20 via-eh-surface to-eh-card flex items-center justify-center"><span class="text-4xl">${icons[i % icons.length]}</span></div><div class="p-4"><h3 class="text-sm font-bold text-eh-text mb-0.5">${g.name}</h3><p class="text-[11px] text-eh-dim mb-1">by ${g.author}</p><p class="text-xs text-eh-muted leading-relaxed mb-3" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${g.desc}</p><div class="red-btn block text-center py-2 rounded-xl text-white text-xs font-bold tracking-wide">Play Now</div></div></div>`).join('');
-            lucide.createIcons();
+        /** Fetch games.json and render the play grid. Only runs once unless forced. */
+        async function loadPlayGames(force) {
+            if (playGamesLoaded && !force) return;
+
+            const loadingEl = document.getElementById('playLoading');
+            const gridEl = document.getElementById('playGrid');
+            const emptyEl = document.getElementById('playEmpty');
+
+            loadingEl.classList.remove('hidden');
+            gridEl.innerHTML = '';
+            emptyEl.classList.add('hidden');
+
+            try {
+                const resp = await fetch('games.json');
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                const games = await resp.json();
+                playGamesData = Array.isArray(games) ? games : [];
+                playGamesLoaded = true;
+                buildPlayCategoryFilters();
+                renderPlayCards(getFilteredPlayGames());
+            } catch (err) {
+                console.error('Failed to load games.json:', err);
+                gridEl.innerHTML = '';
+                emptyEl.classList.remove('hidden');
+                emptyEl.querySelector('p').textContent = 'Failed to load games';
+            } finally {
+                loadingEl.classList.add('hidden');
+            }
+        }
+
+        function buildPlayCategoryFilters() {
+            const cats = ['All', ...new Set(
+                playGamesData.map(g => g.category).filter(Boolean).sort()
+            )];
+            document.getElementById('playCategoryFilters').innerHTML = cats.map(c => `
+                <button onclick="setPlayCategory('${c}')"
+                    class="play-cat-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all
+                    ${c === playActiveCategory ? 'bg-eh-red text-white' : 'bg-eh-card border border-eh-border text-eh-muted hover:text-eh-text hover:border-eh-border-l'}"
+                    data-play-cat="${c}">${c}</button>
+            `).join('');
+        }
+
+        function setPlayCategory(cat) {
+            playActiveCategory = cat;
+            document.querySelectorAll('.play-cat-btn').forEach(btn => {
+                const on = btn.dataset.playCat === cat;
+                btn.className = 'play-cat-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ' +
+                    (on ? 'bg-eh-red text-white' : 'bg-eh-card border border-eh-border text-eh-muted hover:text-eh-text hover:border-eh-border-l');
+            });
+            filterPlayGames();
+        }
+
+        function getFilteredPlayGames() {
+            const q = (document.getElementById('playSearch')?.value || '').toLowerCase().trim();
+            return playGamesData.filter(g => {
+                if (playActiveCategory !== 'All' && g.category !== playActiveCategory) return false;
+                if (q) return `${g.title} ${g.description} ${g.tags} ${g.category}`.toLowerCase().includes(q);
+                return true;
+            });
+        }
+
+        function filterPlayGames() {
+            renderPlayCards(getFilteredPlayGames());
+        }
+
+        function renderPlayCards(games) {
+            const grid = document.getElementById('playGrid');
+            const emptyEl = document.getElementById('playEmpty');
+
+            if (!games.length) {
+                grid.innerHTML = '';
+                emptyEl.classList.remove('hidden');
+                return;
+            }
+            emptyEl.classList.add('hidden');
+
+            grid.innerHTML = games.map((g, i) => {
+                const title = g.title || 'Untitled';
+                const thumb = g.thumb || '';
+                const cat = g.category || '';
+                const desc = g.description || '';
+                const tags = g.tags ? g.tags.split(',').map(t => t.trim()).slice(0, 3) : [];
+                const shortDesc = desc.length > 100 ? desc.substring(0, 100) + '…' : desc;
+                const fallbackImg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 384'%3E%3Crect fill='%23151515' width='512' height='384'/%3E%3Ctext x='256' y='200' fill='%23444' text-anchor='middle' font-size='48'%3E🎮%3C/text%3E%3C/svg%3E";
+
+                return `
+                <div class="play-card bg-eh-card border border-eh-border rounded-2xl overflow-hidden cursor-pointer fade-up"
+                     style="animation-delay:${Math.min(i * 0.04, 0.35)}s"
+                     onclick="openPlayGame(${i})">
+                    <div class="relative overflow-hidden">
+                        <img src="${thumb}" alt="${title}" loading="lazy"
+                             class="card-thumb w-full h-40 object-cover"
+                             onerror="this.onerror=null;this.src='${fallbackImg}'">
+                        ${cat ? `<span class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-eh-red/90 text-white">${cat}</span>` : ''}
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-3">
+                            <span class="text-white text-xs font-semibold flex items-center gap-1.5">
+                                <i data-lucide="play" class="w-3.5 h-3.5"></i> Play Now
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-sm font-bold text-eh-text mb-1 truncate">${title}</h3>
+                        ${shortDesc ? `<p class="text-xs text-eh-muted leading-relaxed mb-2.5" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${shortDesc}</p>` : ''}
+                        ${tags.length ? `<div class="flex flex-wrap gap-1.5 mb-3">${tags.map(t => `<span class="px-2 py-0.5 rounded text-[10px] font-medium bg-eh-surface text-eh-dim border border-eh-border">${t}</span>`).join('')}</div>` : ''}
+                        <button class="red-btn w-full py-2 rounded-lg text-white text-xs font-bold tracking-wide flex items-center justify-center gap-1.5"
+                                onclick="event.stopPropagation();openPlayGame(${i})">
+                            <i data-lucide="gamepad-2" class="w-3.5 h-3.5"></i> Play
+                        </button>
+                    </div>
+                </div>`;
+            }).join('');
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function openPlayGame(index) {
+            const filtered = getFilteredPlayGames();
+            const g = filtered[index];
+            if (!g) return;
+
+            const overlay = document.getElementById('iframeOverlay');
+            const iframe = document.getElementById('gameIframe');
+            if (g.width && g.height) {
+                iframe.style.aspectRatio = g.width + ' / ' + g.height;
+            } else {
+                iframe.style.aspectRatio = '';
+            }
+
+            iframe.src = g.url;
+            currentGameName = g.title || 'Game';
+            document.getElementById('iframeTitle').textContent = currentGameName;
+            document.getElementById('minimizedTitle').textContent = currentGameName;
+            overlay.classList.remove('hidden');
+            overlay.style.display = 'flex';
+            document.getElementById('minimizedGame').classList.add('hidden');
+            document.body.style.overflow = 'hidden';
         }
 
         // ===== GAME IFRAME =====
-        function launchGame(url, name) {
-            currentGameUrl = url; currentGameName = name;
-            document.getElementById('iframeTitle').textContent = name;
-            document.getElementById('gameIframe').src = url;
-            document.getElementById('iframeOverlay').classList.remove('hidden'); document.getElementById('iframeOverlay').style.display = 'flex';
-            document.getElementById('minimizedGame').classList.add('hidden'); document.body.style.overflow = 'hidden';
-        }
         function minimizeGame() { document.getElementById('iframeOverlay').style.display = 'none'; document.getElementById('minimizedTitle').textContent = currentGameName; document.getElementById('minimizedGame').classList.remove('hidden'); document.body.style.overflow = ''; }
         function restoreGame() { document.getElementById('iframeOverlay').style.display = 'flex'; document.getElementById('minimizedGame').classList.add('hidden'); document.body.style.overflow = 'hidden'; }
         function closeGame() { document.getElementById('iframeOverlay').style.display = 'none'; document.getElementById('iframeOverlay').classList.add('hidden'); document.getElementById('gameIframe').src = ''; document.getElementById('minimizedGame').classList.add('hidden'); document.body.style.overflow = ''; currentGameUrl = ''; currentGameName = ''; }
@@ -1934,7 +2087,7 @@ pauiLoadAccess();
                 if (event === 'SIGNED_OUT') { currentUser = null; document.getElementById('dashboardPage').classList.add('hidden'); document.getElementById('authPage').style.display = 'flex'; }
             });
             await Promise.all([loadLibraryGames(), loadPlayGames()]);
-            buildGenreFilters(); renderLibrary(); renderPlayGames();
+            buildGenreFilters(); renderLibrary();
         }
         init();
     </script>
