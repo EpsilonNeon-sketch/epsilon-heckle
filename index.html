@@ -53,6 +53,12 @@
             background: #dc2626;
         }
 
+        .auth-bg {
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
         .auth-bg::before {
             content: '';
             position: absolute;
@@ -387,6 +393,7 @@
                         class="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all text-eh-muted hover:text-eh-text">Sign
                         Up</button>
                 </div>
+                <p id="authGateMessage" class="hidden text-sm text-eh-muted text-center mb-4">Sign in to access the Library, Videos, News, and Community. Play Games is available without an account.</p>
                 <form id="authForm" onsubmit="handleAuth(event)" class="space-y-4">
                     <div>
                         <label
@@ -408,6 +415,8 @@
                                 class="w-4 h-4 animate-spin inline-block"></i></span>
                     </button>
                 </form>
+                <button id="continueGuestBtn" onclick="continueAsGuest()"
+                    class="hidden w-full mt-3 py-2.5 rounded-xl text-sm font-semibold text-eh-muted hover:text-eh-text transition-colors">Continue as guest</button>
             </div>
         </div>
     </div>
@@ -425,11 +434,11 @@
             <div class="h-px bg-eh-border mx-4"></div>
             <nav class="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
                 <button onclick="navigateTo('library')" data-nav="library"
-                    class="nav-item active w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-eh-muted">
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-eh-muted">
                     <i data-lucide="library" class="w-[18px] h-[18px]"></i> Library
                 </button>
                 <button onclick="navigateTo('play')" data-nav="play"
-                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-eh-muted">
+                    class="nav-item active w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-eh-muted">
                     <i data-lucide="gamepad-2" class="w-[18px] h-[18px]"></i> Play Games
                 </button>
                 <button onclick="navigateTo('videos')" data-nav="videos"
@@ -459,7 +468,11 @@
                         <p class="text-xs text-eh-dim">Gamer</p>
                     </div>
                 </div>
-                <button onclick="handleLogout()"
+                <button id="signInBtn" onclick="openAuthGate()"
+                    class="hidden w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-eh-muted hover:text-eh-red hover:bg-red-400/5 transition-all">
+                    <i data-lucide="log-in" class="w-3.5 h-3.5"></i> Sign In
+                </button>
+                <button id="signOutBtn" onclick="handleLogout()"
                     class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-eh-muted hover:text-red-400 hover:bg-red-400/5 transition-all">
                     <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Sign Out
                 </button>
@@ -499,7 +512,7 @@
             </section>
 
             <!-- ===== PLAY GAMES ===== -->
-          <section id="playSection" class="page-section hidden">
+                      <section id="playSection" class="page-section">
     <div class="mb-6">
         <h1 class="text-2xl md:text-3xl font-black tracking-tight">Play <span class="text-eh-red">Games</span></h1>
         <p class="text-eh-muted text-sm mt-1">Jump right in — no download needed</p>
@@ -1591,20 +1604,47 @@ pauiLoadAccess();
         }
 
         async function handleLogout() {
-            await supabaseClient.auth.signOut(); currentUser = null;
-            document.getElementById('dashboardPage').classList.add('hidden');
-            document.getElementById('authPage').classList.remove('hidden'); document.getElementById('authPage').style.display = 'flex';
-            closeGame(); closeVideo();
+            await supabaseClient.auth.signOut();
+            currentUser = null;
+            closeGame();
+            closeVideo();
+            showDashboard(null);
+        }
+
+        function openAuthGate() {
+            document.getElementById('authGateMessage').classList.remove('hidden');
+            document.getElementById('continueGuestBtn').classList.remove('hidden');
+            document.getElementById('authPage').style.display = 'flex';
+        }
+
+        function continueAsGuest() {
+            document.getElementById('authPage').style.display = 'none';
+            document.getElementById('authGateMessage').classList.add('hidden');
+            document.getElementById('continueGuestBtn').classList.add('hidden');
+            navigateTo('play');
         }
 
         function showDashboard(user) {
-            currentUser = user; document.getElementById('authPage').style.display = 'none'; document.getElementById('dashboardPage').classList.remove('hidden');
-            const email = user.email || 'Gamer'; document.getElementById('userEmail').textContent = email; document.getElementById('userAvatar').textContent = email.charAt(0).toUpperCase();
+            currentUser = user;
+            document.getElementById('authPage').style.display = 'none';
+            document.getElementById('authGateMessage').classList.add('hidden');
+            document.getElementById('continueGuestBtn').classList.add('hidden');
+            document.getElementById('dashboardPage').classList.remove('hidden');
+            const email = user ? (user.email || 'Gamer') : 'Guest';
+            document.getElementById('userEmail').textContent = email;
+            document.getElementById('userAvatar').textContent = email.charAt(0).toUpperCase();
+            document.getElementById('signInBtn').style.display = user ? 'none' : 'flex';
+            document.getElementById('signOutBtn').style.display = user ? 'flex' : 'none';
+            navigateTo('play');
             lucide.createIcons();
         }
 
         // ===== NAV =====
         function navigateTo(page) {
+            if (page !== 'play' && !currentUser) {
+                openAuthGate();
+                return;
+            }
             document.querySelectorAll('.page-section').forEach(s => s.classList.add('hidden'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(page + 'Section').classList.remove('hidden');
@@ -2081,10 +2121,10 @@ pauiLoadAccess();
         async function init() {
             lucide.createIcons();
             const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session && session.user) showDashboard(session.user);
+            showDashboard(session && session.user ? session.user : null);
             supabaseClient.auth.onAuthStateChange((event, session) => {
                 if (event === 'SIGNED_IN' && session) showDashboard(session.user);
-                if (event === 'SIGNED_OUT') { currentUser = null; document.getElementById('dashboardPage').classList.add('hidden'); document.getElementById('authPage').style.display = 'flex'; }
+                if (event === 'SIGNED_OUT') showDashboard(null);
             });
             await Promise.all([loadLibraryGames(), loadPlayGames()]);
             buildGenreFilters(); renderLibrary();
